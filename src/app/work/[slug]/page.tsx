@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getAllProjects, getAllSlugs, getProject } from '@/lib/work';
 import { asset } from '@/lib/asset';
+import ImageZoom from '@/components/ImageZoom';
 
 export function generateStaticParams() {
   return getAllSlugs().map((slug) => ({ slug }));
@@ -53,18 +54,24 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       </div>
 
       {/* Stacked images, cols 4-12 */}
-      <div className="col-span-full lg:col-start-4 lg:col-span-9 mt-10 lg:mt-0 flex flex-col gap-[10px]">
-        {project.images.map((img, i) => (
-          <figure key={img.src} className="bg-[var(--color-gray)]/10">
-            <img
-              src={asset(img.src)}
-              alt={img.alt}
-              className="w-full h-auto"
-              loading={i === 0 ? 'eager' : 'lazy'}
-              fetchPriority={i === 0 ? 'high' : undefined}
-            />
-          </figure>
-        ))}
+      <div className="col-span-full lg:col-start-4 lg:col-span-9 mt-10 lg:mt-0">
+        <ImageZoom>
+          {project.images.map((img, i) => (
+            <figure
+              key={img.src}
+              className="bg-[var(--color-gray)]/10 transition-[width] duration-500 ease-[var(--ease-out-quint)]"
+              style={{ width: 'var(--img-size, 100%)' }}
+            >
+              <img
+                src={asset(img.src)}
+                alt={img.alt}
+                className="w-full h-auto"
+                loading={i === 0 ? 'eager' : 'lazy'}
+                fetchPriority={i === 0 ? 'high' : undefined}
+              />
+            </figure>
+          ))}
+        </ImageZoom>
       </div>
 
       {project.body && (
