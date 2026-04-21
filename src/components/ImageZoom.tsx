@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-// Zoom steps in % of the full column width.
+// Zoom steps as % of the full column width.
 const SIZES = [100, 75, 55, 40, 28] as const;
 
 export default function ImageZoom({ children }: { children: React.ReactNode }) {
@@ -21,16 +21,18 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
         {children}
       </div>
 
+      {/* Floating zoom controls, nestled under the logo (top-right) */}
       <div
-        className="fixed bottom-6 right-5 lg:right-8 z-30 flex flex-col gap-[1px] blend-difference"
+        className="fixed right-5 lg:right-8 top-[68px] lg:top-[80px] z-30 flex flex-col items-center gap-[6px] blend-difference"
         style={{ color: 'var(--color-white)' }}
+        aria-label="Image zoom"
       >
         <button
           type="button"
           onClick={zoomIn}
           aria-label="Larger images"
           disabled={idx === 0}
-          className="w-[40px] h-[40px] border border-current flex items-center justify-center link-hover disabled:opacity-30"
+          className="wiggle-a w-[32px] h-[32px] rounded-full border border-current flex items-center justify-center link-hover disabled:opacity-30 leading-none"
         >
           +
         </button>
@@ -39,7 +41,7 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
           onClick={zoomOut}
           aria-label="Smaller images"
           disabled={idx === SIZES.length - 1}
-          className="w-[40px] h-[40px] border border-current flex items-center justify-center link-hover disabled:opacity-30"
+          className="wiggle-b w-[32px] h-[32px] rounded-full border border-current flex items-center justify-center link-hover disabled:opacity-30 leading-none"
         >
           −
         </button>

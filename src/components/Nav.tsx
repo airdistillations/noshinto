@@ -27,11 +27,11 @@ export default function Nav() {
         <div className="flex items-start justify-between gap-6">
           <div className="flex-1 min-w-0">
             {/* Comma-separated tagline-style nav */}
-            <nav aria-label="Primary" className="text-16 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            <nav aria-label="Primary" className="text-16 flex flex-wrap items-baseline gap-x-3 gap-y-1">
               {links.map((l, i) => {
                 const active = l.href === '/' ? pathname === '/' : pathname.startsWith(l.href);
                 return (
-                  <span key={l.href} className="inline-flex items-baseline">
+                  <span key={l.href} className="inline-flex items-baseline gap-x-3">
                     <Link
                       href={l.href}
                       onClick={() => setOpen(false)}
@@ -39,12 +39,11 @@ export default function Nav() {
                       style={{ opacity: active ? 0.4 : 1 }}
                       aria-current={active ? 'page' : undefined}
                     >
-                      {/* Random letter highlight per link to evoke the marker look */}
-                      {l.label === 'work' && (<><span>w</span><span className="mark">or</span><span>k</span></>)}
-                      {l.label === 'about' && (<><span>a</span><span className="mark">bo</span><span>ut</span></>)}
-                      {l.label === 'contact' && (<><span>con</span><span className="mark">ta</span><span>ct</span></>)}
+                      {l.label}
                     </Link>
-                    {i < links.length - 1 && <span aria-hidden>,</span>}
+                    {i < links.length - 1 && (
+                      <span aria-hidden className="opacity-60 select-none">&mdash;</span>
+                    )}
                   </span>
                 );
               })}
