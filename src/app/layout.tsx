@@ -3,9 +3,18 @@ import './globals.css';
 import Nav from '@/components/Nav';
 import ThemeBoot from '@/components/ThemeBoot';
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 export const metadata: Metadata = {
   title: 'Noshinto',
   description: 'Selected work.',
+  icons: {
+    icon: [
+      { url: `${basePath}/logo.svg`, type: 'image/svg+xml' },
+    ],
+    shortcut: `${basePath}/logo.svg`,
+    apple: `${basePath}/logo.svg`,
+  },
 };
 
 // Prevent theme flash: set data-theme before paint from localStorage / prefers-color-scheme.

@@ -21,30 +21,42 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
         {children}
       </div>
 
-      {/* Floating zoom controls, nestled under the logo (top-right) */}
-      <div
-        className="fixed right-5 lg:right-8 top-[68px] lg:top-[80px] z-30 flex flex-col items-center gap-[6px] blend-difference"
-        style={{ color: 'var(--color-white)' }}
-        aria-label="Image zoom"
-      >
-        <button
-          type="button"
-          onClick={zoomIn}
-          aria-label="Larger images"
-          disabled={idx === 0}
-          className="wiggle-a w-[32px] h-[32px] rounded-full border border-current flex items-center justify-center link-hover disabled:opacity-30 leading-none"
+      {/*
+        Two separately-positioned floating buttons around the logo corner.
+        Each has its own slow, out-of-phase drift animation, so they feel
+        like they're orbiting the logo rather than sitting in a stack.
+      */}
+      <div className="pointer-events-none">
+        {/* + : roughly to the left of the logo */}
+        <div
+          className="fixed z-30 right-[60px] lg:right-[80px] top-[18px] lg:top-[24px] float-a"
         >
-          +
-        </button>
-        <button
-          type="button"
-          onClick={zoomOut}
-          aria-label="Smaller images"
-          disabled={idx === SIZES.length - 1}
-          className="wiggle-b w-[32px] h-[32px] rounded-full border border-current flex items-center justify-center link-hover disabled:opacity-30 leading-none"
+          <button
+            type="button"
+            onClick={zoomIn}
+            aria-label="Larger images"
+            disabled={idx === 0}
+            className="pointer-events-auto glass-btn w-[40px] h-[40px] rounded-full flex items-center justify-center text-16 leading-none disabled:opacity-30"
+          >
+            +
+          </button>
+        </div>
+
+        {/* − : below the logo */}
+        <div
+          className="fixed z-30 right-5 lg:right-8 top-[76px] lg:top-[88px] float-b"
         >
-          −
-        </button>
+          <button
+            type="button"
+            onClick={zoomOut}
+            aria-label="Smaller images"
+            disabled={idx === SIZES.length - 1}
+            className="pointer-events-auto glass-btn w-[40px] h-[40px] rounded-full flex items-center justify-center text-16 leading-none disabled:opacity-30"
+          >
+            −
+          </button>
+        </div>
+
         <span className="sr-only" aria-live="polite">{size}%</span>
       </div>
     </>
