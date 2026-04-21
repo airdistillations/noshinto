@@ -2,7 +2,22 @@
 
 import { useState } from 'react';
 
-const SIZES = [100, 75, 55, 40, 28] as const;
+/**
+ * Zoom steps expressed as a minimum column width. With
+ *   grid-template-columns: repeat(auto-fill, minmax(var(--img-min), 1fr))
+ * the browser fits as many columns as the available width allows, so
+ * each click of "−" will add a column whenever there's actually room.
+ *
+ * Step 0 → one image per row (full column width).
+ * Further steps shrink the minimum so more fit per row on wider screens.
+ */
+const STEPS = [
+  { min: '100%',  label: '1 col' },
+  { min: '520px', label: 'large' },
+  { min: '360px', label: 'medium' },
+  { min: '260px', label: 'small' },
+  { min: '180px', label: 'xs' },
+] as const;
 
 function scrollEverythingToTop() {
   try {
@@ -17,26 +32,24 @@ function scrollEverythingToTop() {
 
 export default function ImageZoom({ children }: { children: React.ReactNode }) {
   const [idx, setIdx] = useState(0);
-  const size = SIZES[idx];
+  const step = STEPS[idx];
 
   const zoomIn = () => setIdx((i) => Math.max(0, i - 1));
-  const zoomOut = () => setIdx((i) => Math.min(SIZES.length - 1, i + 1));
+  const zoomOut = () => setIdx((i) => Math.min(STEPS.length - 1, i + 1));
 
   return (
     <>
       <div
-        className="flex flex-col items-center gap-[10px]"
-        style={{ ['--img-size' as string]: `${size}%` } as React.CSSProperties}
+        className="grid gap-[10px]"
+        style={{
+          ['--img-min' as string]: step.min,
+          gridTemplateColumns: 'repeat(auto-fill, minmax(var(--img-min), 1fr))',
+        } as React.CSSProperties}
       >
         {children}
       </div>
 
-      {/*
-        Triangle formation anchored to the bottom-right corner.
-        ↑ at the corner; − directly above; + diagonally up-and-left from −.
-        Each button is independently positioned and floats out of phase,
-        so the triangle gently breathes without anything touching.
-      */}
+      {/* Triangle cluster in the bottom-right corner */}
 
       {/* ↑ Back to top — corner anchor */}
       <div className="fixed z-30 bottom-[20px] right-[20px] lg:bottom-[40px] lg:right-[40px]">
@@ -58,8 +71,8 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
           <button
             type="button"
             onClick={zoomOut}
-            aria-label="Smaller images"
-            disabled={idx === SIZES.length - 1}
+            aria-label="Smaller images — more columns"
+            disabled={idx === STEPS.length - 1}
             className="glass-btn w-[60px] h-[60px] rounded-full flex items-center justify-center text-16 leading-none disabled:opacity-30 disabled:pointer-events-none"
           >
             −
@@ -73,7 +86,7 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
           <button
             type="button"
             onClick={zoomIn}
-            aria-label="Larger images"
+            aria-label="Larger images — fewer columns"
             disabled={idx === 0}
             className="glass-btn w-[60px] h-[60px] rounded-full flex items-center justify-center text-16 leading-none disabled:opacity-30 disabled:pointer-events-none"
           >
@@ -82,7 +95,7 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
         </span>
       </div>
 
-      <span className="sr-only" aria-live="polite">{size}%</span>
+      <span className="sr-only" aria-live="polite">{step.label}</span>
     </>
   );
 }
