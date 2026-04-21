@@ -175,8 +175,10 @@ img { display: block; }
       color-mix(in oklab, var(--color-bg) 18%, transparent) 0%,
       color-mix(in oklab, var(--color-bg) 4%,  transparent) 48%,
       color-mix(in oklab, var(--color-text) 3%, transparent) 100%);
-  -webkit-backdrop-filter: blur(18px) saturate(190%);
-  backdrop-filter: url(#glass-disperse) blur(8px) saturate(190%);
+  -webkit-backdrop-filter: blur(14px) saturate(190%);
+  /* Liquid lens refraction: pulls backdrop pixels toward the centre so
+     content behind the button bows outward like through a water drop. */
+  backdrop-filter: url(#liquid-lens) blur(6px) saturate(190%);
   border: none;
   box-shadow:
     0 14px 30px -12px color-mix(in oklab, var(--color-text) 30%, transparent),
