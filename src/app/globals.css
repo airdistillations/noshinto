@@ -196,17 +196,17 @@ img { display: block; }
     box-shadow 110ms cubic-bezier(.2, .8, .4, 1);
 }
 
-/* Layer 1 — effect: blurred backdrop warped by the liquid lens.
-   Transparent bg so filter's SourceGraphic is effectively the
-   blurred backdrop from backdrop-filter. */
+/* Layer 1 — effect: blurred, saturated backdrop. No SVG filter here:
+   Chrome doesn't pass backdrop-filter output into element `filter`,
+   so the lens refraction can't be achieved without a foreignObject
+   workaround. A well-tuned frosted blur reads as "glass" cleanly. */
 .glass-btn > .glass-effect {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   z-index: 0;
-  -webkit-backdrop-filter: blur(3px) saturate(180%);
-  backdrop-filter: blur(3px) saturate(180%);
-  filter: url(#liquid-lens);
+  -webkit-backdrop-filter: blur(14px) saturate(200%) brightness(1.05);
+  backdrop-filter: blur(14px) saturate(200%) brightness(1.05);
   pointer-events: none;
 }
 
@@ -218,11 +218,12 @@ img { display: block; }
   z-index: 1;
   background:
     radial-gradient(130% 130% at 28% 18%,
-      color-mix(in oklab, var(--color-bg) 22%, transparent) 0%,
-      transparent 60%);
+      color-mix(in oklab, var(--color-bg) 32%, transparent) 0%,
+      color-mix(in oklab, var(--color-bg) 6%, transparent) 55%,
+      transparent 100%);
   box-shadow:
-    inset 2px 2px 1px 0 color-mix(in oklab, var(--color-bg) 55%, transparent),
-    inset -1px -1px 1px 1px color-mix(in oklab, var(--color-bg) 45%, transparent);
+    inset 2px 2px 1px 0 color-mix(in oklab, var(--color-bg) 60%, transparent),
+    inset -1px -1px 1px 1px color-mix(in oklab, var(--color-bg) 50%, transparent);
   pointer-events: none;
 }
 
