@@ -31,25 +31,29 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
         {children}
       </div>
 
-      {/* Liquid water-drop cluster, bottom-right */}
-      <div className="fixed bottom-[24px] right-[24px] lg:bottom-[40px] lg:right-[40px] z-30 flex flex-col items-center gap-[28px]">
-        {/*
-          Float animation lives on the wrapper; hover scale/lift lives on the
-          button. Keeping the two transforms on separate elements lets both
-          run without overriding each other.
-        */}
-        <span className="float-a inline-block">
+      {/*
+        Triangle formation anchored to the bottom-right corner.
+        ↑ at the corner; − directly above; + diagonally up-and-left from −.
+        Each button is independently positioned and floats out of phase,
+        so the triangle gently breathes without anything touching.
+      */}
+
+      {/* ↑ Back to top — corner anchor */}
+      <div className="fixed z-30 bottom-[20px] right-[20px] lg:bottom-[40px] lg:right-[40px]">
+        <span className="float-c inline-block">
           <button
             type="button"
-            onClick={zoomIn}
-            aria-label="Larger images"
-            disabled={idx === 0}
-            className="glass-btn w-[60px] h-[60px] rounded-full flex items-center justify-center text-16 leading-none disabled:opacity-30 disabled:pointer-events-none"
+            onClick={scrollEverythingToTop}
+            aria-label="Back to top"
+            className="glass-btn w-[60px] h-[60px] rounded-full flex items-center justify-center text-16 leading-none"
           >
-            +
+            ↑
           </button>
         </span>
+      </div>
 
+      {/* − Smaller — directly above ↑ */}
+      <div className="fixed z-30 bottom-[110px] right-[20px] lg:bottom-[150px] lg:right-[40px]">
         <span className="float-b inline-block">
           <button
             type="button"
@@ -61,20 +65,24 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
             −
           </button>
         </span>
+      </div>
 
-        <span className="float-c inline-block">
+      {/* + Larger — up-and-left from − */}
+      <div className="fixed z-30 bottom-[110px] right-[110px] lg:bottom-[150px] lg:right-[150px]">
+        <span className="float-a inline-block">
           <button
             type="button"
-            onClick={scrollEverythingToTop}
-            aria-label="Back to top"
-            className="glass-btn w-[60px] h-[60px] rounded-full flex items-center justify-center text-16 leading-none"
+            onClick={zoomIn}
+            aria-label="Larger images"
+            disabled={idx === 0}
+            className="glass-btn w-[60px] h-[60px] rounded-full flex items-center justify-center text-16 leading-none disabled:opacity-30 disabled:pointer-events-none"
           >
-            ↑
+            +
           </button>
         </span>
-
-        <span className="sr-only" aria-live="polite">{size}%</span>
       </div>
+
+      <span className="sr-only" aria-live="polite">{size}%</span>
     </>
   );
 }

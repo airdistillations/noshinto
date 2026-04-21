@@ -42,6 +42,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeBoot />
         <Nav />
         {children}
+
+        {/* Reusable SVG filters: liquid-glass dispersion/refraction for .glass-btn */}
+        <svg aria-hidden="true" width="0" height="0" style={{ position: 'absolute', pointerEvents: 'none' }}>
+          <defs>
+            <filter id="glass-disperse" x="-20%" y="-20%" width="140%" height="140%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" seed="7" result="noise" />
+              <feGaussianBlur in="noise" stdDeviation="1.2" result="noiseSoft" />
+              <feDisplacementMap in="SourceGraphic" in2="noiseSoft" scale="22" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+          </defs>
+        </svg>
       </body>
     </html>
   );

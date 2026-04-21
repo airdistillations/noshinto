@@ -152,19 +152,21 @@ img { display: block; }
 .float-c { animation: float-c 5.8s cubic-bezier(.45,.05,.55,.95) infinite; animation-delay: -3.4s; }
 
 .glass-btn {
-  /* Water-drop body: convex radial highlight (top-left light), glassy tint toward the base */
+  /* Very transparent body: let the backdrop come through. */
   background:
     radial-gradient(130% 130% at 28% 18%,
-      color-mix(in oklab, var(--color-bg) 65%, transparent) 0%,
-      color-mix(in oklab, var(--color-bg) 25%, transparent) 38%,
-      color-mix(in oklab, var(--color-text) 10%, transparent) 100%);
-  -webkit-backdrop-filter: blur(16px) saturate(170%);
-  backdrop-filter: blur(16px) saturate(170%);
+      color-mix(in oklab, var(--color-bg) 32%, transparent) 0%,
+      color-mix(in oklab, var(--color-bg) 10%, transparent) 42%,
+      color-mix(in oklab, var(--color-text) 4%, transparent) 100%);
+  /* Fallback: blur + saturate. Progressive enhancement layers the SVG
+     displacement filter below to create refraction/dispersion. */
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  backdrop-filter: url(#glass-disperse) blur(6px) saturate(180%);
   border: none;
   box-shadow:
-    0 10px 24px -10px color-mix(in oklab, var(--color-text) 28%, transparent),
-    0 2px 6px  -2px  color-mix(in oklab, var(--color-text) 22%, transparent),
-    inset 0 2px 4px  color-mix(in oklab, var(--color-bg) 45%, transparent),
+    0 14px 30px -12px color-mix(in oklab, var(--color-text) 32%, transparent),
+    0 3px 8px  -2px  color-mix(in oklab, var(--color-text) 24%, transparent),
+    inset 0 2px 4px  color-mix(in oklab, var(--color-bg) 55%, transparent),
     inset 0 -3px 6px color-mix(in oklab, var(--color-text) 14%, transparent);
   color: var(--color-text);
   transition:
@@ -173,18 +175,17 @@ img { display: block; }
     background 420ms var(--ease-out-quint);
 }
 .glass-btn:hover {
-  /* Lifts forward: bigger drop, softer halo, the droplet 'pops' off the background */
   transform: scale(1.12) translateY(-3px);
   box-shadow:
-    0 22px 38px -10px color-mix(in oklab, var(--color-text) 38%, transparent),
-    0 6px 14px  -2px  color-mix(in oklab, var(--color-text) 32%, transparent),
-    inset 0 2px 4px  color-mix(in oklab, var(--color-bg) 60%, transparent),
+    0 26px 44px -10px color-mix(in oklab, var(--color-text) 42%, transparent),
+    0 6px 14px  -2px  color-mix(in oklab, var(--color-text) 34%, transparent),
+    inset 0 2px 4px  color-mix(in oklab, var(--color-bg) 70%, transparent),
     inset 0 -3px 6px color-mix(in oklab, var(--color-text) 18%, transparent);
   background:
     radial-gradient(130% 130% at 28% 18%,
-      color-mix(in oklab, var(--color-bg) 80%, transparent) 0%,
-      color-mix(in oklab, var(--color-bg) 30%, transparent) 40%,
-      color-mix(in oklab, var(--color-text) 12%, transparent) 100%);
+      color-mix(in oklab, var(--color-bg) 44%, transparent) 0%,
+      color-mix(in oklab, var(--color-bg) 14%, transparent) 44%,
+      color-mix(in oklab, var(--color-text) 6%, transparent) 100%);
 }
 
 /* Old wiggle kept for anything still using it */
