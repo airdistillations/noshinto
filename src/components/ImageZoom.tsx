@@ -3,21 +3,18 @@
 import { useState } from 'react';
 
 /**
- * Zoom steps are expressed as a preferred *column width*. We flow the
- * images through CSS Multi-Column Layout so they pack masonry-style —
- * adjacent columns never align on the same row, there's no visible row
- * height, and images "click" into the next one vertically.
- *
- * The `min(…, 100%)` guard stops a column from overflowing a narrow
- * viewport (phones), which otherwise caused horizontal scroll and
- * pushed the floating buttons off-screen.
+ * Zoom steps are a preferred column width for CSS multi-column layout.
+ * `column-width` only accepts <length>, not percentages, so step 0 uses
+ * a very large length to guarantee a single column on any realistic
+ * viewport. `column-width` also self-clamps to the container, so there
+ * is no overflow risk on narrow phones.
  */
 const STEPS = [
-  { min: '100%',  label: '1 col' },
-  { min: '520px', label: 'large' },
-  { min: '340px', label: 'medium' },
-  { min: '220px', label: 'small' },
-  { min: '150px', label: 'xs' },
+  { min: '9999px', label: '1 col' },
+  { min: '520px',  label: 'large' },
+  { min: '340px',  label: 'medium' },
+  { min: '220px',  label: 'small' },
+  { min: '150px',  label: 'xs' },
 ] as const;
 
 function scrollEverythingToTop() {

@@ -104,12 +104,12 @@ img { display: block; }
   }
   .input:focus { border-color: currentColor; }
 
-  /* Masonry-flow: CSS multi-column layout. No row alignment; images
-     in adjacent columns naturally stagger. min() caps the column
-     width at 100% of the container to avoid horizontal overflow on
-     narrow viewports. */
+  /* Masonry-flow: CSS multi-column layout. Images flow top-to-bottom
+     within each column, columns pack independently, no row alignment.
+     column-width must be a <length> (percentages are invalid here) —
+     it self-clamps to the container, so no overflow on narrow screens. */
   .masonry-flow {
-    column-width: min(var(--img-min, 100%), 100%);
+    column-width: var(--img-min, 9999px);
     column-gap: 10px;
   }
   .masonry-flow > * {
