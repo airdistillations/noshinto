@@ -105,11 +105,11 @@ img { display: block; }
   .input:focus { border-color: currentColor; }
 
   /* Masonry-flow: CSS multi-column layout. Images flow top-to-bottom
-     within each column, columns pack independently, no row alignment.
-     column-width must be a <length> (percentages are invalid here) —
-     it self-clamps to the container, so no overflow on narrow screens. */
+     within each column; adjacent columns don't align horizontally, so
+     there's no visible row height. --img-cols pins the exact column
+     count for predictable taps. */
   .masonry-flow {
-    column-width: var(--img-min, 9999px);
+    column-count: var(--img-cols, 1);
     column-gap: 10px;
   }
   .masonry-flow > * {

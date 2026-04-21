@@ -3,18 +3,18 @@
 import { useState } from 'react';
 
 /**
- * Zoom steps are a preferred column width for CSS multi-column layout.
- * `column-width` only accepts <length>, not percentages, so step 0 uses
- * a very large length to guarantee a single column on any realistic
- * viewport. `column-width` also self-clamps to the container, so there
- * is no overflow risk on narrow phones.
+ * Each zoom step directly pins the column count. Forces an exact
+ * number of columns regardless of container width, so every tap on "−"
+ * adds one column (1 → 2 → 3 → 4 → 5) and every tap on "+" removes one.
+ * Images within a column stack masonry-style (top-to-bottom flow,
+ * no horizontal row alignment).
  */
 const STEPS = [
-  { min: '9999px', label: '1 col' },
-  { min: '520px',  label: 'large' },
-  { min: '340px',  label: 'medium' },
-  { min: '220px',  label: 'small' },
-  { min: '150px',  label: 'xs' },
+  { count: 1, label: '1 column' },
+  { count: 2, label: '2 columns' },
+  { count: 3, label: '3 columns' },
+  { count: 4, label: '4 columns' },
+  { count: 5, label: '5 columns' },
 ] as const;
 
 function scrollEverythingToTop() {
@@ -65,7 +65,7 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
     <>
       <div
         className="masonry-flow"
-        style={{ ['--img-min' as string]: step.min } as React.CSSProperties}
+        style={{ ['--img-cols' as string]: String(step.count) } as React.CSSProperties}
       >
         {children}
       </div>
