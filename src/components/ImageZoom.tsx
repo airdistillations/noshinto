@@ -2,8 +2,18 @@
 
 import { useState } from 'react';
 
-// Zoom steps as % of the full column width.
 const SIZES = [100, 75, 55, 40, 28] as const;
+
+function scrollEverythingToTop() {
+  try {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.querySelectorAll<HTMLElement>('[data-scroll-root], .snap-y').forEach((el) => {
+      el.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  } catch {
+    window.scrollTo(0, 0);
+  }
+}
 
 export default function ImageZoom({ children }: { children: React.ReactNode }) {
   const [idx, setIdx] = useState(0);
@@ -21,42 +31,34 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
         {children}
       </div>
 
-      {/*
-        Two separately-positioned floating buttons around the logo corner.
-        Each has its own slow, out-of-phase drift animation, so they feel
-        like they're orbiting the logo rather than sitting in a stack.
-      */}
-      <div className="pointer-events-none">
-        {/* + : roughly to the left of the logo */}
-        <div
-          className="fixed z-30 right-[60px] lg:right-[80px] top-[18px] lg:top-[24px] float-a"
+      {/* Three floating liquid-glass buttons in the bottom-right corner */}
+      <div className="fixed bottom-[24px] right-[24px] lg:bottom-[40px] lg:right-[40px] z-30 flex flex-col gap-3">
+        <button
+          type="button"
+          onClick={zoomIn}
+          aria-label="Larger images"
+          disabled={idx === 0}
+          className="float-a glass-btn w-[60px] h-[60px] rounded-full flex items-center justify-center text-16 leading-none disabled:opacity-30"
         >
-          <button
-            type="button"
-            onClick={zoomIn}
-            aria-label="Larger images"
-            disabled={idx === 0}
-            className="pointer-events-auto glass-btn w-[40px] h-[40px] rounded-full flex items-center justify-center text-16 leading-none disabled:opacity-30"
-          >
-            +
-          </button>
-        </div>
-
-        {/* − : below the logo */}
-        <div
-          className="fixed z-30 right-5 lg:right-8 top-[76px] lg:top-[88px] float-b"
+          +
+        </button>
+        <button
+          type="button"
+          onClick={zoomOut}
+          aria-label="Smaller images"
+          disabled={idx === SIZES.length - 1}
+          className="float-b glass-btn w-[60px] h-[60px] rounded-full flex items-center justify-center text-16 leading-none disabled:opacity-30"
         >
-          <button
-            type="button"
-            onClick={zoomOut}
-            aria-label="Smaller images"
-            disabled={idx === SIZES.length - 1}
-            className="pointer-events-auto glass-btn w-[40px] h-[40px] rounded-full flex items-center justify-center text-16 leading-none disabled:opacity-30"
-          >
-            −
-          </button>
-        </div>
-
+          −
+        </button>
+        <button
+          type="button"
+          onClick={scrollEverythingToTop}
+          aria-label="Back to top"
+          className="float-c glass-btn w-[60px] h-[60px] rounded-full flex items-center justify-center text-16 leading-none"
+        >
+          ↑
+        </button>
         <span className="sr-only" aria-live="polite">{size}%</span>
       </div>
     </>

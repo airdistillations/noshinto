@@ -51,6 +51,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         <p className="pt-10 copy-sm">
           <Link href="/" className="link-hover">← Back to work</Link>
         </p>
+
+        {project.body && (
+          <div className="pt-10 copy-sm whitespace-pre-line opacity-80">
+            {project.body}
+          </div>
+        )}
       </div>
 
       {/* Stacked images, cols 4-12 */}
@@ -73,12 +79,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           ))}
         </ImageZoom>
       </div>
-
-      {project.body && (
-        <div className="col-span-full lg:col-start-4 lg:col-span-6 mt-16 text-16 whitespace-pre-line opacity-85">
-          {project.body}
-        </div>
-      )}
 
       {next && next.slug !== project.slug && (
         <div className="col-span-full lg:col-start-2 lg:col-span-10 mt-24 pt-10 border-t border-current/10">

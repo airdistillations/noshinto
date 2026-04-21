@@ -24,13 +24,9 @@ export default function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-      className="group inline-flex items-center justify-center w-[40px] h-[40px]"
+      className="inline-flex items-center justify-center w-[40px] h-[40px]"
     >
-      <span
-        aria-hidden="true"
-        className="inline-block h-full w-full transition-transform duration-[1000ms] group-hover:[transform:rotate(720deg)]"
-        style={{ transitionTimingFunction: 'var(--ease-out-expo)' }}
-      >
+      <span aria-hidden="true" className="spin-slow inline-block h-full w-full">
         <img
           src={asset('/logo.svg')}
           alt=""
