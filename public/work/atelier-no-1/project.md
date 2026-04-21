@@ -8,9 +8,9 @@ description: |
   A quiet study of
   material and light
   inside a small atelier.
-cover: 01.svg
+cover: AIR043-crop2.jpg
 images:
-  - src: 01.svg
+  - src: AIR043-crop2.jpg
     alt: Still life of a workbench with morning light falling across tools
   - src: 02.svg
     alt: Wide interior shot of the atelier with low natural light
