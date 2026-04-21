@@ -13,18 +13,34 @@ export default function ThemeToggle() {
     setMounted(true);
   }, []);
 
-  function toggle() {
+  function toggle(event: React.MouseEvent<HTMLButtonElement>) {
     const next = theme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    try { localStorage.setItem('theme', next); } catch {}
-    setTheme(next);
+    const apply = () => {
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch {}
+      setTheme(next);
+    };
+
+    const d = document as Document & {
+      startViewTransition?: (cb: () => void) => { finished: Promise<unknown> };
+    };
+
+    if (typeof d.startViewTransition === 'function') {
+      // Radiate the reveal from the logo's position.
+      const rect = event.currentTarget.getBoundingClientRect();
+      document.documentElement.style.setProperty('--theme-x', `${rect.left + rect.width / 2}px`);
+      document.documentElement.style.setProperty('--theme-y', `${rect.top + rect.height / 2}px`);
+      d.startViewTransition(apply);
+    } else {
+      apply();
+    }
   }
 
   return (
     <button
       onClick={toggle}
       aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-      className="inline-flex items-center justify-center w-[40px] h-[40px]"
+      className="inline-flex items-center justify-center w-[40px] h-[40px] transition-transform duration-300 ease-out hover:scale-[1.18]"
     >
       <span aria-hidden="true" className="spin-slow inline-block h-full w-full">
         <img

@@ -168,6 +168,7 @@ img { display: block; }
 .float-c { animation: float-c 5.8s cubic-bezier(.45,.05,.55,.95) infinite; animation-delay: -3.4s; }
 
 .glass-btn {
+  position: relative;
   /* Round glass sheet — almost invisible body, lets the images beneath come through. */
   background:
     radial-gradient(130% 130% at 28% 18%,
@@ -212,13 +213,47 @@ img { display: block; }
     transform 110ms cubic-bezier(.2, .8, .4, 1),
     box-shadow 110ms cubic-bezier(.2, .8, .4, 1);
 }
+/* Specular reflection stroke: a bright arc on the side of the button
+   that faces the cursor, tracked via --stroke-angle (degrees, 0 = top).
+   The ring is drawn as a conic-gradient border using a dual-mask
+   "donut" trick so only the border area of the button is visible. */
+.glass-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from calc(var(--stroke-angle, 135deg) - 50deg) at 50% 50%,
+    transparent 0deg,
+    rgba(255, 255, 255, 0.85) 40deg,
+    rgba(255, 255, 255, 0.35) 70deg,
+    transparent 100deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+          mask-composite: exclude;
+  pointer-events: none;
+  transition: opacity 300ms var(--ease-out-quint);
+  mix-blend-mode: plus-lighter;
+}
+.glass-btn:hover::before { opacity: 1.2; }
+
 /* Symbol glyphs (+ − ↑) auto-invert against whatever is behind the
    glass sheet via mix-blend-difference. Color is fixed white so the
    difference calculation yields black over light bg, white over dark. */
 .glass-btn-glyph {
+  position: relative;
   color: #fff;
   mix-blend-mode: difference;
   font-weight: 400;
+  z-index: 1;
 }
 
 /* Old wiggle kept for anything still using it */
@@ -257,4 +292,17 @@ img { display: block; }
 /* Keep the floating zoom cluster above the animating masonry layers. */
 ::view-transition-group(zoom-cluster) {
   z-index: 9999;
+}
+
+/* Theme switch: the new state reveals from the click point in a
+   circular wipe. `--theme-x` / `--theme-y` are set on the root element
+   by ThemeToggle before the transition begins. */
+html::view-transition-old(root) { animation: none; }
+html::view-transition-new(root) {
+  animation: theme-reveal 620ms cubic-bezier(.22, 1, .36, 1);
+  clip-path: circle(160% at var(--theme-x, 50%) var(--theme-y, 50%));
+}
+@keyframes theme-reveal {
+  from { clip-path: circle(0 at var(--theme-x, 50%) var(--theme-y, 50%)); }
+  to   { clip-path: circle(160% at var(--theme-x, 50%) var(--theme-y, 50%)); }
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 
 /**
@@ -79,6 +79,38 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
   const zoomOut = () => withTransition(() => setIdx((i) => Math.min(STEPS.length - 1, i + 1)));
   const atMax = idx === 0;
   const atMin = idx === STEPS.length - 1;
+
+  // Specular stroke tracking: each .glass-btn picks up a --stroke-angle
+  // pointing from its centre toward the cursor, so the bright arc on the
+  // conic-gradient ring always faces the mouse. rAF-batched to stay cheap.
+  useEffect(() => {
+    let raf = 0;
+    let latest: { x: number; y: number } | null = null;
+
+    const apply = () => {
+      raf = 0;
+      if (!latest) return;
+      const buttons = document.querySelectorAll<HTMLElement>('.glass-btn');
+      buttons.forEach((btn) => {
+        const r = btn.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        // atan2: 0 = right, +π/2 = down. Add 90° to align with CSS conic (0 = top).
+        const angle = (Math.atan2(latest!.y - cy, latest!.x - cx) * 180) / Math.PI + 90;
+        btn.style.setProperty('--stroke-angle', `${angle}deg`);
+      });
+    };
+    const onMove = (e: MouseEvent) => {
+      latest = { x: e.clientX, y: e.clientY };
+      if (!raf) raf = requestAnimationFrame(apply);
+    };
+
+    window.addEventListener('mousemove', onMove, { passive: true });
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
 
   return (
     <>
