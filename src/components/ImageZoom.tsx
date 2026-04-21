@@ -55,17 +55,18 @@ function GlassButton({ onClick, label, symbol, float, disabled }: BtnProps) {
         onClick={onClick}
         aria-label={label}
         disabled={disabled}
-        className="glass-btn relative w-[60px] h-[60px] rounded-full flex items-center justify-center leading-none disabled:opacity-30 disabled:pointer-events-none"
+        className="glass-btn relative w-[60px] h-[60px] rounded-full overflow-hidden disabled:opacity-30 disabled:pointer-events-none"
       >
-        {/* Symbol lives in a sibling overlay so it sits outside the
-            glass-btn stacking context — that lets mix-blend-difference
-            blend against the page backdrop (images + bg), auto-inverting. */}
-        <span
-          aria-hidden="true"
-          className="glass-btn-glyph pointer-events-none text-16"
-        >
-          {symbol}
-        </span>
+        {/* Effect: blur the backdrop, then warp it with the liquid lens filter.
+            Separated into its own layer because Chrome doesn't accept url()
+            inside backdrop-filter, but accepts both when stacked. */}
+        <span aria-hidden="true" className="glass-effect" />
+        {/* Tint / body fill for the droplet */}
+        <span aria-hidden="true" className="glass-tint" />
+        {/* Cursor-tracking specular ring */}
+        <span aria-hidden="true" className="glass-stroke" />
+        {/* Glyph on top, auto-inverts with mix-blend-difference */}
+        <span aria-hidden="true" className="glass-btn-glyph text-16">{symbol}</span>
       </button>
     </span>
   );

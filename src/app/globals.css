@@ -169,62 +169,70 @@ img { display: block; }
 
 .glass-btn {
   position: relative;
-  /* Round glass sheet — almost invisible body, lets the images beneath come through. */
-  background:
-    radial-gradient(130% 130% at 28% 18%,
-      color-mix(in oklab, var(--color-bg) 18%, transparent) 0%,
-      color-mix(in oklab, var(--color-bg) 4%,  transparent) 48%,
-      color-mix(in oklab, var(--color-text) 3%, transparent) 100%);
-  -webkit-backdrop-filter: blur(10px) saturate(200%);
-  /* Liquid lens refraction: pulls backdrop pixels strongly toward the
-     centre so content behind the button bows like through a water drop. */
-  backdrop-filter: url(#liquid-lens) blur(3px) saturate(200%);
+  isolation: isolate;
+  background: transparent;
   border: none;
+  padding: 0;
+  color: var(--color-text);
   box-shadow:
     0 14px 30px -12px color-mix(in oklab, var(--color-text) 30%, transparent),
-    0 3px 8px  -2px  color-mix(in oklab, var(--color-text) 22%, transparent),
-    inset 0 2px 3px  color-mix(in oklab, var(--color-bg) 45%, transparent),
-    inset 0 -3px 6px color-mix(in oklab, var(--color-text) 12%, transparent);
+    0 3px 8px  -2px  color-mix(in oklab, var(--color-text) 22%, transparent);
   transition:
     transform 420ms var(--ease-out-quint),
-    box-shadow 420ms var(--ease-out-quint),
-    background 420ms var(--ease-out-quint);
+    box-shadow 420ms var(--ease-out-quint);
 }
 .glass-btn:hover {
   transform: scale(1.12) translateY(-3px);
   box-shadow:
     0 26px 44px -10px color-mix(in oklab, var(--color-text) 42%, transparent),
-    0 6px 14px  -2px  color-mix(in oklab, var(--color-text) 34%, transparent),
-    inset 0 2px 4px  color-mix(in oklab, var(--color-bg) 65%, transparent),
-    inset 0 -3px 6px color-mix(in oklab, var(--color-text) 18%, transparent);
-  background:
-    radial-gradient(130% 130% at 28% 18%,
-      color-mix(in oklab, var(--color-bg) 28%, transparent) 0%,
-      color-mix(in oklab, var(--color-bg) 8%,  transparent) 48%,
-      color-mix(in oklab, var(--color-text) 5%, transparent) 100%);
+    0 6px 14px  -2px  color-mix(in oklab, var(--color-text) 34%, transparent);
 }
-/* Tap / click press: quick squeeze-in with a fast transition, bounces
-   back to :hover state on release using the slower default duration. */
 .glass-btn:active {
   transform: scale(0.94);
   box-shadow:
-    0 6px 14px -6px color-mix(in oklab, var(--color-text) 34%, transparent),
-    0 1px 3px  -1px color-mix(in oklab, var(--color-text) 22%, transparent),
-    inset 0 1px 2px color-mix(in oklab, var(--color-bg) 60%, transparent);
+    0 6px 14px -6px color-mix(in oklab, var(--color-text) 34%, transparent);
   transition:
     transform 110ms cubic-bezier(.2, .8, .4, 1),
     box-shadow 110ms cubic-bezier(.2, .8, .4, 1);
 }
-/* Specular reflection stroke: a bright arc on the side of the button
-   that faces the cursor, tracked via --stroke-angle (degrees, 0 = top).
-   The ring is drawn as a conic-gradient border using a dual-mask
-   "donut" trick so only the border area of the button is visible. */
-.glass-btn::before {
-  content: '';
+
+/* Layer 1 — effect: blurred backdrop warped by the liquid lens.
+   Transparent bg so filter's SourceGraphic is effectively the
+   blurred backdrop from backdrop-filter. */
+.glass-btn > .glass-effect {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 0;
+  -webkit-backdrop-filter: blur(3px) saturate(180%);
+  backdrop-filter: blur(3px) saturate(180%);
+  filter: url(#liquid-lens);
+  pointer-events: none;
+}
+
+/* Layer 2 — tint/body: subtle highlight + gloss */
+.glass-btn > .glass-tint {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 1;
+  background:
+    radial-gradient(130% 130% at 28% 18%,
+      color-mix(in oklab, var(--color-bg) 22%, transparent) 0%,
+      transparent 60%);
+  box-shadow:
+    inset 2px 2px 1px 0 color-mix(in oklab, var(--color-bg) 55%, transparent),
+    inset -1px -1px 1px 1px color-mix(in oklab, var(--color-bg) 45%, transparent);
+  pointer-events: none;
+}
+
+/* Layer 3 — cursor-tracking specular arc */
+.glass-btn > .glass-stroke {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: 1.5px;
+  z-index: 2;
   background: conic-gradient(
     from calc(var(--stroke-angle, 135deg) - 50deg) at 50% 50%,
     transparent 0deg,
@@ -241,21 +249,24 @@ img { display: block; }
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
           mask-composite: exclude;
-  pointer-events: none;
-  transition: opacity 300ms var(--ease-out-quint);
   mix-blend-mode: plus-lighter;
+  pointer-events: none;
 }
-.glass-btn:hover::before { opacity: 1.2; }
 
-/* Symbol glyphs (+ − ↑) auto-invert against whatever is behind the
-   glass sheet via mix-blend-difference. Color is fixed white so the
-   difference calculation yields black over light bg, white over dark. */
+/* Layer 4 — glyph (+ − ↑). Absolutely centred so the glyph is sharp
+   and sits above every effect layer. */
 .glass-btn-glyph {
-  position: relative;
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #fff;
   mix-blend-mode: difference;
   font-weight: 400;
-  z-index: 1;
+  line-height: 1;
+  pointer-events: none;
 }
 
 /* Old wiggle kept for anything still using it */
