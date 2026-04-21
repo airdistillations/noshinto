@@ -63,7 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 preserveAspectRatio="none"
                 result="lensMap"
               />
-              <feDisplacementMap in="SourceGraphic" in2="lensMap" scale="0.22" xChannelSelector="R" yChannelSelector="G" />
+              <feDisplacementMap in="SourceGraphic" in2="lensMap" scale="0.6" xChannelSelector="R" yChannelSelector="G" />
             </filter>
 
             {/* Kept for reference; still used as a fallback in some places. */}
