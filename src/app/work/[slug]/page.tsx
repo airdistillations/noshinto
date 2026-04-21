@@ -63,7 +63,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       <div className="col-span-full lg:col-start-4 lg:col-span-9 mt-10 lg:mt-0">
         <ImageZoom>
           {project.images.map((img, i) => (
-            <figure key={img.src} className="bg-[var(--color-gray)]/10">
+            <figure
+              key={img.src}
+              className="bg-[var(--color-gray)]/10"
+              style={{ ['viewTransitionName' as string]: `proj-img-${i}` } as React.CSSProperties}
+            >
               <img
                 src={asset(img.src)}
                 alt={img.alt}

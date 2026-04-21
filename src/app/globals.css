@@ -168,23 +168,20 @@ img { display: block; }
 .float-c { animation: float-c 5.8s cubic-bezier(.45,.05,.55,.95) infinite; animation-delay: -3.4s; }
 
 .glass-btn {
-  /* Very transparent body: let the backdrop come through. */
+  /* Round glass sheet — almost invisible body, lets the images beneath come through. */
   background:
     radial-gradient(130% 130% at 28% 18%,
-      color-mix(in oklab, var(--color-bg) 32%, transparent) 0%,
-      color-mix(in oklab, var(--color-bg) 10%, transparent) 42%,
-      color-mix(in oklab, var(--color-text) 4%, transparent) 100%);
-  /* Fallback: blur + saturate. Progressive enhancement layers the SVG
-     displacement filter below to create refraction/dispersion. */
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  backdrop-filter: url(#glass-disperse) blur(6px) saturate(180%);
+      color-mix(in oklab, var(--color-bg) 18%, transparent) 0%,
+      color-mix(in oklab, var(--color-bg) 4%,  transparent) 48%,
+      color-mix(in oklab, var(--color-text) 3%, transparent) 100%);
+  -webkit-backdrop-filter: blur(18px) saturate(190%);
+  backdrop-filter: url(#glass-disperse) blur(8px) saturate(190%);
   border: none;
   box-shadow:
-    0 14px 30px -12px color-mix(in oklab, var(--color-text) 32%, transparent),
-    0 3px 8px  -2px  color-mix(in oklab, var(--color-text) 24%, transparent),
-    inset 0 2px 4px  color-mix(in oklab, var(--color-bg) 55%, transparent),
-    inset 0 -3px 6px color-mix(in oklab, var(--color-text) 14%, transparent);
-  color: var(--color-text);
+    0 14px 30px -12px color-mix(in oklab, var(--color-text) 30%, transparent),
+    0 3px 8px  -2px  color-mix(in oklab, var(--color-text) 22%, transparent),
+    inset 0 2px 3px  color-mix(in oklab, var(--color-bg) 45%, transparent),
+    inset 0 -3px 6px color-mix(in oklab, var(--color-text) 12%, transparent);
   transition:
     transform 420ms var(--ease-out-quint),
     box-shadow 420ms var(--ease-out-quint),
@@ -195,13 +192,33 @@ img { display: block; }
   box-shadow:
     0 26px 44px -10px color-mix(in oklab, var(--color-text) 42%, transparent),
     0 6px 14px  -2px  color-mix(in oklab, var(--color-text) 34%, transparent),
-    inset 0 2px 4px  color-mix(in oklab, var(--color-bg) 70%, transparent),
+    inset 0 2px 4px  color-mix(in oklab, var(--color-bg) 65%, transparent),
     inset 0 -3px 6px color-mix(in oklab, var(--color-text) 18%, transparent);
   background:
     radial-gradient(130% 130% at 28% 18%,
-      color-mix(in oklab, var(--color-bg) 44%, transparent) 0%,
-      color-mix(in oklab, var(--color-bg) 14%, transparent) 44%,
-      color-mix(in oklab, var(--color-text) 6%, transparent) 100%);
+      color-mix(in oklab, var(--color-bg) 28%, transparent) 0%,
+      color-mix(in oklab, var(--color-bg) 8%,  transparent) 48%,
+      color-mix(in oklab, var(--color-text) 5%, transparent) 100%);
+}
+/* Tap / click press: quick squeeze-in with a fast transition, bounces
+   back to :hover state on release using the slower default duration. */
+.glass-btn:active {
+  transform: scale(0.94);
+  box-shadow:
+    0 6px 14px -6px color-mix(in oklab, var(--color-text) 34%, transparent),
+    0 1px 3px  -1px color-mix(in oklab, var(--color-text) 22%, transparent),
+    inset 0 1px 2px color-mix(in oklab, var(--color-bg) 60%, transparent);
+  transition:
+    transform 110ms cubic-bezier(.2, .8, .4, 1),
+    box-shadow 110ms cubic-bezier(.2, .8, .4, 1);
+}
+/* Symbol glyphs (+ − ↑) auto-invert against whatever is behind the
+   glass sheet via mix-blend-difference. Color is fixed white so the
+   difference calculation yields black over light bg, white over dark. */
+.glass-btn-glyph {
+  color: #fff;
+  mix-blend-mode: difference;
+  font-weight: 400;
 }
 
 /* Old wiggle kept for anything still using it */
@@ -229,4 +246,10 @@ img { display: block; }
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
+}
+
+/* View Transitions: slow the masonry reflow a bit and use a smooth curve. */
+::view-transition-group(*) {
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(.22, 1, .36, 1);
 }
