@@ -46,10 +46,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Reusable SVG filters: liquid-glass dispersion/refraction for .glass-btn */}
         <svg aria-hidden="true" width="0" height="0" style={{ position: 'absolute', pointerEvents: 'none' }}>
           <defs>
-            <filter id="glass-disperse" x="-20%" y="-20%" width="140%" height="140%">
-              <feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" seed="7" result="noise" />
-              <feGaussianBlur in="noise" stdDeviation="1.2" result="noiseSoft" />
-              <feDisplacementMap in="SourceGraphic" in2="noiseSoft" scale="22" xChannelSelector="R" yChannelSelector="G" />
+            <filter id="glass-disperse" x="-30%" y="-30%" width="160%" height="160%">
+              {/* Low-frequency fractal noise = big, liquid-sized waves rather than pebbly */}
+              <feTurbulence type="fractalNoise" baseFrequency="0.008 0.011" numOctaves="2" seed="11" result="noise" />
+              <feGaussianBlur in="noise" stdDeviation="2" result="noiseSoft" />
+              {/* Large displacement scale for pronounced lensing / refraction */}
+              <feDisplacementMap in="SourceGraphic" in2="noiseSoft" scale="48" xChannelSelector="R" yChannelSelector="G" />
             </filter>
           </defs>
         </svg>

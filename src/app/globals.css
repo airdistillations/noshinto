@@ -294,15 +294,32 @@ img { display: block; }
   z-index: 9999;
 }
 
-/* Theme switch: the new state reveals from the click point in a
-   circular wipe. `--theme-x` / `--theme-y` are set on the root element
-   by ThemeToggle before the transition begins. */
+/* Theme switch: the new state reveals from the click point via a
+   radial mask with a feathered edge. `--theme-r` is registered with
+   @property so it can interpolate inside the radial-gradient mask.
+   `--theme-x` / `--theme-y` are set by ThemeToggle on :root. */
+@property --theme-r {
+  syntax: '<length-percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
 html::view-transition-old(root) { animation: none; }
 html::view-transition-new(root) {
-  animation: theme-reveal 620ms cubic-bezier(.22, 1, .36, 1);
-  clip-path: circle(160% at var(--theme-x, 50%) var(--theme-y, 50%));
+  animation: theme-reveal 720ms cubic-bezier(.22, 1, .36, 1);
+  -webkit-mask-image: radial-gradient(
+    circle at var(--theme-x, 50%) var(--theme-y, 50%),
+    black 0%,
+    black calc(var(--theme-r) * 0.78),
+    transparent var(--theme-r)
+  );
+          mask-image: radial-gradient(
+    circle at var(--theme-x, 50%) var(--theme-y, 50%),
+    black 0%,
+    black calc(var(--theme-r) * 0.78),
+    transparent var(--theme-r)
+  );
 }
 @keyframes theme-reveal {
-  from { clip-path: circle(0 at var(--theme-x, 50%) var(--theme-y, 50%)); }
-  to   { clip-path: circle(160% at var(--theme-x, 50%) var(--theme-y, 50%)); }
+  from { --theme-r: 0%; }
+  to   { --theme-r: 180%; }
 }
