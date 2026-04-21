@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getAllProjects, getAllSlugs, getProject } from '@/lib/work';
+import { getAllProjects, getAllSlugs, getProject, type Project } from '@/lib/work';
 import { asset } from '@/lib/asset';
 import ImageZoom from '@/components/ImageZoom';
 
@@ -18,6 +18,34 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
+function ProjectInfo({ project }: { project: Project }) {
+  return (
+    <div className="text-16">
+      <h1 className="text-16">{project.title}</h1>
+      {project.description && (
+        <p className="copy-sm pt-2 whitespace-pre-line opacity-80">{project.description}</p>
+      )}
+      <dl className="pt-6 copy-sm space-y-1 opacity-70">
+        {project.year && (
+          <div className="flex gap-2"><dt>Year</dt><dd>{project.year}</dd></div>
+        )}
+        {project.role && (
+          <div className="flex gap-2"><dt>Role</dt><dd>{project.role}</dd></div>
+        )}
+        {project.location && (
+          <div className="flex gap-2"><dt>Location</dt><dd>{project.location}</dd></div>
+        )}
+      </dl>
+      <p className="pt-10 copy-sm">
+        <Link href="/" className="link-hover">← Back to work</Link>
+      </p>
+      {project.body && (
+        <div className="pt-10 copy-sm whitespace-pre-line opacity-80">{project.body}</div>
+      )}
+    </div>
+  );
+}
+
 export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const slugs = getAllSlugs();
@@ -26,40 +54,25 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
   const all = getAllProjects();
   const idx = all.findIndex((p) => p.slug === project.slug);
-  const next = all[(idx + 1) % all.length];
+  const prev = all.length > 1 ? all[(idx - 1 + all.length) % all.length] : undefined;
+  const next = all.length > 1 ? all[(idx + 1) % all.length] : undefined;
 
   return (
     <main className="grid-layout pt-[50vh] pb-24">
-      {/* Header row: cols 2-3 for meta, cols 4-12 for first image full-width */}
-      <div className="col-span-full lg:col-start-2 lg:col-span-2 text-16">
-        <h1 className="text-16">{project.title}</h1>
-        {project.description && (
-          <p className="copy-sm pt-2 whitespace-pre-line opacity-80">{project.description}</p>
-        )}
-        <dl className="pt-6 copy-sm space-y-1 opacity-70">
-          {project.year && (
-            <div className="flex gap-2"><dt>Year</dt><dd>{project.year}</dd></div>
-          )}
-          {project.role && (
-            <div className="flex gap-2"><dt>Role</dt><dd>{project.role}</dd></div>
-          )}
-          {project.location && (
-            <div className="flex gap-2"><dt>Location</dt><dd>{project.location}</dd></div>
-          )}
-        </dl>
+      {/* DESKTOP: fixed info aside in the "Noshinto" watermark slot, auto-inverts over images */}
+      <aside
+        className="hidden lg:block fixed left-0 top-1/2 -translate-y-1/2 z-10 pl-8 pr-4 max-w-[260px] max-h-[calc(100vh-4rem)] overflow-y-auto blend-difference"
+        style={{ color: 'var(--color-white)' }}
+      >
+        <ProjectInfo project={project} />
+      </aside>
 
-        <p className="pt-10 copy-sm">
-          <Link href="/" className="link-hover">← Back to work</Link>
-        </p>
-
-        {project.body && (
-          <div className="pt-10 copy-sm whitespace-pre-line opacity-80">
-            {project.body}
-          </div>
-        )}
+      {/* MOBILE: info inline above the images (no blend) */}
+      <div className="col-span-full lg:hidden">
+        <ProjectInfo project={project} />
       </div>
 
-      {/* Stacked images, cols 4-12 */}
+      {/* Stacked images, cols 4-12 on desktop */}
       <div className="col-span-full lg:col-start-4 lg:col-span-9 mt-10 lg:mt-0">
         <ImageZoom>
           {project.images.map((img, i) => (
@@ -80,12 +93,25 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </ImageZoom>
       </div>
 
-      {next && next.slug !== project.slug && (
-        <div className="col-span-full lg:col-start-2 lg:col-span-10 mt-24 pt-10 border-t border-current/10">
-          <Link href={`/work/${next.slug}/`} className="link-hover text-16 flex items-baseline justify-between gap-6">
-            <span className="copy-sm opacity-60">Next project</span>
-            <span>{next.title} →</span>
-          </Link>
+      {/* Prev / Next footer */}
+      {(prev || next) && (
+        <div className="col-span-full lg:col-start-2 lg:col-span-10 mt-24 pt-10 border-t border-current/10 flex items-baseline justify-between gap-6">
+          {prev ? (
+            <Link href={`/work/${prev.slug}/`} className="link-hover text-16 min-w-0">
+              <span className="copy-sm opacity-60 block">← Previous project</span>
+              <span className="block truncate">{prev.title}</span>
+            </Link>
+          ) : (
+            <span aria-hidden />
+          )}
+          {next ? (
+            <Link href={`/work/${next.slug}/`} className="link-hover text-16 text-right min-w-0">
+              <span className="copy-sm opacity-60 block">Next project →</span>
+              <span className="block truncate">{next.title}</span>
+            </Link>
+          ) : (
+            <span aria-hidden />
+          )}
         </div>
       )}
     </main>

@@ -87,16 +87,19 @@ export default function Nav() {
         </div>
       </header>
 
-      {/* Left-column "Noshinto" watermark — now a link to About */}
-      <Link
-        href="/about/"
-        onClick={onSignatureClick}
-        className="hidden lg:block fixed left-0 top-1/2 -translate-y-1/2 z-10 pl-8 text-16 blend-difference link-hover"
-        style={{ color: 'var(--color-white)' }}
-        aria-label="About"
-      >
-        <span className="tracking-tight">Noshinto</span>
-      </Link>
+      {/* Left-column "Noshinto" watermark — links to About. Hidden on
+          project detail pages where the project info takes this slot. */}
+      {!pathname.startsWith('/work/') && (
+        <Link
+          href="/about/"
+          onClick={onSignatureClick}
+          className="hidden lg:block fixed left-0 top-1/2 -translate-y-1/2 z-10 pl-8 text-16 blend-difference link-hover"
+          style={{ color: 'var(--color-white)' }}
+          aria-label="About"
+        >
+          <span className="tracking-tight">Noshinto</span>
+        </Link>
+      )}
 
     </>
   );

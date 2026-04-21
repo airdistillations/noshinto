@@ -7,7 +7,7 @@
   --color-black: #000;
   --color-white: #fff;
   --color-gray: #5c5c5c;
-  --color-blue: #090935;        /* signature off-black navy */
+  --color-blue: #2b2b2b;        /* charcoal grey (formerly navy) */
   --color-preview-red: #b81414;
   --color-contact-tint: #b6b6d6;
 
@@ -252,4 +252,9 @@ img { display: block; }
 ::view-transition-group(*) {
   animation-duration: 520ms;
   animation-timing-function: cubic-bezier(.22, 1, .36, 1);
+}
+
+/* Keep the floating zoom cluster above the animating masonry layers. */
+::view-transition-group(zoom-cluster) {
+  z-index: 9999;
 }

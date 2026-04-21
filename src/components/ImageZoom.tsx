@@ -89,8 +89,13 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
         {children}
       </div>
 
-      {/* Unified bottom-center row for every viewport */}
-      <div className="fixed inset-x-0 bottom-[20px] lg:bottom-[40px] z-30 flex justify-center items-end gap-5 lg:gap-6 pointer-events-none">
+      {/* Unified bottom-center row for every viewport. Named view-transition
+          group keeps this cluster on its own layer above the masonry during
+          reflow animations (otherwise the root snapshot can cover it). */}
+      <div
+        className="fixed inset-x-0 bottom-[20px] lg:bottom-[40px] z-30 flex justify-center items-end gap-5 lg:gap-6 pointer-events-none"
+        style={{ ['viewTransitionName' as string]: 'zoom-cluster' } as React.CSSProperties}
+      >
         <div className="pointer-events-auto">
           <GlassButton onClick={zoomIn}  label="Larger images — fewer columns"  symbol="+" float="float-a" disabled={atMax} />
         </div>
