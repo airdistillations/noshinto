@@ -305,7 +305,11 @@ img { display: block; }
 }
 html::view-transition-old(root) { animation: none; }
 html::view-transition-new(root) {
-  animation: theme-reveal 720ms cubic-bezier(.22, 1, .36, 1);
+  /* forwards: hold the mask at its final fully-revealed radius until the
+     browser tears down the pseudo-element. Without this, --theme-r
+     snaps back to its @property initial-value for one frame and the
+     new theme flashes to hidden right before handoff. */
+  animation: theme-reveal 720ms cubic-bezier(.22, 1, .36, 1) forwards;
   -webkit-mask-image: radial-gradient(
     circle at var(--theme-x, 50%) var(--theme-y, 50%),
     black 0%,
