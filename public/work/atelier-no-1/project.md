@@ -1,22 +1,30 @@
 ---
-title: Atelier No. 1
-year: 2024
-role: Direction, Photography
-location: Paris
+title: "A.I.R. DISTILLATIONS"
+year: 2025
+role: "Founder, Branding, Photography, Recipe Creation"
+location: "Antwerp"
 order: 1
 description: |
-  A quiet study of
-  material and light
-  inside a small atelier.
+  The classic choice of "with or without alcohol" is outdated.
+  Freeing up categories creates space for depth and precision.
 cover: AIR043-crop2.jpg
 images:
   - src: AIR043-crop2.jpg
-    alt: Still life of a workbench with morning light falling across tools
-  - src: 02.svg
-    alt: Wide interior shot of the atelier with low natural light
-  - src: 03.svg
-    alt: A hand resting on a linen draped over a chair
+    alt: "Still life of a workbench with morning light falling across tools"
+  - src: AIR095-small-crop.jpg
+    alt: ""
+  - src: AIR103-crop.jpg
+    alt: ""
+  - src: AwaShiso-serve-Misera-crop.jpg
+    alt: ""
+  - src: airone26-cult.jpg
+    alt: ""
+  - src: ina-field0002.jpg
+    alt: ""
+  - src: label-light0126-AIR-black.jpg
+    alt: ""
 ---
 
-A short note about the project goes here. This text appears below the images.
-Use blank lines for paragraph breaks. Keep it brief — let the images speak.
+We have a different vision in a world dominated by synthetic shortcuts in flavor creation through artificial extractions made in laboratories.
+
+A.I.R. challenges these standards through its extreme quest for authenticity, creating an alternative that doesn't imitate, but creates dignity.
