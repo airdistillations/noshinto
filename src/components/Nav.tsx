@@ -1,66 +1,71 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { asset } from '@/lib/asset';
+import ThemeToggle from './ThemeToggle';
 
 const links = [
-  { href: '/', label: 'Work' },
-  { href: '/about/', label: 'About' },
-  { href: '/contact/', label: 'Contact' },
+  { href: '/', label: 'work' },
+  { href: '/about/', label: 'about' },
+  { href: '/contact/', label: 'contact' },
 ];
 
 export default function Nav() {
+  const pathname = usePathname() || '/';
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-paper/90 backdrop-blur border-b border-line">
-      <div className="mx-auto max-w-[1400px] px-6 md:px-10 h-16 md:h-20 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-3" aria-label="Home">
-          <span className="inline-block h-9 w-9 md:h-10 md:w-10 rounded-full overflow-hidden border border-line bg-white">
-            {/* Replace /public/logo.svg with your circular logo */}
-            <img src={asset('/logo.svg')} alt="Logo" className="h-full w-full object-cover" />
-          </span>
-          <span className="font-serif italic text-lg md:text-xl tracking-tight">noshinto</span>
-        </Link>
+    <>
+      {/* 10% scrim for legibility behind nav */}
+      <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 h-32 z-10 bg-gradient-scrim" />
 
-        <nav className="hidden md:flex items-center gap-10 text-sm">
-          {links.map((l) => (
-            <Link key={l.href} href={l.href} className="tracking-wide-xl uppercase text-xs hover:opacity-60 transition-opacity">
-              {l.label}
-            </Link>
-          ))}
-        </nav>
+      <header
+        className="fixed inset-x-0 top-0 z-20 px-5 py-6 lg:px-8 lg:py-8 blend-difference text-white"
+        style={{ color: 'var(--color-white)' }}
+      >
+        <div className="flex items-start justify-between gap-6">
+          <div className="flex-1 min-w-0">
+            {/* Comma-separated tagline-style nav */}
+            <nav aria-label="Primary" className="text-16 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+              {links.map((l, i) => {
+                const active = l.href === '/' ? pathname === '/' : pathname.startsWith(l.href);
+                return (
+                  <span key={l.href} className="inline-flex items-baseline">
+                    <Link
+                      href={l.href}
+                      onClick={() => setOpen(false)}
+                      className="link-hover"
+                      style={{ opacity: active ? 0.4 : 1 }}
+                      aria-current={active ? 'page' : undefined}
+                    >
+                      {/* Random letter highlight per link to evoke the marker look */}
+                      {l.label === 'work' && (<><span>w</span><span className="mark">or</span><span>k</span></>)}
+                      {l.label === 'about' && (<><span>a</span><span className="mark">bo</span><span>ut</span></>)}
+                      {l.label === 'contact' && (<><span>con</span><span className="mark">ta</span><span>ct</span></>)}
+                    </Link>
+                    {i < links.length - 1 && <span aria-hidden>,</span>}
+                  </span>
+                );
+              })}
+            </nav>
+          </div>
 
-        <button
-          className="md:hidden inline-flex items-center justify-center h-10 w-10 -mr-2"
-          aria-label="Menu"
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-        >
-          <span className="relative block w-5 h-3">
-            <span className={`absolute left-0 right-0 top-0 h-px bg-ink transition-transform ${open ? 'translate-y-[6px] rotate-45' : ''}`} />
-            <span className={`absolute left-0 right-0 bottom-0 h-px bg-ink transition-transform ${open ? '-translate-y-[6px] -rotate-45' : ''}`} />
-          </span>
-        </button>
-      </div>
-
-      {open && (
-        <div className="md:hidden border-t border-line">
-          <nav className="px-6 py-6 flex flex-col gap-5">
-            {links.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                onClick={() => setOpen(false)}
-                className="tracking-wide-xl uppercase text-sm"
-              >
-                {l.label}
-              </Link>
-            ))}
-          </nav>
+          <div className="flex items-center gap-4 shrink-0">
+            {/* Logo / theme toggle */}
+            <ThemeToggle />
+          </div>
         </div>
-      )}
-    </header>
+      </header>
+
+      {/* Left-column author signature — visible on desktop only, vertical-centered watermark feel */}
+      <div
+        aria-hidden
+        className="hidden lg:block fixed left-0 top-1/2 -translate-y-1/2 z-10 pl-8 text-16 blend-difference"
+        style={{ color: 'var(--color-white)' }}
+      >
+        <span className="tracking-tight">Noshinto</span>
+      </div>
+    </>
   );
 }

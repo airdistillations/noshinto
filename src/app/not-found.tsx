@@ -2,10 +2,14 @@ import Link from 'next/link';
 
 export default function NotFound() {
   return (
-    <div className="mx-auto max-w-[800px] px-6 md:px-10 py-24 text-center">
-      <p className="eyebrow">404</p>
-      <h1 className="mt-4 font-serif text-4xl md:text-6xl">Not found.</h1>
-      <Link href="/" className="mt-8 inline-block eyebrow hover:opacity-60">← Back to work</Link>
-    </div>
+    <main className="grid-layout pt-[50vh] pb-24">
+      <div className="col-span-full lg:col-start-4 lg:col-span-6 text-16">
+        <p className="copy-sm opacity-60">404</p>
+        <p className="pt-2">Not found.</p>
+        <p className="pt-6">
+          <Link href="/" className="link-hover">← Back to work</Link>
+        </p>
+      </div>
+    </main>
   );
 }

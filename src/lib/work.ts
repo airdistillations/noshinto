@@ -2,15 +2,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
 
+export type ProjectImage = {
+  src: string;
+  alt: string;
+};
+
 export type Project = {
   slug: string;
   title: string;
   year?: string | number;
   role?: string;
   location?: string;
-  summary?: string;
+  description?: string;
   cover: string;
-  images: string[];
+  images: ProjectImage[];
   order: number;
   body: string;
 };
@@ -26,6 +31,27 @@ function publicImagePath(slug: string, filename: string) {
   return `/work/${slug}/${filename}`;
 }
 
+function filenameToAlt(filename: string, title: string) {
+  const base = filename.replace(/\.[^.]+$/, '').replace(/^\d+[-_\s]*/, '').replace(/[-_]/g, ' ').trim();
+  return base ? `${title} — ${base}` : title;
+}
+
+type RawImageEntry = string | { src?: unknown; alt?: unknown };
+
+function normalizeImages(raw: RawImageEntry[] | undefined, files: string[], slug: string, title: string): ProjectImage[] {
+  if (!raw || raw.length === 0) {
+    return files.map((f) => ({ src: publicImagePath(slug, f), alt: filenameToAlt(f, title) }));
+  }
+  return raw.map((entry) => {
+    if (typeof entry === 'string') {
+      return { src: publicImagePath(slug, entry), alt: filenameToAlt(entry, title) };
+    }
+    const src = typeof entry.src === 'string' ? entry.src : '';
+    const alt = typeof entry.alt === 'string' ? entry.alt : filenameToAlt(src, title);
+    return { src: publicImagePath(slug, src), alt };
+  });
+}
+
 export function getAllProjects(): Project[] {
   if (!fs.existsSync(CONTENT_DIR)) return [];
   const slugs = fs.readdirSync(CONTENT_DIR).filter((name) => {
@@ -33,11 +59,9 @@ export function getAllProjects(): Project[] {
     return fs.statSync(full).isDirectory();
   });
 
-  const projects: Project[] = slugs.map((slug) => getProject(slug));
-  return projects.sort((a, b) => {
-    if (a.order !== b.order) return a.order - b.order;
-    return a.title.localeCompare(b.title);
-  });
+  return slugs
+    .map((slug) => getProject(slug))
+    .sort((a, b) => (a.order !== b.order ? a.order - b.order : a.title.localeCompare(b.title)));
 }
 
 export function getProject(slug: string): Project {
@@ -49,22 +73,25 @@ export function getProject(slug: string): Project {
   const content = parsed.content;
 
   const files = fs.readdirSync(dir).filter(isImage).sort();
+  const title = (data.title as string) || slug.replace(/-/g, ' ');
+
+  const rawImages = Array.isArray(data.images) ? (data.images as RawImageEntry[]) : undefined;
+  const images = normalizeImages(rawImages, files, slug, title);
 
   const explicitCover = typeof data.cover === 'string' ? data.cover : undefined;
-  const explicitImages = Array.isArray(data.images) ? (data.images as string[]) : undefined;
-
-  const imageFiles = explicitImages?.length ? explicitImages : files;
-  const coverFile = explicitCover || imageFiles[0] || files[0];
+  const cover = explicitCover
+    ? publicImagePath(slug, explicitCover)
+    : images[0]?.src || '';
 
   return {
     slug,
-    title: (data.title as string) || slug.replace(/-/g, ' '),
+    title,
     year: data.year as string | number | undefined,
     role: data.role as string | undefined,
     location: data.location as string | undefined,
-    summary: data.summary as string | undefined,
-    cover: coverFile ? publicImagePath(slug, coverFile) : '',
-    images: imageFiles.map((f) => publicImagePath(slug, f)),
+    description: data.description as string | undefined,
+    cover,
+    images,
     order: typeof data.order === 'number' ? data.order : 999,
     body: content.trim(),
   };

@@ -1,52 +1,101 @@
+import BerlinClock from '@/components/BerlinClock';
+import { asset } from '@/lib/asset';
+
 export const metadata = { title: 'Contact — Noshinto' };
 
 const EMAIL = 'hello@noshinto.com';
+const LOCATION = 'Your city, Country';
+const AGENCY = {
+  name: '',
+  address: '',
+  phone: '',
+  email: '',
+};
+const SOCIALS = [
+  { label: 'Instagram', href: 'https://instagram.com/' },
+  { label: 'YouTube', href: 'https://youtube.com/' },
+  { label: 'Behance', href: 'https://behance.net/' },
+];
 
 export default function ContactPage() {
   return (
-    <div className="mx-auto max-w-[1100px] px-6 md:px-10 pt-10 md:pt-20 pb-20">
-      <p className="eyebrow">Contact</p>
-      <h1 className="mt-4 font-serif text-4xl md:text-6xl leading-[1.05] tracking-tight max-w-3xl">
-        For projects, collaborations, or a quiet hello.
-      </h1>
+    <main className="relative isolate min-h-svh">
+      {/* Luminosity-blended hero */}
+      <div className="absolute inset-0 -z-20" style={{ background: 'var(--color-contact-tint)' }} />
+      <img
+        src={asset('/contact-hero.svg')}
+        alt=""
+        aria-hidden
+        className="absolute inset-0 -z-10 h-full w-full object-cover blend-luminosity"
+      />
 
-      <div className="mt-12 md:mt-16 grid md:grid-cols-[1.2fr,1fr] gap-10 md:gap-20 border-t border-line pt-10 md:pt-16">
-        <div>
-          <p className="eyebrow">Email</p>
-          <a
-            href={`mailto:${EMAIL}`}
-            className="mt-3 block font-serif text-3xl md:text-5xl tracking-tight hover:opacity-60 transition-opacity break-all"
-          >
-            {EMAIL}
-          </a>
+      <div className="grid-layout pt-[50vh] pb-24">
+        {/* Desktop: cols 4-8 = bio/socials, cols 10-12 = agency/contact
+            Mobile: single column stack */}
+        <div className="col-span-full lg:col-start-4 lg:col-span-5 text-16">
+          <p className="whitespace-pre-line">
+            Replace this with a short bio. Two or three lines is plenty. What you do,
+            who you work with, what you&rsquo;re drawn to.
+          </p>
+          <p className="pt-6 whitespace-pre-line opacity-80">
+            A second paragraph for approach, recent work, or a quiet note about collaboration.
+          </p>
 
-          <p className="mt-10 eyebrow">Based in</p>
-          <p className="mt-3 font-serif text-xl md:text-2xl">Your city, Country</p>
+          <p className="pt-10 copy-sm opacity-60">Selected clients</p>
+          <p className="pt-1 text-16">
+            Client One — Client Two — Client Three — Client Four — Client Five
+          </p>
+
+          <p className="pt-10 copy-sm opacity-60">Socials</p>
+          <ul className="pt-1 flex flex-wrap gap-x-4 gap-y-1 text-16">
+            {SOCIALS.map((s, i) => (
+              <li key={s.href} className="inline-flex">
+                <a className="link-hover" href={s.href} target="_blank" rel="noreferrer">
+                  {s.label}
+                </a>
+                {i < SOCIALS.length - 1 && <span aria-hidden>,</span>}
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <div className="flex flex-col gap-6">
-          <div>
-            <p className="eyebrow">Elsewhere</p>
-            <ul className="mt-3 flex flex-col gap-2 font-serif text-xl md:text-2xl">
-              <li>
-                <a className="hover:opacity-60" href="https://instagram.com/" target="_blank" rel="noreferrer">
-                  Instagram ↗
-                </a>
-              </li>
-              <li>
-                <a className="hover:opacity-60" href="https://www.linkedin.com/" target="_blank" rel="noreferrer">
-                  LinkedIn ↗
-                </a>
-              </li>
-            </ul>
-          </div>
+        <div className="col-span-full mt-10 lg:mt-0 lg:col-start-10 lg:col-span-3 text-16">
+          {AGENCY.name && (
+            <>
+              <p className="copy-sm opacity-60">Represented by</p>
+              <p className="pt-1 whitespace-pre-line">
+                {AGENCY.name}
+                {AGENCY.address ? `\n${AGENCY.address}` : ''}
+              </p>
+            </>
+          )}
+          {AGENCY.phone && <p className="pt-4">{AGENCY.phone}</p>}
+          {AGENCY.email && (
+            <p className="pt-4">
+              <a href={`mailto:${AGENCY.email}`} className="link-hover">{AGENCY.email}</a>
+            </p>
+          )}
 
-          <div className="mt-8 md:mt-auto text-sm text-muted max-w-sm">
-            Please include a short brief, timing, and any reference material when
-            reaching out.
-          </div>
+          <p className={`${AGENCY.name ? 'pt-10' : ''} copy-sm opacity-60`}>Loveletters</p>
+          <p className="pt-1">
+            <a href={`mailto:${EMAIL}`} className="link-hover break-all">{EMAIL}</a>
+          </p>
+
+          <p className="pt-10 copy-sm opacity-60">Based in</p>
+          <p className="pt-1">{LOCATION}</p>
+
+          <p className="pt-10 copy-sm opacity-60">Local time</p>
+          <BerlinClock className="pt-1" />
         </div>
       </div>
-    </div>
+
+      {/* Bottom-right disclaimer slot */}
+      <div
+        className="fixed bottom-6 right-5 lg:right-8 z-10 copy-sm blend-difference"
+        style={{ color: 'var(--color-white)' }}
+      >
+        <a href="#disclaimer" className="link-hover">Disclaimer</a>
+      </div>
+    </main>
   );
 }

@@ -5,17 +5,29 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
-        serif: ['var(--font-serif)', 'Georgia', 'serif'],
+        sans: ['var(--font-display)', 'system-ui', 'sans-serif'],
+      },
+      fontSize: {
+        // 62.5% base means 1rem = 10px
+        '12': ['1.2rem', { lineHeight: '1.5rem' }],
+        '16': ['1.6rem', { lineHeight: '2rem' }],
       },
       colors: {
-        ink: '#111111',
-        paper: '#fafaf7',
-        muted: '#6b6b6b',
-        line: '#e8e6df',
+        bg: 'var(--color-bg)',
+        ink: 'var(--color-text)',
+        muted: 'var(--color-gray)',
+        accent: 'var(--color-preview-red)',
       },
-      letterSpacing: {
-        'wide-xl': '0.18em',
+      gridTemplateColumns: {
+        'layout-6': 'repeat(6, minmax(0, 1fr))',
+        'layout-12': 'repeat(12, minmax(0, 1fr))',
+      },
+      transitionTimingFunction: {
+        'out-quint': 'cubic-bezier(.22,1,.36,1)',
+        'out-expo': 'cubic-bezier(.16,1,.3,1)',
+      },
+      spacing: {
+        'gutter': '10px',
       },
     },
   },

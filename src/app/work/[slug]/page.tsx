@@ -7,94 +7,80 @@ export function generateStaticParams() {
   return getAllSlugs().map((slug) => ({ slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   try {
-    const project = getProject(params.slug);
+    const project = getProject(slug);
     return { title: `${project.title} — Noshinto` };
   } catch {
     return { title: 'Noshinto' };
   }
 }
 
-export default function ProjectPage({ params }: { params: { slug: string } }) {
+export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const slugs = getAllSlugs();
-  if (!slugs.includes(params.slug)) notFound();
-  const project = getProject(params.slug);
+  if (!slugs.includes(slug)) notFound();
+  const project = getProject(slug);
 
   const all = getAllProjects();
   const idx = all.findIndex((p) => p.slug === project.slug);
   const next = all[(idx + 1) % all.length];
 
   return (
-    <article>
-      <header className="mx-auto max-w-[1400px] px-6 md:px-10 pt-10 md:pt-16 pb-6 md:pb-10">
-        <p className="eyebrow">
-          <Link href="/" className="hover:opacity-60">Work</Link>
-          <span> / </span>
-          <span>{project.title}</span>
-        </p>
-        <h1 className="mt-4 font-serif text-4xl md:text-6xl leading-[1.05] tracking-tight max-w-3xl">
-          {project.title}
-        </h1>
-
-        <dl className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-4 max-w-3xl border-t border-line pt-6">
+    <main className="grid-layout pt-[50vh] pb-24">
+      {/* Header row: cols 2-3 for meta, cols 4-12 for first image full-width */}
+      <div className="col-span-full lg:col-start-2 lg:col-span-2 text-16">
+        <h1 className="text-16">{project.title}</h1>
+        {project.description && (
+          <p className="copy-sm pt-2 whitespace-pre-line opacity-80">{project.description}</p>
+        )}
+        <dl className="pt-6 copy-sm space-y-1 opacity-70">
           {project.year && (
-            <div>
-              <dt className="eyebrow">Year</dt>
-              <dd className="mt-1 text-sm">{project.year}</dd>
-            </div>
+            <div className="flex gap-2"><dt>Year</dt><dd>{project.year}</dd></div>
           )}
           {project.role && (
-            <div>
-              <dt className="eyebrow">Role</dt>
-              <dd className="mt-1 text-sm">{project.role}</dd>
-            </div>
+            <div className="flex gap-2"><dt>Role</dt><dd>{project.role}</dd></div>
           )}
           {project.location && (
-            <div>
-              <dt className="eyebrow">Location</dt>
-              <dd className="mt-1 text-sm">{project.location}</dd>
-            </div>
+            <div className="flex gap-2"><dt>Location</dt><dd>{project.location}</dd></div>
           )}
         </dl>
 
-        {project.summary && (
-          <p className="mt-8 max-w-2xl text-base md:text-lg text-ink/80">{project.summary}</p>
-        )}
-      </header>
+        <p className="pt-10 copy-sm">
+          <Link href="/" className="link-hover">← Back to work</Link>
+        </p>
+      </div>
 
-      <section className="mx-auto max-w-[1400px] px-6 md:px-10 pb-16 flex flex-col gap-4 md:gap-6">
-        {project.images.map((src, i) => (
-          <figure key={src} className="bg-line">
+      {/* Stacked images, cols 4-12 */}
+      <div className="col-span-full lg:col-start-4 lg:col-span-9 mt-10 lg:mt-0 flex flex-col gap-[10px]">
+        {project.images.map((img, i) => (
+          <figure key={img.src} className="bg-[var(--color-gray)]/10">
             <img
-              src={asset(src)}
-              alt={`${project.title} — ${i + 1}`}
+              src={asset(img.src)}
+              alt={img.alt}
               className="w-full h-auto"
               loading={i === 0 ? 'eager' : 'lazy'}
+              fetchPriority={i === 0 ? 'high' : undefined}
             />
           </figure>
         ))}
-      </section>
+      </div>
 
       {project.body && (
-        <section className="mx-auto max-w-[720px] px-6 md:px-10 pb-16 font-serif text-lg leading-relaxed whitespace-pre-line">
+        <div className="col-span-full lg:col-start-4 lg:col-span-6 mt-16 text-16 whitespace-pre-line opacity-85">
           {project.body}
-        </section>
+        </div>
       )}
 
       {next && next.slug !== project.slug && (
-        <nav className="border-t border-line">
-          <Link
-            href={`/work/${next.slug}/`}
-            className="mx-auto max-w-[1400px] px-6 md:px-10 py-10 md:py-14 flex items-baseline justify-between gap-6 group"
-          >
-            <span className="eyebrow">Next project</span>
-            <span className="font-serif text-2xl md:text-4xl tracking-tight group-hover:opacity-60 transition-opacity">
-              {next.title} →
-            </span>
+        <div className="col-span-full lg:col-start-2 lg:col-span-10 mt-24 pt-10 border-t border-current/10">
+          <Link href={`/work/${next.slug}/`} className="link-hover text-16 flex items-baseline justify-between gap-6">
+            <span className="copy-sm opacity-60">Next project</span>
+            <span>{next.title} →</span>
           </Link>
-        </nav>
+        </div>
       )}
-    </article>
+    </main>
   );
 }

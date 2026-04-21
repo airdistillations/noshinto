@@ -2,21 +2,16 @@ export const metadata = { title: 'About — Noshinto' };
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-[1000px] px-6 md:px-10 pt-10 md:pt-20 pb-16">
-      <p className="eyebrow">About</p>
-      <h1 className="mt-4 font-serif text-4xl md:text-6xl leading-[1.05] tracking-tight">
-        A short introduction.
-      </h1>
-      <div className="mt-10 grid md:grid-cols-[1fr,1fr] gap-10 md:gap-16 text-ink/85 text-base md:text-lg leading-relaxed font-serif">
-        <p>
-          Replace this text with your bio. Keep it short — a paragraph or two is plenty.
+    <main className="grid-layout pt-[50vh] pb-24">
+      <div className="col-span-full lg:col-start-4 lg:col-span-6 text-16">
+        <p className="whitespace-pre-line">
+          Replace this text with a short bio. Keep it spare &mdash; a paragraph or two.
           What you do, who you work with, where you&rsquo;re based.
         </p>
-        <p>
-          A second paragraph about approach, recent clients, or whatever feels most
-          relevant. The tone here is quiet and direct.
+        <p className="pt-6 whitespace-pre-line opacity-80">
+          A second paragraph about approach or recent work. The tone here is quiet and direct.
         </p>
       </div>
-    </div>
+    </main>
   );
 }

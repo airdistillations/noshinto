@@ -1,53 +1,112 @@
 import Link from 'next/link';
 import { getAllProjects } from '@/lib/work';
 import { asset } from '@/lib/asset';
+import ScrollCounter from '@/components/ScrollCounter';
 
 export default function HomePage() {
   const projects = getAllProjects();
+  const total = projects.length;
 
   return (
-    <div>
-      <section className="mx-auto max-w-[1400px] px-6 md:px-10 pt-10 md:pt-20 pb-10 md:pb-16">
-        <p className="eyebrow">Selected Work</p>
-        <h1 className="mt-4 font-serif text-4xl md:text-6xl leading-[1.05] tracking-tight max-w-3xl">
-          A collection of projects — photography, direction, and visual work.
-        </h1>
-      </section>
-
-      {projects.length === 0 ? (
-        <div className="mx-auto max-w-[1400px] px-6 md:px-10 py-20 text-muted">
-          No projects yet. Add a folder under <code>content/work/</code>.
+    <main className="relative isolate">
+      {total === 0 ? (
+        <div className="grid-layout pt-[50vh] pb-24 copy-sm opacity-60">
+          <p className="col-span-full lg:col-start-4 lg:col-span-6">
+            No projects yet. Add a folder under <code>public/work/</code>.
+          </p>
         </div>
       ) : (
-        <section className="mx-auto max-w-[1400px] px-6 md:px-10 pb-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {projects.map((p) => (
-              <Link
-                key={p.slug}
-                href={`/work/${p.slug}/`}
-                className="group block"
-                aria-label={p.title}
-              >
-                <div className="relative overflow-hidden bg-line aspect-[4/5]">
-                  {p.cover && (
-                    <img
-                      src={asset(p.cover)}
-                      alt={p.title}
-                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.03]"
-                      loading="lazy"
-                    />
-                  )}
-                </div>
-                <div className="mt-4 flex items-baseline justify-between gap-4">
-                  <h2 className="font-serif text-xl md:text-2xl tracking-tight">{p.title}</h2>
-                  {p.year && <span className="text-xs tracking-wide-xl uppercase text-muted">{p.year}</span>}
-                </div>
-                {p.summary && <p className="mt-1 text-sm text-muted max-w-md">{p.summary}</p>}
-              </Link>
-            ))}
+        <div className="grid-layout">
+          {/* Scroll container: snap on mobile, normal flow on desktop */}
+          <div
+            className="col-span-full lg:col-start-1 lg:col-span-12
+                       snap-y snap-mandatory h-svh overflow-auto
+                       lg:h-auto lg:overflow-visible lg:pt-[50vh]"
+          >
+            {projects.map((p, i) => {
+              const heroImages = p.images.slice(0, 3);
+              const firstImage = heroImages[0];
+              return (
+                <section
+                  key={p.slug}
+                  data-project-index={i + 1}
+                  className="relative isolate
+                             h-svh lg:h-auto lg:pb-20
+                             snap-center lg:scroll-mt-[50vh]"
+                >
+                  {/* MOBILE: full-viewport cover image with title overlay */}
+                  <Link
+                    href={`/work/${p.slug}/`}
+                    className="absolute inset-0 lg:hidden"
+                    aria-label={p.title}
+                  >
+                    {firstImage && (
+                      <img
+                        src={asset(firstImage.src)}
+                        alt={firstImage.alt || p.title}
+                        className="absolute inset-0 h-full w-full object-cover"
+                        loading={i === 0 ? 'eager' : 'lazy'}
+                        fetchPriority={i === 0 ? 'high' : undefined}
+                      />
+                    )}
+                    <div
+                      className="absolute inset-0 flex items-center justify-center p-5 blend-difference"
+                      style={{ color: 'var(--color-white)' }}
+                    >
+                      <h2 className="text-16 tracking-tight">{p.title}</h2>
+                    </div>
+                  </Link>
+
+                  {/* DESKTOP: 12-col editorial row */}
+                  <div className="hidden lg:grid grid-cols-12 gap-x-[10px] px-0">
+                    {/* Cols 2-3: title + description */}
+                    <div className="col-start-2 col-span-2 pt-2">
+                      <Link href={`/work/${p.slug}/`} className="link-hover block">
+                        <h2 className="text-16">{p.title}</h2>
+                      </Link>
+                      {p.description && (
+                        <p className="copy-sm whitespace-pre-line pt-2 opacity-80">
+                          {p.description}
+                        </p>
+                      )}
+                      <p className="copy-sm pt-2 opacity-50">
+                        {[p.role, p.location, p.year].filter(Boolean).join(' — ')}
+                      </p>
+                    </div>
+
+                    {/* Cols 4-12: image strip */}
+                    <Link
+                      href={`/work/${p.slug}/`}
+                      className="col-start-4 col-span-9 group"
+                      aria-label={p.title}
+                    >
+                      <div className="grid grid-cols-3 gap-x-[10px]">
+                        {heroImages.map((img, idx) => (
+                          <div key={img.src} className="aspect-[3/4] overflow-hidden bg-[var(--color-gray)]/10">
+                            <img
+                              src={asset(img.src)}
+                              alt={img.alt || `${p.title} — ${idx + 1}`}
+                              className="h-full w-full object-cover"
+                              loading={i === 0 && idx === 0 ? 'eager' : 'lazy'}
+                              fetchPriority={i === 0 && idx === 0 ? 'high' : undefined}
+                            />
+                          </div>
+                        ))}
+                        {/* Fill empty slots so the row keeps its shape */}
+                        {Array.from({ length: Math.max(0, 3 - heroImages.length) }).map((_, k) => (
+                          <div key={`ph-${k}`} className="aspect-[3/4]" />
+                        ))}
+                      </div>
+                    </Link>
+                  </div>
+                </section>
+              );
+            })}
           </div>
-        </section>
+        </div>
       )}
-    </div>
+
+      {total > 0 && <ScrollCounter total={total} />}
+    </main>
   );
 }
