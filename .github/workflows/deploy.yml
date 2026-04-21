@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, claude/portfolio-website-build-hQ97A]
   workflow_dispatch:
 
 permissions:
