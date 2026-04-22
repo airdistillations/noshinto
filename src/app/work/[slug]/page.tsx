@@ -79,7 +79,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             <figure
               key={img.src}
               className="bg-[var(--color-gray)]/10"
-              style={{ ['viewTransitionName' as string]: `proj-img-${i}` } as React.CSSProperties}
             >
               <img
                 src={asset(img.src)}
