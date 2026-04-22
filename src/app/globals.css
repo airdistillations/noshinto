@@ -249,34 +249,14 @@ img { display: block; }
   pointer-events: none;
 }
 
-/* Layer 3 — lens rim: a subtle bright ring right where the blur meets
-   the clear centre, so the eye reads a glass edge rather than a fuzzy
-   falloff. plus-lighter blend keeps it looking like light, not paint. */
-.glass-btn > .glass-lens-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  z-index: 2;
-  background: radial-gradient(
-    circle at 50% 50%,
-    transparent 24%,
-    rgba(255, 255, 255, 0.08) 29%,
-    rgba(255, 255, 255, 0.28) 33%,
-    rgba(255, 255, 255, 0.10) 38%,
-    transparent 45%
-  );
-  mix-blend-mode: plus-lighter;
-  pointer-events: none;
-}
-
-/* Layer 4 — specular arc, angle driven by pointer position (mouse + touch)
+/* Layer 3 — specular arc, angle driven by pointer position (mouse + touch)
    via --stroke-angle set on each button from JS. */
 .glass-btn > .glass-stroke {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: 1.5px;
-  z-index: 3;
+  z-index: 2;
   background: conic-gradient(
     from calc(var(--stroke-angle, 135deg) - 50deg) at 50% 50%,
     transparent 0deg,
@@ -299,12 +279,12 @@ img { display: block; }
   transition: background 120ms linear;
 }
 
-/* Layer 5 — glyph (+ − ↑). Absolutely centred so the glyph is sharp
+/* Layer 4 — glyph (+ − ↑). Absolutely centred so the glyph is sharp
    and sits above every effect layer. */
 .glass-btn-glyph {
   position: absolute;
   inset: 0;
-  z-index: 4;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;

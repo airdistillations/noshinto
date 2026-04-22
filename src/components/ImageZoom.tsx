@@ -46,7 +46,6 @@ function GlassButton({ onClick, label, symbol, float, disabled }: BtnProps) {
       >
         <span aria-hidden="true" className="glass-effect" />
         <span aria-hidden="true" className="glass-tint" />
-        <span aria-hidden="true" className="glass-lens-ring" />
         <span aria-hidden="true" className="glass-stroke" />
         <span aria-hidden="true" className="glass-btn-glyph text-16">{symbol}</span>
       </button>
