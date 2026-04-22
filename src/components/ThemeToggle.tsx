@@ -15,7 +15,11 @@ export default function ThemeToggle() {
   }, []);
 
   function toggle(event: React.MouseEvent<HTMLButtonElement>) {
-    const next = theme === 'dark' ? 'light' : 'dark';
+    // Read from the DOM rather than React state: rapid successive clicks
+    // fire before the component re-renders, so the `theme` closure would be
+    // stale and both clicks would compute the same `next`.
+    const current = (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
     const apply = () => {
       document.documentElement.setAttribute('data-theme', next);
       try { localStorage.setItem('theme', next); } catch {}
