@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /**
  * Each zoom step pins the exact column count — every "−" tap adds one
@@ -45,7 +45,6 @@ function GlassButton({ onClick, label, symbol, float, disabled }: BtnProps) {
         className="glass-btn relative w-[60px] h-[60px] rounded-full overflow-hidden disabled:opacity-30 disabled:pointer-events-none"
       >
         <span aria-hidden="true" className="glass-effect" />
-        <span aria-hidden="true" className="glass-refraction" />
         <span aria-hidden="true" className="glass-tint" />
         <span aria-hidden="true" className="glass-stroke" />
         <span aria-hidden="true" className="glass-btn-glyph text-16">{symbol}</span>
@@ -70,6 +69,43 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
   };
   const atMax = idx === 0;
   const atMin = idx === STEPS.length - 1;
+
+  // Pointer-tracking specular stroke: every .glass-btn picks up a
+  // --stroke-angle pointing from its centre toward the latest pointer
+  // position, so the bright arc on the conic-gradient ring faces the
+  // mouse (desktop) or the tap (mobile). Pointer events cover both.
+  useEffect(() => {
+    let raf = 0;
+    let latest: { x: number; y: number } | null = null;
+
+    const apply = () => {
+      raf = 0;
+      if (!latest) return;
+      const buttons = document.querySelectorAll<HTMLElement>('.glass-btn');
+      buttons.forEach((btn) => {
+        const r = btn.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        // atan2: 0 = right, +π/2 = down. Add 90° to align with CSS conic (0 = top).
+        const angle = (Math.atan2(latest!.y - cy, latest!.x - cx) * 180) / Math.PI + 90;
+        btn.style.setProperty('--stroke-angle', `${angle}deg`);
+      });
+    };
+    const onPointer = (e: PointerEvent) => {
+      latest = { x: e.clientX, y: e.clientY };
+      if (!raf) raf = requestAnimationFrame(apply);
+    };
+
+    // pointermove covers mouse; pointerdown also fires on first touch
+    // so the arc snaps toward the tap even before any movement.
+    window.addEventListener('pointermove', onPointer, { passive: true });
+    window.addEventListener('pointerdown', onPointer, { passive: true });
+    return () => {
+      window.removeEventListener('pointermove', onPointer);
+      window.removeEventListener('pointerdown', onPointer);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
 
   return (
     <>

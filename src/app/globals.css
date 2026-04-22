@@ -221,40 +221,24 @@ img { display: block; }
     box-shadow 80ms cubic-bezier(.2, .8, .4, 1);
 }
 
-/* Layer 1 — outer frost. Heavier saturation + slight contrast boost gives
-   the feel of looking through thick glass at the page below. */
+/* Layer 1 — frosted fill. Strong uniform backdrop blur + saturation + a
+   touch of contrast reads as thick glass against the page beneath. */
 .glass-btn > .glass-effect {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   z-index: 0;
-  -webkit-backdrop-filter: blur(14px) saturate(220%) brightness(1.06) contrast(1.04);
-  backdrop-filter: blur(14px) saturate(220%) brightness(1.06) contrast(1.04);
+  -webkit-backdrop-filter: blur(18px) saturate(220%) brightness(1.06) contrast(1.04);
+  backdrop-filter: blur(18px) saturate(220%) brightness(1.06) contrast(1.04);
   pointer-events: none;
 }
 
-/* Layer 2 — inner refraction dome. Second backdrop-filter at a different
-   strength + a slight hue-rotate, so the middle of the button reads as a
-   "lens core" that bends the backdrop differently than the edges. The
-   radial mask fades the effect out at the rim so it blends into layer 1. */
-.glass-btn > .glass-refraction {
-  position: absolute;
-  inset: 6px;
-  border-radius: inherit;
-  z-index: 1;
-  -webkit-backdrop-filter: blur(3px) saturate(150%) brightness(1.05) hue-rotate(-4deg);
-  backdrop-filter: blur(3px) saturate(150%) brightness(1.05) hue-rotate(-4deg);
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 45%, transparent 85%);
-          mask-image: radial-gradient(circle at 50% 50%, #000 45%, transparent 85%);
-  pointer-events: none;
-}
-
-/* Layer 3 — tint/body: subtle highlight + gloss */
+/* Layer 2 — tint/body: subtle highlight + gloss */
 .glass-btn > .glass-tint {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  z-index: 2;
+  z-index: 1;
   background:
     radial-gradient(130% 130% at 28% 18%,
       color-mix(in oklab, var(--color-bg) 32%, transparent) 0%,
@@ -266,13 +250,14 @@ img { display: block; }
   pointer-events: none;
 }
 
-/* Layer 4 — static specular arc at the top-left quadrant */
+/* Layer 3 — specular arc, angle driven by pointer position (mouse + touch)
+   via --stroke-angle set on each button from JS. */
 .glass-btn > .glass-stroke {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: 1.5px;
-  z-index: 3;
+  z-index: 2;
   background: conic-gradient(
     from calc(var(--stroke-angle, 135deg) - 50deg) at 50% 50%,
     transparent 0deg,
@@ -291,14 +276,16 @@ img { display: block; }
           mask-composite: exclude;
   mix-blend-mode: plus-lighter;
   pointer-events: none;
+  /* Smooth angle changes so the arc glides instead of jumping. */
+  transition: background 120ms linear;
 }
 
-/* Layer 5 — glyph (+ − ↑). Absolutely centred so the glyph is sharp
+/* Layer 4 — glyph (+ − ↑). Absolutely centred so the glyph is sharp
    and sits above every effect layer. */
 .glass-btn-glyph {
   position: absolute;
   inset: 0;
-  z-index: 4;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;
