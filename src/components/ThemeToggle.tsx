@@ -6,40 +6,45 @@ import { asset } from '@/lib/asset';
 export default function ThemeToggle() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [mounted, setMounted] = useState(false);
-  const transitioning = useRef(false);
+  // Synchronous source of truth for the current theme. Flipped at the top
+  // of every click so a second rapid click can't see a stale value — the
+  // View Transition callback (and React state) update asynchronously, so
+  // DOM attributes and React state both lag behind the click stream.
+  const themeRef = useRef<'light' | 'dark'>('light');
 
   useEffect(() => {
     const current = (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
+    themeRef.current = current;
     setTheme(current);
     setMounted(true);
   }, []);
 
   function toggle(event: React.MouseEvent<HTMLButtonElement>) {
-    // Read from the DOM rather than React state: rapid successive clicks
-    // fire before the component re-renders, so the `theme` closure would be
-    // stale and both clicks would compute the same `next`.
-    const current = (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
-    const next = current === 'dark' ? 'light' : 'dark';
+    const next = themeRef.current === 'dark' ? 'light' : 'dark';
+    themeRef.current = next;
+
+    // Read the latest intent at callback time — a second click may have
+    // already flipped themeRef by the time this actually runs.
     const apply = () => {
-      document.documentElement.setAttribute('data-theme', next);
-      try { localStorage.setItem('theme', next); } catch {}
-      setTheme(next);
+      const latest = themeRef.current;
+      document.documentElement.setAttribute('data-theme', latest);
+      try { localStorage.setItem('theme', latest); } catch {}
+      setTheme(latest);
     };
 
     const d = document as Document & {
-      startViewTransition?: (cb: () => void) => { finished: Promise<unknown> };
+      startViewTransition?: (cb: () => void) => unknown;
     };
 
-    // Rapid successive clicks bypass the view transition so every tap
-    // registers immediately — the API otherwise drops/queues overlapping
-    // transitions, which felt like unresponsive clicks.
-    if (typeof d.startViewTransition === 'function' && !transitioning.current) {
+    if (typeof d.startViewTransition === 'function') {
+      // Radiate the reveal from the logo's position.
       const rect = event.currentTarget.getBoundingClientRect();
       document.documentElement.style.setProperty('--theme-x', `${rect.left + rect.width / 2}px`);
       document.documentElement.style.setProperty('--theme-y', `${rect.top + rect.height / 2}px`);
-      transitioning.current = true;
-      const t = d.startViewTransition(apply);
-      t.finished.finally(() => { transitioning.current = false; });
+      // Let the browser skip any in-flight transition — apply() reads the
+      // live ref, so whichever callback actually runs still converges on
+      // the correct final state.
+      d.startViewTransition(apply);
     } else {
       apply();
     }
