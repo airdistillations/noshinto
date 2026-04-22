@@ -2,7 +2,7 @@ import LocalClock from '@/components/LocalClock';
 
 export const metadata = { title: 'Contact — Noshinto' };
 
-const EMAIL = 'hello@noshinto.com';
+const EMAIL = 'hi@noshinto.com';
 const LOCATION = 'Antwerp, Belgium';
 const AGENCY = {
   name: '',
