@@ -221,10 +221,7 @@ img { display: block; }
     box-shadow 80ms cubic-bezier(.2, .8, .4, 1);
 }
 
-/* Layer 1 — frosted rim. backdrop-filter can't actually magnify, so the
-   magnifier illusion comes from where the blur *isn't*: the mask cuts a
-   clear circle out of the centre, letting the page show through crisply
-   while the rim stays heavily frosted. Reads as a lens. */
+/* Layer 1 — frosted fill: strong uniform blur across the whole button. */
 .glass-btn > .glass-effect {
   position: absolute;
   inset: 0;
@@ -232,23 +229,10 @@ img { display: block; }
   z-index: 0;
   -webkit-backdrop-filter: blur(18px) saturate(220%) brightness(1.06) contrast(1.04);
   backdrop-filter: blur(18px) saturate(220%) brightness(1.06) contrast(1.04);
-  -webkit-mask-image: radial-gradient(
-    circle at 50% 50%,
-    transparent 30%,
-    rgba(0, 0, 0, 0.35) 50%,
-    #000 70%
-  );
-          mask-image: radial-gradient(
-    circle at 50% 50%,
-    transparent 30%,
-    rgba(0, 0, 0, 0.35) 50%,
-    #000 70%
-  );
   pointer-events: none;
 }
 
-/* Layer 2 — tint/body: gloss on the rim only, faded from the centre so
-   the clear lens isn't tinted. */
+/* Layer 2 — tint/body: subtle highlight + gloss */
 .glass-btn > .glass-tint {
   position: absolute;
   inset: 0;
@@ -262,16 +246,6 @@ img { display: block; }
   box-shadow:
     inset 2px 2px 1px 0 color-mix(in oklab, var(--color-bg) 60%, transparent),
     inset -1px -1px 1px 1px color-mix(in oklab, var(--color-bg) 50%, transparent);
-  -webkit-mask-image: radial-gradient(
-    circle at 50% 50%,
-    transparent 28%,
-    #000 65%
-  );
-          mask-image: radial-gradient(
-    circle at 50% 50%,
-    transparent 28%,
-    #000 65%
-  );
   pointer-events: none;
 }
 
