@@ -8,14 +8,17 @@ type ViewTransition = {
   finished: Promise<unknown>;
 };
 
+// Rapid clicks bypass the View Transition API entirely: a burst within
+// this window flips the DOM synchronously with no snapshot/overlay, so
+// there's nothing for the browser to paint around.
+const BURST_WINDOW_MS = 250;
+
 export default function ThemeToggle() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [mounted, setMounted] = useState(false);
-  // Synchronous source of truth — flipped at the top of every click so a
-  // second rapid click can't see a stale value (the DOM attribute and
-  // React state both lag the click stream).
   const themeRef = useRef<'light' | 'dark'>('light');
   const activeTransition = useRef<ViewTransition | null>(null);
+  const lastClickAt = useRef(0);
 
   useEffect(() => {
     const current = (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
@@ -25,8 +28,11 @@ export default function ThemeToggle() {
   }, []);
 
   function toggle(event: React.MouseEvent<HTMLButtonElement>) {
-    const next = themeRef.current === 'dark' ? 'light' : 'dark';
-    themeRef.current = next;
+    const now = performance.now();
+    const burst = now - lastClickAt.current < BURST_WINDOW_MS;
+    lastClickAt.current = now;
+
+    themeRef.current = themeRef.current === 'dark' ? 'light' : 'dark';
 
     const apply = () => {
       const latest = themeRef.current;
@@ -35,32 +41,31 @@ export default function ThemeToggle() {
       setTheme(latest);
     };
 
-    // Rapid second click during an active animation: skip the in-flight
-    // transition and apply immediately so the DOM flips NOW instead of
-    // waiting for a new snapshot/skip cycle.
+    // Tear down any in-flight animation: the overlay would mask the change.
     if (activeTransition.current) {
       activeTransition.current.skipTransition();
       activeTransition.current = null;
-      apply();
-      return;
     }
 
     const d = document as Document & {
       startViewTransition?: (cb: () => void) => ViewTransition;
     };
 
-    if (typeof d.startViewTransition === 'function') {
-      const rect = event.currentTarget.getBoundingClientRect();
-      document.documentElement.style.setProperty('--theme-x', `${rect.left + rect.width / 2}px`);
-      document.documentElement.style.setProperty('--theme-y', `${rect.top + rect.height / 2}px`);
-      const t = d.startViewTransition(apply);
-      activeTransition.current = t;
-      t.finished.finally(() => {
-        if (activeTransition.current === t) activeTransition.current = null;
-      });
-    } else {
+    // Burst of clicks, or no API: flip the DOM now, no animation.
+    if (burst || typeof d.startViewTransition !== 'function') {
       apply();
+      return;
     }
+
+    // Isolated click: run the pretty radial reveal.
+    const rect = event.currentTarget.getBoundingClientRect();
+    document.documentElement.style.setProperty('--theme-x', `${rect.left + rect.width / 2}px`);
+    document.documentElement.style.setProperty('--theme-y', `${rect.top + rect.height / 2}px`);
+    const t = d.startViewTransition(apply);
+    activeTransition.current = t;
+    t.finished.finally(() => {
+      if (activeTransition.current === t) activeTransition.current = null;
+    });
   }
 
   return (

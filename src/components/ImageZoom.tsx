@@ -27,24 +27,47 @@ function scrollEverythingToTop() {
   }
 }
 
-// Wraps a state update in a View Transition when the browser supports it,
-// so the masonry reflow is tweened automatically (FLIP for every figure
-// with a unique view-transition-name). Rapid taps while a transition is
-// already running skip the animation and apply synchronously, otherwise
-// the API drops/queues overlapping calls and clicks feel ignored.
+type ViewTransition = {
+  skipTransition: () => void;
+  finished: Promise<unknown>;
+};
+
+// Clicks within this window are treated as a burst and bypass the View
+// Transition API entirely — the snapshot/overlay/teardown overhead is
+// what makes rapid taps feel laggy.
+const BURST_WINDOW_MS = 250;
+
+// Runs masonry reflow through a View Transition (FLIP per figure) for
+// isolated clicks, but snaps synchronously during bursts so every tap
+// feels instant.
 function useViewTransitionRunner() {
-  const transitioning = useRef(false);
+  const active = useRef<ViewTransition | null>(null);
+  const lastClickAt = useRef(0);
+
   return (update: () => void) => {
-    const d = document as Document & {
-      startViewTransition?: (cb: () => void) => { finished: Promise<unknown> };
-    };
-    if (typeof d.startViewTransition === 'function' && !transitioning.current) {
-      transitioning.current = true;
-      const t = d.startViewTransition(() => flushSync(update));
-      t.finished.finally(() => { transitioning.current = false; });
-    } else {
-      update();
+    const now = performance.now();
+    const burst = now - lastClickAt.current < BURST_WINDOW_MS;
+    lastClickAt.current = now;
+
+    if (active.current) {
+      active.current.skipTransition();
+      active.current = null;
     }
+
+    const d = document as Document & {
+      startViewTransition?: (cb: () => void) => ViewTransition;
+    };
+
+    if (burst || typeof d.startViewTransition !== 'function') {
+      update();
+      return;
+    }
+
+    const t = d.startViewTransition(() => flushSync(update));
+    active.current = t;
+    t.finished.finally(() => {
+      if (active.current === t) active.current = null;
+    });
   };
 }
 
