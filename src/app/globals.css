@@ -337,8 +337,11 @@ img { display: block; }
   animation-timing-function: cubic-bezier(.22, 1, .36, 1);
 }
 
-/* Keep the floating zoom cluster above the animating masonry layers. */
-::view-transition-group(zoom-cluster) {
+/* Keep the floating zoom cluster and the site nav above the animating layers.
+   Without this the per-image view-transition groups (proj-img-*) stack above
+   the root snapshot and hide the logo/nav during a theme transition. */
+::view-transition-group(zoom-cluster),
+::view-transition-group(site-nav) {
   z-index: 9999;
 }
 

@@ -3,14 +3,19 @@
 import { useEffect, useRef, useState } from 'react';
 import { asset } from '@/lib/asset';
 
+type ViewTransition = {
+  skipTransition: () => void;
+  finished: Promise<unknown>;
+};
+
 export default function ThemeToggle() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [mounted, setMounted] = useState(false);
-  // Synchronous source of truth for the current theme. Flipped at the top
-  // of every click so a second rapid click can't see a stale value — the
-  // View Transition callback (and React state) update asynchronously, so
-  // DOM attributes and React state both lag behind the click stream.
+  // Synchronous source of truth — flipped at the top of every click so a
+  // second rapid click can't see a stale value (the DOM attribute and
+  // React state both lag the click stream).
   const themeRef = useRef<'light' | 'dark'>('light');
+  const activeTransition = useRef<ViewTransition | null>(null);
 
   useEffect(() => {
     const current = (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
@@ -23,8 +28,6 @@ export default function ThemeToggle() {
     const next = themeRef.current === 'dark' ? 'light' : 'dark';
     themeRef.current = next;
 
-    // Read the latest intent at callback time — a second click may have
-    // already flipped themeRef by the time this actually runs.
     const apply = () => {
       const latest = themeRef.current;
       document.documentElement.setAttribute('data-theme', latest);
@@ -32,19 +35,29 @@ export default function ThemeToggle() {
       setTheme(latest);
     };
 
+    // Rapid second click during an active animation: skip the in-flight
+    // transition and apply immediately so the DOM flips NOW instead of
+    // waiting for a new snapshot/skip cycle.
+    if (activeTransition.current) {
+      activeTransition.current.skipTransition();
+      activeTransition.current = null;
+      apply();
+      return;
+    }
+
     const d = document as Document & {
-      startViewTransition?: (cb: () => void) => unknown;
+      startViewTransition?: (cb: () => void) => ViewTransition;
     };
 
     if (typeof d.startViewTransition === 'function') {
-      // Radiate the reveal from the logo's position.
       const rect = event.currentTarget.getBoundingClientRect();
       document.documentElement.style.setProperty('--theme-x', `${rect.left + rect.width / 2}px`);
       document.documentElement.style.setProperty('--theme-y', `${rect.top + rect.height / 2}px`);
-      // Let the browser skip any in-flight transition — apply() reads the
-      // live ref, so whichever callback actually runs still converges on
-      // the correct final state.
-      d.startViewTransition(apply);
+      const t = d.startViewTransition(apply);
+      activeTransition.current = t;
+      t.finished.finally(() => {
+        if (activeTransition.current === t) activeTransition.current = null;
+      });
     } else {
       apply();
     }
