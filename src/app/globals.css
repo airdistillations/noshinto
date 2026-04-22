@@ -221,8 +221,10 @@ img { display: block; }
     box-shadow 80ms cubic-bezier(.2, .8, .4, 1);
 }
 
-/* Layer 1 — frosted fill. Strong uniform backdrop blur + saturation + a
-   touch of contrast reads as thick glass against the page beneath. */
+/* Layer 1 — frosted rim. backdrop-filter can't actually magnify, so the
+   magnifier illusion comes from where the blur *isn't*: the mask cuts a
+   clear circle out of the centre, letting the page show through crisply
+   while the rim stays heavily frosted. Reads as a lens. */
 .glass-btn > .glass-effect {
   position: absolute;
   inset: 0;
@@ -230,10 +232,23 @@ img { display: block; }
   z-index: 0;
   -webkit-backdrop-filter: blur(18px) saturate(220%) brightness(1.06) contrast(1.04);
   backdrop-filter: blur(18px) saturate(220%) brightness(1.06) contrast(1.04);
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent 30%,
+    rgba(0, 0, 0, 0.35) 50%,
+    #000 70%
+  );
+          mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent 30%,
+    rgba(0, 0, 0, 0.35) 50%,
+    #000 70%
+  );
   pointer-events: none;
 }
 
-/* Layer 2 — tint/body: subtle highlight + gloss */
+/* Layer 2 — tint/body: gloss on the rim only, faded from the centre so
+   the clear lens isn't tinted. */
 .glass-btn > .glass-tint {
   position: absolute;
   inset: 0;
@@ -247,17 +262,47 @@ img { display: block; }
   box-shadow:
     inset 2px 2px 1px 0 color-mix(in oklab, var(--color-bg) 60%, transparent),
     inset -1px -1px 1px 1px color-mix(in oklab, var(--color-bg) 50%, transparent);
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent 28%,
+    #000 65%
+  );
+          mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent 28%,
+    #000 65%
+  );
   pointer-events: none;
 }
 
-/* Layer 3 — specular arc, angle driven by pointer position (mouse + touch)
+/* Layer 3 — lens rim: a subtle bright ring right where the blur meets
+   the clear centre, so the eye reads a glass edge rather than a fuzzy
+   falloff. plus-lighter blend keeps it looking like light, not paint. */
+.glass-btn > .glass-lens-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 2;
+  background: radial-gradient(
+    circle at 50% 50%,
+    transparent 24%,
+    rgba(255, 255, 255, 0.08) 29%,
+    rgba(255, 255, 255, 0.28) 33%,
+    rgba(255, 255, 255, 0.10) 38%,
+    transparent 45%
+  );
+  mix-blend-mode: plus-lighter;
+  pointer-events: none;
+}
+
+/* Layer 4 — specular arc, angle driven by pointer position (mouse + touch)
    via --stroke-angle set on each button from JS. */
 .glass-btn > .glass-stroke {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: 1.5px;
-  z-index: 2;
+  z-index: 3;
   background: conic-gradient(
     from calc(var(--stroke-angle, 135deg) - 50deg) at 50% 50%,
     transparent 0deg,
@@ -280,12 +325,12 @@ img { display: block; }
   transition: background 120ms linear;
 }
 
-/* Layer 4 — glyph (+ − ↑). Absolutely centred so the glyph is sharp
+/* Layer 5 — glyph (+ − ↑). Absolutely centred so the glyph is sharp
    and sits above every effect layer. */
 .glass-btn-glyph {
   position: absolute;
   inset: 0;
-  z-index: 3;
+  z-index: 4;
   display: flex;
   align-items: center;
   justify-content: center;
