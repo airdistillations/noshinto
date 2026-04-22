@@ -50,7 +50,7 @@ export default function Nav() {
   return (
     <>
       {/* Frosted glass scrim behind nav */}
-      <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 h-32 z-10 bg-gradient-scrim" />
+      <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 h-48 lg:h-56 z-10 bg-gradient-scrim" />
 
       <header
         className="fixed inset-x-0 top-0 z-20 px-5 py-6 lg:px-8 lg:py-8 blend-difference"
