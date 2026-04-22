@@ -324,42 +324,12 @@ img { display: block; }
   100%  { transform: translate(0, 0); }
 }
 
-/* Collapsible sections (About page). Native <details> with a custom
-   toggle glyph; + rotates 45° into × when open. */
-.collapsible > summary {
-  list-style: none;
-  cursor: pointer;
-  user-select: none;
-}
-.collapsible > summary::-webkit-details-marker { display: none; }
-.collapsible > summary .toggle {
-  display: inline-block;
-  transition: transform 280ms var(--ease-out-quint);
-}
-.collapsible[open] > summary .toggle { transform: rotate(45deg); }
-
-/* Gentle open/close animation. Wraps the body in a grid with
-   grid-template-rows: 0fr → 1fr — the only CSS-only way to animate
-   from 0 to auto height without measuring. Inner div clips overflow
-   so collapsing content disappears smoothly instead of overflowing. */
-.collapsible > .collapse-content {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 380ms var(--ease-out-quint);
-}
-.collapsible[open] > .collapse-content {
-  grid-template-rows: 1fr;
-}
-.collapsible > .collapse-content > * {
-  min-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: opacity 220ms var(--ease-out-quint);
-}
-.collapsible[open] > .collapse-content > * {
-  opacity: 1;
-  transition: opacity 260ms 80ms var(--ease-out-quint);
-}
+/* Collapsible animation now lives inside <Collapsible> (client
+   component). Keeping a placeholder note so the deletion is
+   intentional — the previous .collapsible/.collapse-content CSS
+   targeted native <details>, which slots non-summary children into
+   a shadow DOM slot that gets display:none when closed; that breaks
+   the grid-template-rows transition before it can run. */
 
 /* Old wiggle kept for anything still using it */
 @keyframes wiggle-a {
