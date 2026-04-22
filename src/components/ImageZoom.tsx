@@ -30,23 +30,27 @@ type BtnProps = {
   onClick: () => void;
   label: string;
   symbol: string;
+  float: 'float-a' | 'float-b' | 'float-c';
   disabled?: boolean;
 };
 
-function GlassButton({ onClick, label, symbol, disabled }: BtnProps) {
+function GlassButton({ onClick, label, symbol, float, disabled }: BtnProps) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={label}
-      disabled={disabled}
-      className="glass-btn relative w-[60px] h-[60px] rounded-full overflow-hidden disabled:opacity-30 disabled:pointer-events-none"
-    >
-      <span aria-hidden="true" className="glass-effect" />
-      <span aria-hidden="true" className="glass-tint" />
-      <span aria-hidden="true" className="glass-stroke" />
-      <span aria-hidden="true" className="glass-btn-glyph text-16">{symbol}</span>
-    </button>
+    <span className={float}>
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={label}
+        disabled={disabled}
+        className="glass-btn relative w-[60px] h-[60px] rounded-full overflow-hidden disabled:opacity-30 disabled:pointer-events-none"
+      >
+        <span aria-hidden="true" className="glass-effect" />
+        <span aria-hidden="true" className="glass-refraction" />
+        <span aria-hidden="true" className="glass-tint" />
+        <span aria-hidden="true" className="glass-stroke" />
+        <span aria-hidden="true" className="glass-btn-glyph text-16">{symbol}</span>
+      </button>
+    </span>
   );
 }
 
@@ -78,13 +82,13 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
 
       <div className="fixed inset-x-0 bottom-[20px] lg:bottom-[40px] z-30 flex justify-center items-end gap-5 lg:gap-6 pointer-events-none">
         <div className="pointer-events-auto">
-          <GlassButton onClick={zoomIn}  label="Larger images — fewer columns"  symbol="+" disabled={atMax} />
+          <GlassButton onClick={zoomIn}  label="Larger images — fewer columns"  symbol="+" float="float-a" disabled={atMax} />
         </div>
         <div className="pointer-events-auto">
-          <GlassButton onClick={zoomOut} label="Smaller images — more columns"  symbol="−" disabled={atMin} />
+          <GlassButton onClick={zoomOut} label="Smaller images — more columns"  symbol="−" float="float-b" disabled={atMin} />
         </div>
         <div className="pointer-events-auto">
-          <GlassButton onClick={scrollEverythingToTop} label="Back to top"       symbol="↑" />
+          <GlassButton onClick={scrollEverythingToTop} label="Back to top"       symbol="↑" float="float-c" />
         </div>
       </div>
 

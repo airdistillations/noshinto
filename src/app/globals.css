@@ -167,6 +167,30 @@ img { display: block; }
   .min-h-svh { min-height: 100svh; }
 }
 
+/* ---------- Float wrappers: each button drifts on its own loop ---------- */
+@keyframes float-a {
+  0%   { transform: translate(0, 0)     rotate(0deg); }
+  33%  { transform: translate(-6px, 4px) rotate(-4deg); }
+  66%  { transform: translate(-3px, -5px) rotate(3deg); }
+  100% { transform: translate(0, 0)     rotate(0deg); }
+}
+@keyframes float-b {
+  0%   { transform: translate(0, 0)     rotate(0deg); }
+  33%  { transform: translate(5px, -4px) rotate(3deg); }
+  66%  { transform: translate(4px, 5px)  rotate(-2deg); }
+  100% { transform: translate(0, 0)     rotate(0deg); }
+}
+@keyframes float-c {
+  0%   { transform: translate(0, 0)      rotate(0deg); }
+  33%  { transform: translate(-4px, -5px) rotate(2deg); }
+  66%  { transform: translate(5px, -2px)  rotate(-3deg); }
+  100% { transform: translate(0, 0)      rotate(0deg); }
+}
+/* Slow + out-of-phase durations/delays so each button wobbles independently. */
+.float-a { display: inline-block; animation: float-a 6.4s cubic-bezier(.45,.05,.55,.95) infinite; }
+.float-b { display: inline-block; animation: float-b 7.2s cubic-bezier(.45,.05,.55,.95) infinite; animation-delay: -2.1s; }
+.float-c { display: inline-block; animation: float-c 6.8s cubic-bezier(.45,.05,.55,.95) infinite; animation-delay: -4.3s; }
+
 /* ---------- Liquid-glass zoom controls ---------- */
 .glass-btn {
   position: relative;
@@ -178,28 +202,59 @@ img { display: block; }
   box-shadow:
     0 14px 30px -12px color-mix(in oklab, var(--color-text) 30%, transparent),
     0 3px 8px  -2px  color-mix(in oklab, var(--color-text) 22%, transparent);
+  transition:
+    transform 180ms var(--ease-out-quint),
+    box-shadow 180ms var(--ease-out-quint);
+}
+.glass-btn:hover {
+  transform: scale(1.08);
+  box-shadow:
+    0 22px 40px -10px color-mix(in oklab, var(--color-text) 40%, transparent),
+    0 6px 14px  -2px  color-mix(in oklab, var(--color-text) 30%, transparent);
+}
+.glass-btn:active {
+  transform: scale(0.94);
+  box-shadow:
+    0 6px 14px -6px color-mix(in oklab, var(--color-text) 34%, transparent);
+  transition:
+    transform 80ms cubic-bezier(.2, .8, .4, 1),
+    box-shadow 80ms cubic-bezier(.2, .8, .4, 1);
 }
 
-/* Layer 1 — effect: blurred, saturated backdrop. No SVG filter here:
-   Chrome doesn't pass backdrop-filter output into element `filter`,
-   so the lens refraction can't be achieved without a foreignObject
-   workaround. A well-tuned frosted blur reads as "glass" cleanly. */
+/* Layer 1 — outer frost. Heavier saturation + slight contrast boost gives
+   the feel of looking through thick glass at the page below. */
 .glass-btn > .glass-effect {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   z-index: 0;
-  -webkit-backdrop-filter: blur(14px) saturate(200%) brightness(1.05);
-  backdrop-filter: blur(14px) saturate(200%) brightness(1.05);
+  -webkit-backdrop-filter: blur(14px) saturate(220%) brightness(1.06) contrast(1.04);
+  backdrop-filter: blur(14px) saturate(220%) brightness(1.06) contrast(1.04);
   pointer-events: none;
 }
 
-/* Layer 2 — tint/body: subtle highlight + gloss */
+/* Layer 2 — inner refraction dome. Second backdrop-filter at a different
+   strength + a slight hue-rotate, so the middle of the button reads as a
+   "lens core" that bends the backdrop differently than the edges. The
+   radial mask fades the effect out at the rim so it blends into layer 1. */
+.glass-btn > .glass-refraction {
+  position: absolute;
+  inset: 6px;
+  border-radius: inherit;
+  z-index: 1;
+  -webkit-backdrop-filter: blur(3px) saturate(150%) brightness(1.05) hue-rotate(-4deg);
+  backdrop-filter: blur(3px) saturate(150%) brightness(1.05) hue-rotate(-4deg);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 45%, transparent 85%);
+          mask-image: radial-gradient(circle at 50% 50%, #000 45%, transparent 85%);
+  pointer-events: none;
+}
+
+/* Layer 3 — tint/body: subtle highlight + gloss */
 .glass-btn > .glass-tint {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  z-index: 1;
+  z-index: 2;
   background:
     radial-gradient(130% 130% at 28% 18%,
       color-mix(in oklab, var(--color-bg) 32%, transparent) 0%,
@@ -211,13 +266,13 @@ img { display: block; }
   pointer-events: none;
 }
 
-/* Layer 3 — cursor-tracking specular arc */
+/* Layer 4 — static specular arc at the top-left quadrant */
 .glass-btn > .glass-stroke {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: 1.5px;
-  z-index: 2;
+  z-index: 3;
   background: conic-gradient(
     from calc(var(--stroke-angle, 135deg) - 50deg) at 50% 50%,
     transparent 0deg,
@@ -238,12 +293,12 @@ img { display: block; }
   pointer-events: none;
 }
 
-/* Layer 4 — glyph (+ − ↑). Absolutely centred so the glyph is sharp
+/* Layer 5 — glyph (+ − ↑). Absolutely centred so the glyph is sharp
    and sits above every effect layer. */
 .glass-btn-glyph {
   position: absolute;
   inset: 0;
-  z-index: 3;
+  z-index: 4;
   display: flex;
   align-items: center;
   justify-content: center;
