@@ -1,10 +1,9 @@
-import BerlinClock from '@/components/BerlinClock';
-import { asset } from '@/lib/asset';
+import LocalClock from '@/components/LocalClock';
 
 export const metadata = { title: 'Contact — Noshinto' };
 
 const EMAIL = 'hello@noshinto.com';
-const LOCATION = 'Your city, Country';
+const LOCATION = 'Antwerp, Belgium';
 const AGENCY = {
   name: '',
   address: '',
@@ -12,22 +11,16 @@ const AGENCY = {
   email: '',
 };
 const SOCIALS = [
-  { label: 'Instagram', href: 'https://instagram.com/' },
-  { label: 'YouTube', href: 'https://youtube.com/' },
-  { label: 'Behance', href: 'https://behance.net/' },
+  { label: 'Instagram', href: 'https://www.instagram.com/noshinto/' },
 ];
 
 export default function ContactPage() {
   return (
     <main className="relative isolate min-h-svh">
-      {/* Luminosity-blended hero */}
-      <div className="absolute inset-0 -z-20" style={{ background: 'var(--color-contact-tint)' }} />
-      <img
-        src={asset('/contact-hero.svg')}
-        alt=""
-        aria-hidden
-        className="absolute inset-0 -z-10 h-full w-full object-cover blend-luminosity"
-      />
+      {/* Animated grain overlay sits on top of the page's theme background
+          (var(--color-bg), toggled by the logo). Pointer-events none so
+          it never interferes with interaction. */}
+      <div aria-hidden className="noise-overlay" />
 
       <div className="grid-layout pt-[50vh] pb-24">
         {/* Desktop: cols 4-8 = bio/socials, cols 10-12 = agency/contact
@@ -39,11 +32,6 @@ export default function ContactPage() {
           </p>
           <p className="pt-6 whitespace-pre-line opacity-80">
             A second paragraph for approach, recent work, or a quiet note about collaboration.
-          </p>
-
-          <p className="pt-10 copy-sm opacity-60">Selected clients</p>
-          <p className="pt-1 text-16">
-            Client One — Client Two — Client Three — Client Four — Client Five
           </p>
 
           <p className="pt-10 copy-sm opacity-60">Socials</p>
@@ -76,7 +64,7 @@ export default function ContactPage() {
             </p>
           )}
 
-          <p className={`${AGENCY.name ? 'pt-10' : ''} copy-sm opacity-60`}>Loveletters</p>
+          <p className={`${AGENCY.name ? 'pt-10' : ''} copy-sm opacity-60`}>E-mail</p>
           <p className="pt-1">
             <a href={`mailto:${EMAIL}`} className="link-hover break-all">{EMAIL}</a>
           </p>
@@ -85,16 +73,8 @@ export default function ContactPage() {
           <p className="pt-1">{LOCATION}</p>
 
           <p className="pt-10 copy-sm opacity-60">Local time</p>
-          <BerlinClock className="pt-1" />
+          <LocalClock city="Antwerp" timeZone="Europe/Brussels" className="pt-1" />
         </div>
-      </div>
-
-      {/* Bottom-right disclaimer slot */}
-      <div
-        className="fixed bottom-6 right-5 lg:right-8 z-10 copy-sm blend-difference"
-        style={{ color: 'var(--color-white)' }}
-      >
-        <a href="#disclaimer" className="link-hover">Disclaimer</a>
       </div>
     </main>
   );

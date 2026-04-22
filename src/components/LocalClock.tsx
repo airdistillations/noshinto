@@ -2,7 +2,13 @@
 
 import { useEffect, useState } from 'react';
 
-export default function BerlinClock({ className = '' }: { className?: string }) {
+type Props = {
+  city: string;
+  timeZone: string;
+  className?: string;
+};
+
+export default function LocalClock({ city, timeZone, className = '' }: Props) {
   const [time, setTime] = useState<string>('');
 
   useEffect(() => {
@@ -11,13 +17,13 @@ export default function BerlinClock({ className = '' }: { className?: string }) 
       minute: '2-digit',
       second: '2-digit',
       hour12: false,
-      timeZone: 'Europe/Berlin',
+      timeZone,
     });
     const tick = () => setTime(fmt.format(new Date()));
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [timeZone]);
 
-  return <p className={className}>Berlin, {time || '--:--:--'}</p>;
+  return <p className={className}>{city}, {time || '--:--:--'}</p>;
 }
