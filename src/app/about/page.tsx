@@ -8,19 +8,16 @@ export default function AboutPage() {
           Everybody has the next big &lsquo;idea&rsquo;... Ideas are worthless. Magic happens when you make them come alive in the most efficient way with vigorous impact. It is never good enough, always room for improvement. The creation of B&ocirc;tan Distillery was a dream in so many levels. I designed a non-existent product that exactly fits the needs of the current population, but especially the future generations. My expertise encompasses the lifecycle of a product: from recipe creation to supply chain, from brand identity to brand manifesto, from data analysis to strategic actions. I connect all variables in a vertically aligned integrated business model to assure the desired position of the brand.
         </p>
 
-        <details className="collapsible mt-14 border-t border-current/15">
-          <summary className="flex items-baseline justify-between pt-4">
-            <span>Experience</span>
-            <span aria-hidden className="toggle opacity-60">+</span>
-          </summary>
+        <section className="mt-32">
+          <h2 className="eyebrow uppercase tracking-wider">Experience</h2>
 
-          <div className="pt-6 space-y-3">
-            <details className="collapsible border-t border-current/10">
-              <summary className="flex items-baseline justify-between pt-3">
+          <div className="mt-8 space-y-0">
+            <details className="collapsible border-t border-current/15">
+              <summary className="flex items-baseline justify-between py-5 opacity-60">
                 <span>B&ocirc;tan Distillery: Founder &amp; Chief Marketing Officer</span>
-                <span aria-hidden className="toggle opacity-60">+</span>
+                <span aria-hidden className="toggle">+</span>
               </summary>
-              <div className="pt-4 space-y-6">
+              <div className="pb-6 space-y-6">
                 <p className="copy-sm opacity-60">Botan bv &middot; 2019 &ndash; 2023</p>
 
                 <div className="space-y-2">
@@ -46,12 +43,12 @@ export default function AboutPage() {
               </div>
             </details>
 
-            <details className="collapsible border-t border-current/10">
-              <summary className="flex items-baseline justify-between pt-3">
+            <details className="collapsible border-t border-current/15">
+              <summary className="flex items-baseline justify-between py-5 opacity-60">
                 <span>Other Work Experience</span>
-                <span aria-hidden className="toggle opacity-60">+</span>
+                <span aria-hidden className="toggle">+</span>
               </summary>
-              <div className="pt-4 space-y-4 copy-sm opacity-75">
+              <div className="pb-6 space-y-4 copy-sm opacity-75">
                 <p>Graphic Design &amp; Art Direction at Coming Soon &middot; 2016 &ndash; 2018</p>
                 <div className="space-y-1">
                   <p>For Flavor Festival &middot; 2010 &mdash; 2015</p>
@@ -64,7 +61,7 @@ export default function AboutPage() {
               </div>
             </details>
           </div>
-        </details>
+        </section>
       </div>
     </main>
   );
