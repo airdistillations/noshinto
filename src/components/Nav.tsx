@@ -56,7 +56,7 @@ export default function Nav() {
 
       <header
         className="fixed inset-x-0 top-0 z-20 px-5 py-6 lg:px-8 lg:py-8 blend-difference"
-        style={{ color: 'var(--color-white)', ['viewTransitionName' as string]: 'site-nav' } as React.CSSProperties}
+        style={{ color: 'var(--color-white)' }}
       >
         <div className="flex items-start justify-between gap-6">
           <div className="flex-1 min-w-0">

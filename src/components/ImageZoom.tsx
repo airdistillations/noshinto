@@ -155,12 +155,15 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
         {children}
       </div>
 
-      {/* Unified bottom-center row for every viewport. Named view-transition
-          group keeps this cluster on its own layer above the masonry during
-          reflow animations (otherwise the root snapshot can cover it). */}
+      {/* Unified bottom-center row for every viewport.
+          NOTE: deliberately no view-transition-name here. Naming the cluster
+          made the browser hide it during transitions (paint-suppressed so the
+          snapshot can show through), which killed :hover / cursor on the
+          buttons until the animation finished. Real-DOM z-30 keeps it above
+          page content normally; during a transition the per-image snapshots
+          may briefly overlay it, which is the lesser evil. */}
       <div
         className="fixed inset-x-0 bottom-[20px] lg:bottom-[40px] z-30 flex justify-center items-end gap-5 lg:gap-6 pointer-events-none"
-        style={{ ['viewTransitionName' as string]: 'zoom-cluster' } as React.CSSProperties}
       >
         <div className="pointer-events-auto">
           <GlassButton onClick={zoomIn}  label="Larger images — fewer columns"  symbol="+" float="float-a" disabled={atMax} />

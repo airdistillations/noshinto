@@ -337,13 +337,12 @@ img { display: block; }
   animation-timing-function: cubic-bezier(.22, 1, .36, 1);
 }
 
-/* Keep the floating zoom cluster and the site nav above the animating layers.
-   Without this the per-image view-transition groups (proj-img-*) stack above
-   the root snapshot and hide the logo/nav during a theme transition. */
-::view-transition-group(zoom-cluster),
-::view-transition-group(site-nav) {
-  z-index: 9999;
-}
+/* (Previously bumped z-index of zoom-cluster / site-nav view-transition
+   groups, but assigning view-transition-name to interactive containers
+   makes the browser paint-suppress them mid-animation, which killed
+   :hover and the pointer cursor on the buttons. Removed; we accept the
+   minor visual stacking artifact during theme transitions on project
+   pages in exchange for buttons that stay live throughout.) */
 
 /* Theme switch: the new state reveals from the click point via a
    radial mask with a feathered edge. `--theme-r` is registered with
