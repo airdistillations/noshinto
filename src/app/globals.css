@@ -295,6 +295,20 @@ img { display: block; }
   pointer-events: none;
 }
 
+/* Collapsible sections (About page). Native <details> with a custom
+   toggle glyph; + rotates 45° into × when open. */
+.collapsible > summary {
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+.collapsible > summary::-webkit-details-marker { display: none; }
+.collapsible > summary .toggle {
+  display: inline-block;
+  transition: transform 200ms var(--ease-out-quint);
+}
+.collapsible[open] > summary .toggle { transform: rotate(45deg); }
+
 /* Old wiggle kept for anything still using it */
 @keyframes wiggle-a {
   0%, 100% { transform: rotate(-3deg) translate(0, 0); }
