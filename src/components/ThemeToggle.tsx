@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { asset } from '@/lib/asset';
 
 export default function ThemeToggle() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [mounted, setMounted] = useState(false);
+  const transitioning = useRef(false);
 
   useEffect(() => {
     const current = (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || 'light';
@@ -25,12 +26,16 @@ export default function ThemeToggle() {
       startViewTransition?: (cb: () => void) => { finished: Promise<unknown> };
     };
 
-    if (typeof d.startViewTransition === 'function') {
-      // Radiate the reveal from the logo's position.
+    // Rapid successive clicks bypass the view transition so every tap
+    // registers immediately — the API otherwise drops/queues overlapping
+    // transitions, which felt like unresponsive clicks.
+    if (typeof d.startViewTransition === 'function' && !transitioning.current) {
       const rect = event.currentTarget.getBoundingClientRect();
       document.documentElement.style.setProperty('--theme-x', `${rect.left + rect.width / 2}px`);
       document.documentElement.style.setProperty('--theme-y', `${rect.top + rect.height / 2}px`);
-      d.startViewTransition(apply);
+      transitioning.current = true;
+      const t = d.startViewTransition(apply);
+      t.finished.finally(() => { transitioning.current = false; });
     } else {
       apply();
     }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 
 /**
@@ -29,14 +29,23 @@ function scrollEverythingToTop() {
 
 // Wraps a state update in a View Transition when the browser supports it,
 // so the masonry reflow is tweened automatically (FLIP for every figure
-// with a unique view-transition-name).
-function withTransition(update: () => void) {
-  const d = document as Document & { startViewTransition?: (cb: () => void) => unknown };
-  if (typeof d.startViewTransition === 'function') {
-    d.startViewTransition(() => flushSync(update));
-  } else {
-    update();
-  }
+// with a unique view-transition-name). Rapid taps while a transition is
+// already running skip the animation and apply synchronously, otherwise
+// the API drops/queues overlapping calls and clicks feel ignored.
+function useViewTransitionRunner() {
+  const transitioning = useRef(false);
+  return (update: () => void) => {
+    const d = document as Document & {
+      startViewTransition?: (cb: () => void) => { finished: Promise<unknown> };
+    };
+    if (typeof d.startViewTransition === 'function' && !transitioning.current) {
+      transitioning.current = true;
+      const t = d.startViewTransition(() => flushSync(update));
+      t.finished.finally(() => { transitioning.current = false; });
+    } else {
+      update();
+    }
+  };
 }
 
 type BtnProps = {
@@ -75,9 +84,10 @@ function GlassButton({ onClick, label, symbol, float, disabled }: BtnProps) {
 export default function ImageZoom({ children }: { children: React.ReactNode }) {
   const [idx, setIdx] = useState(0);
   const step = STEPS[idx];
+  const runTransition = useViewTransitionRunner();
 
-  const zoomIn = () => withTransition(() => setIdx((i) => Math.max(0, i - 1)));
-  const zoomOut = () => withTransition(() => setIdx((i) => Math.min(STEPS.length - 1, i + 1)));
+  const zoomIn = () => runTransition(() => setIdx((i) => Math.max(0, i - 1)));
+  const zoomOut = () => runTransition(() => setIdx((i) => Math.min(STEPS.length - 1, i + 1)));
   const atMax = idx === 0;
   const atMin = idx === STEPS.length - 1;
 
