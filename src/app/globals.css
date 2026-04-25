@@ -331,6 +331,17 @@ img { display: block; }
    a shadow DOM slot that gets display:none when closed; that breaks
    the grid-template-rows transition before it can run. */
 
+/* ScrollCounter: subtle slide-up + fade each time the index changes.
+   React remounts the wrapping span via key={index}, which restarts
+   the animation on every tick. */
+@keyframes counter-tick {
+  0%   { opacity: 0; transform: translateY(35%); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.counter-tick {
+  animation: counter-tick 320ms var(--ease-out-quint);
+}
+
 /* Old wiggle kept for anything still using it */
 @keyframes wiggle-a {
   0%, 100% { transform: rotate(-3deg) translate(0, 0); }
