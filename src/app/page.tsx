@@ -18,9 +18,12 @@ export default function HomePage() {
   }
 
   return (
-    <main className="relative isolate">
-      {/* MOBILE: full-bleed snap-scroll stack */}
-      <div className="lg:hidden snap-y snap-mandatory h-svh overflow-auto">
+    <main className="relative">
+      {/* MOBILE: full-bleed snap-scroll stack. isolate here (not on <main>)
+          so the ScrollCounter's z-20 lands in the body's stacking context
+          and renders above Nav's bottom scrim (z-10) — while still
+          containing the blend-difference titles below. */}
+      <div className="lg:hidden snap-y snap-mandatory h-svh overflow-auto isolate">
         {projects.map((p, i) => {
           const firstImage = p.images[0];
           return (
