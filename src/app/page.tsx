@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getAllProjects } from '@/lib/work';
 import { asset } from '@/lib/asset';
 import ScrollCounter from '@/components/ScrollCounter';
+import ActiveProjectTitle from '@/components/ActiveProjectTitle';
 
 export default function HomePage() {
   const projects = getAllProjects();
@@ -69,13 +70,11 @@ export default function HomePage() {
                 data-project-index={i + 1}
                 className="col-span-12 grid grid-cols-12 gap-x-[10px] pb-20 scroll-mt-[50vh]"
               >
-                {/* Cols 2-3: title + description */}
+                {/* Cols 2-3: description + meta. Title moved to the fixed
+                    ActiveProjectTitle overlay aligned with col-4. */}
                 <div className="col-start-2 col-span-2 pt-2">
-                  <Link href={`/work/${p.slug}/`} className="link-hover block">
-                    <h2 className="text-16">{p.title}</h2>
-                  </Link>
                   {p.description && (
-                    <p className="copy-sm whitespace-pre-line pt-2 opacity-80">
+                    <p className="copy-sm whitespace-pre-line opacity-80">
                       {p.description}
                     </p>
                   )}
@@ -116,6 +115,7 @@ export default function HomePage() {
         </div>
       </div>
 
+      <ActiveProjectTitle titles={projects.map((p) => p.title)} />
       <ScrollCounter total={total} />
     </main>
   );
