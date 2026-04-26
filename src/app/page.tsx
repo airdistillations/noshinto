@@ -70,20 +70,8 @@ export default function HomePage() {
                 data-project-index={i + 1}
                 className="col-span-12 grid grid-cols-12 gap-x-[10px] pb-20 scroll-mt-[50vh]"
               >
-                {/* Cols 2-3: description + meta. Title moved to the fixed
-                    ActiveProjectTitle overlay aligned with col-4. */}
-                <div className="col-start-2 col-span-2 pt-2">
-                  {p.description && (
-                    <p className="copy-sm whitespace-pre-line opacity-80">
-                      {p.description}
-                    </p>
-                  )}
-                  <p className="copy-sm pt-2 opacity-50">
-                    {[p.role, p.location, p.year].filter(Boolean).join(' — ')}
-                  </p>
-                </div>
-
-                {/* Cols 4-12: image strip */}
+                {/* Cols 4-12: image strip. Title + description + meta now
+                    live in the fixed ActiveProjectTitle overlay. */}
                 <Link
                   href={`/work/${p.slug}/`}
                   className="col-start-4 col-span-9"
@@ -115,7 +103,15 @@ export default function HomePage() {
         </div>
       </div>
 
-      <ActiveProjectTitle titles={projects.map((p) => p.title)} />
+      <ActiveProjectTitle
+        projects={projects.map((p) => ({
+          title: p.title,
+          description: p.description,
+          role: p.role,
+          location: p.location,
+          year: p.year,
+        }))}
+      />
       <ScrollCounter total={total} />
     </main>
   );

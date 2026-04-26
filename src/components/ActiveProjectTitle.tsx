@@ -2,11 +2,19 @@
 
 import { useEffect, useState } from 'react';
 
-export default function ActiveProjectTitle({ titles }: { titles: string[] }) {
+type ProjectSummary = {
+  title: string;
+  description?: string;
+  role?: string;
+  location?: string;
+  year?: string;
+};
+
+export default function ActiveProjectTitle({ projects }: { projects: ProjectSummary[] }) {
   const [index, setIndex] = useState(1);
 
   useEffect(() => {
-    if (titles.length === 0) return;
+    if (projects.length === 0) return;
     const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-project-index]'));
     if (sections.length === 0) return;
 
@@ -24,9 +32,12 @@ export default function ActiveProjectTitle({ titles }: { titles: string[] }) {
     );
     sections.forEach((s) => io.observe(s));
     return () => io.disconnect();
-  }, [titles.length]);
+  }, [projects.length]);
 
-  const title = titles[index - 1] ?? '';
+  const project = projects[index - 1];
+  if (!project) return null;
+
+  const meta = [project.role, project.location, project.year].filter(Boolean).join(' — ');
 
   return (
     <div
@@ -35,11 +46,22 @@ export default function ActiveProjectTitle({ titles }: { titles: string[] }) {
       style={{ color: 'var(--color-white)' }}
     >
       <div className="grid-layout h-full items-center">
-        <h2 className="col-start-4 col-span-6 text-[3em] leading-[1.05]">
-          <span key={index} className="counter-tick inline-block">
-            {title}
-          </span>
-        </h2>
+        <div className="col-start-4 col-span-6">
+          {/* key={index} forces a remount on every project change so the
+              counter-tick keyframes restart on the whole title + info
+              block in one synchronized motion. */}
+          <div key={index} className="counter-tick">
+            <h2 className="text-[3em] leading-[1.05]">{project.title}</h2>
+            <div className="mt-6 max-w-[44ch]">
+              {project.description && (
+                <p className="copy-sm whitespace-pre-line opacity-80">
+                  {project.description}
+                </p>
+              )}
+              {meta && <p className="copy-sm pt-2 opacity-50">{meta}</p>}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
