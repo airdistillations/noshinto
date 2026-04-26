@@ -86,7 +86,7 @@ export default function ActiveProjectTitle({ projects }: { projects: ProjectSumm
           centred and lines up with the watermark + counter at top-1/2.
           content-center (not items-center) is what actually centres the
           auto-sized row within the full-height grid container. */}
-      <div className="hidden lg:block">
+      <div className="hidden lg:block h-full">
         <div className="grid-layout h-full content-center">
           <div className="col-start-4 col-span-6">
             <div key={`d-${index}`} className="counter-tick relative">
