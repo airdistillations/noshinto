@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 type ProjectSummary = {
   title: string;
@@ -9,6 +9,30 @@ type ProjectSummary = {
   location?: string;
   year?: string | number;
 };
+
+/**
+ * Splits a title into per-word spans, each with the .title-wiggle
+ * animation and a staggered animation-delay so the words drift out
+ * of phase instead of moving in lockstep.
+ */
+function WigglingTitle({ children }: { children: string }) {
+  const words = children.split(' ');
+  return (
+    <>
+      {words.map((word, i) => (
+        <Fragment key={i}>
+          <span
+            className="title-wiggle inline-block"
+            style={{ animationDelay: `${i * -1.3}s` }}
+          >
+            {word}
+          </span>
+          {i < words.length - 1 ? ' ' : ''}
+        </Fragment>
+      ))}
+    </>
+  );
+}
 
 export default function ActiveProjectTitle({ projects }: { projects: ProjectSummary[] }) {
   const [index, setIndex] = useState(1);
@@ -48,27 +72,26 @@ export default function ActiveProjectTitle({ projects }: { projects: ProjectSumm
       className="fixed inset-0 z-20 pointer-events-none blend-difference"
       style={{ color: 'var(--color-white)' }}
     >
-      {/* Mobile: title alone, centred in the viewport. Same key/animation
-          pattern as desktop so it fades up when the active project
-          changes. The in-flow image-overlay title in <main> is removed —
-          this fixed one takes over. */}
+      {/* Mobile: title alone, centred in the viewport. */}
       <div className="lg:hidden h-full flex items-center justify-center px-5">
         <div key={`m-${index}`} className="counter-tick">
-          <h2 className="title-wiggle text-[3em] leading-[1.05] tracking-tight text-center">
-            {project.title}
+          <h2 className="text-[3em] leading-[1.05] tracking-tight text-center">
+            <WigglingTitle>{project.title}</WigglingTitle>
           </h2>
         </div>
       </div>
 
       {/* Desktop: title at col-start-4 with info paragraph hanging below
           via absolute positioning, so the title alone is what gets
-          centred and lines up with the watermark + counter at top-1/2. */}
+          centred and lines up with the watermark + counter at top-1/2.
+          content-center (not items-center) is what actually centres the
+          auto-sized row within the full-height grid container. */}
       <div className="hidden lg:block">
-        <div className="grid-layout h-full items-center">
+        <div className="grid-layout h-full content-center">
           <div className="col-start-4 col-span-6">
             <div key={`d-${index}`} className="counter-tick relative">
-              <h2 className="title-wiggle text-[3em] leading-[1.05]">
-                {project.title}
+              <h2 className="text-[3em] leading-[1.05]">
+                <WigglingTitle>{project.title}</WigglingTitle>
               </h2>
               <div className="absolute top-full left-0 w-full mt-6 max-w-[44ch]">
                 {project.description && (
