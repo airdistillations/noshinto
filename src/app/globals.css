@@ -342,6 +342,23 @@ img { display: block; }
   animation: counter-tick 320ms var(--ease-out-quint);
 }
 
+/* Continuous subtle drift on the active project title — same vibe
+   as the glass buttons (.float-a/b/c) but tuned smaller for text
+   so the rotation isn't legibility-breaking. Applied to a child of
+   the counter-tick wrapper so the per-tick fade-up transform on
+   the parent composes with the wiggle on the child rather than
+   conflicting on the same element. */
+@keyframes title-wiggle {
+  0%   { transform: translate(0, 0)     rotate(0deg); }
+  33%  { transform: translate(-3px, 2px) rotate(-0.5deg); }
+  66%  { transform: translate(2px, -2px) rotate(0.4deg); }
+  100% { transform: translate(0, 0)     rotate(0deg); }
+}
+.title-wiggle {
+  display: inline-block;
+  animation: title-wiggle 7.4s cubic-bezier(.45,.05,.55,.95) infinite;
+}
+
 /* Old wiggle kept for anything still using it */
 @keyframes wiggle-a {
   0%, 100% { transform: rotate(-3deg) translate(0, 0); }
