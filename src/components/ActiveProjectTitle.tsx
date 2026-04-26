@@ -7,7 +7,7 @@ type ProjectSummary = {
   description?: string;
   role?: string;
   location?: string;
-  year?: string;
+  year?: string | number;
 };
 
 export default function ActiveProjectTitle({ projects }: { projects: ProjectSummary[] }) {
@@ -37,7 +37,10 @@ export default function ActiveProjectTitle({ projects }: { projects: ProjectSumm
   const project = projects[index - 1];
   if (!project) return null;
 
-  const meta = [project.role, project.location, project.year].filter(Boolean).join(' — ');
+  const meta = [project.role, project.location, project.year]
+    .filter(Boolean)
+    .map(String)
+    .join(' — ');
 
   return (
     <div
