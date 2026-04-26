@@ -51,7 +51,7 @@ export default function HomePage() {
                   className="absolute inset-0 flex items-center justify-center p-5 blend-difference"
                   style={{ color: 'var(--color-white)' }}
                 >
-                  <h2 className="text-16 tracking-tight">{p.title}</h2>
+                  <h2 className="text-[3em] leading-[1.05] tracking-tight text-center">{p.title}</h2>
                 </div>
               </Link>
             </section>

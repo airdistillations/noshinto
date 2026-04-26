@@ -31,7 +31,7 @@ export default function ScrollCounter({ total }: { total: number }) {
 
   return (
     <div
-      className="pointer-events-none fixed z-20 blend-difference text-16 bottom-6 right-5 lg:bottom-auto lg:top-1/2 lg:right-0 lg:pr-8 lg:-translate-y-1/2 lg:text-[3em] lg:leading-none tabular-nums"
+      className="pointer-events-none fixed z-20 blend-difference text-[3em] leading-none tabular-nums bottom-6 right-5 lg:bottom-auto lg:top-1/2 lg:right-0 lg:pr-8 lg:-translate-y-1/2"
       style={{ color: 'var(--color-white)' }}
       aria-hidden
     >

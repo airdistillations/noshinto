@@ -52,10 +52,14 @@ export default function ActiveProjectTitle({ projects }: { projects: ProjectSumm
         <div className="col-start-4 col-span-6">
           {/* key={index} forces a remount on every project change so the
               counter-tick keyframes restart on the whole title + info
-              block in one synchronized motion. */}
-          <div key={index} className="counter-tick">
+              block in one synchronized motion. The wrapping div is
+              `relative` so the absolutely-positioned info paragraph below
+              hangs off the title without affecting its vertical centre —
+              that keeps the title aligned with the Noshinto watermark
+              and ScrollCounter, both of which sit at viewport top-1/2. */}
+          <div key={index} className="counter-tick relative">
             <h2 className="text-[3em] leading-[1.05]">{project.title}</h2>
-            <div className="mt-6 max-w-[44ch]">
+            <div className="absolute top-full left-0 w-full mt-6 max-w-[44ch]">
               {project.description && (
                 <p className="copy-sm whitespace-pre-line opacity-80">
                   {project.description}
