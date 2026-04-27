@@ -1,0 +1,13 @@
+{
+  "bio": "Replace this with a short bio. Two or three lines is plenty. What you do, who you work with, what you're drawn to.\n\nA second paragraph for approach, recent work, or a quiet note about collaboration.",
+  "email": "hi@noshinto.com",
+  "location": "Antwerp, Belgium",
+  "city": "Antwerp",
+  "timezone": "Europe/Brussels",
+  "socials": [
+    {
+      "label": "Instagram",
+      "href": "https://www.instagram.com/noshinto/"
+    }
+  ]
+}

@@ -12,6 +12,8 @@ import {
 } from '@/lib/github-client';
 import { resizeAndEncode, blobToObjectURL, slugify } from '@/lib/image-client';
 import { parse, serialize, type ProjectDoc, type ProjectImage } from '@/lib/yaml-client';
+import AboutEditor from './AboutEditor';
+import ContactEditor from './ContactEditor';
 
 const OWNER = process.env.NEXT_PUBLIC_REPO_OWNER || '';
 const REPO = process.env.NEXT_PUBLIC_REPO_NAME || '';
@@ -22,7 +24,10 @@ const PAT_KEY = 'noshinto_admin_pat';
 type View =
   | { kind: 'setup' }
   | { kind: 'list' }
-  | { kind: 'edit'; slug: string | null };
+  | { kind: 'edit'; slug: string | null }
+  | { kind: 'pages' }
+  | { kind: 'edit-about' }
+  | { kind: 'edit-contact' };
 
 type ProjectSummary = {
   slug: string;
@@ -68,8 +73,36 @@ export default function AdminApp() {
     setView({ kind: 'setup' });
   }
 
+  // Top-level tabs are visible whenever a token is set (i.e. not in setup).
+  const showTabs = view.kind !== 'setup';
+  const activeTab: 'projects' | 'pages' =
+    view.kind === 'pages' || view.kind === 'edit-about' || view.kind === 'edit-contact'
+      ? 'pages'
+      : 'projects';
+
   return (
-    <Shell pat={pat} onSignOut={signOut}>
+    <Shell
+      pat={pat}
+      onSignOut={signOut}
+      tabs={
+        showTabs ? (
+          <nav className="flex gap-6 copy-sm">
+            <button
+              onClick={() => setView({ kind: 'list' })}
+              className={`link-hover ${activeTab === 'projects' ? '' : 'opacity-50'}`}
+            >
+              Projects
+            </button>
+            <button
+              onClick={() => setView({ kind: 'pages' })}
+              className={`link-hover ${activeTab === 'pages' ? '' : 'opacity-50'}`}
+            >
+              Pages
+            </button>
+          </nav>
+        ) : null
+      }
+    >
       {error && <p className="copy-sm text-[color:var(--color-preview-red)] pb-6">{error}</p>}
       {view.kind === 'setup' && (
         <Setup
@@ -100,15 +133,47 @@ export default function AdminApp() {
           onError={setError}
         />
       )}
+      {view.kind === 'pages' && (
+        <PagesList
+          onEditAbout={() => setView({ kind: 'edit-about' })}
+          onEditContact={() => setView({ kind: 'edit-contact' })}
+        />
+      )}
+      {view.kind === 'edit-about' && (
+        <AboutEditor
+          cfg={cfg}
+          pat={pat}
+          onDone={() => { setError(''); setView({ kind: 'pages' }); }}
+          onError={setError}
+        />
+      )}
+      {view.kind === 'edit-contact' && (
+        <ContactEditor
+          cfg={cfg}
+          pat={pat}
+          onDone={() => { setError(''); setView({ kind: 'pages' }); }}
+          onError={setError}
+        />
+      )}
     </Shell>
   );
 }
 
-function Shell({ children, pat, onSignOut }: { children: React.ReactNode; pat?: string; onSignOut?: () => void }) {
+function Shell({
+  children,
+  pat,
+  onSignOut,
+  tabs,
+}: {
+  children: React.ReactNode;
+  pat?: string;
+  onSignOut?: () => void;
+  tabs?: React.ReactNode;
+}) {
   return (
     <main className="min-h-screen pt-24 pb-24 px-5 lg:px-8">
       <div className="max-w-[900px] mx-auto">
-        <header className="flex items-baseline justify-between pb-10">
+        <header className="flex items-baseline justify-between pb-4">
           <h1 className="text-16">Admin</h1>
           {pat && onSignOut && (
             <button onClick={onSignOut} className="copy-sm link-hover underline underline-offset-4">
@@ -116,9 +181,46 @@ function Shell({ children, pat, onSignOut }: { children: React.ReactNode; pat?: 
             </button>
           )}
         </header>
+        {tabs && <div className="pb-10 border-b border-current/15 mb-10">{tabs}</div>}
         {children}
       </div>
     </main>
+  );
+}
+
+/* ---------------- Pages list ---------------- */
+
+function PagesList({
+  onEditAbout,
+  onEditContact,
+}: {
+  onEditAbout: () => void;
+  onEditContact: () => void;
+}) {
+  return (
+    <div>
+      <p className="copy-sm opacity-60 pb-6">Static pages with editable content.</p>
+      <ul className="space-y-3">
+        <li className="flex items-center gap-4 border border-current/15 p-4">
+          <div className="flex-1 min-w-0">
+            <p className="text-16">About</p>
+            <p className="copy-sm opacity-50">/about/ · intro paragraph + experience entries</p>
+          </div>
+          <button onClick={onEditAbout} className="copy-sm link-hover underline underline-offset-4">
+            Edit
+          </button>
+        </li>
+        <li className="flex items-center gap-4 border border-current/15 p-4">
+          <div className="flex-1 min-w-0">
+            <p className="text-16">Contact</p>
+            <p className="copy-sm opacity-50">/contact/ · bio, e-mail, location, clock, socials</p>
+          </div>
+          <button onClick={onEditContact} className="copy-sm link-hover underline underline-offset-4">
+            Edit
+          </button>
+        </li>
+      </ul>
+    </div>
   );
 }
 
