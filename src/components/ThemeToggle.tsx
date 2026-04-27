@@ -29,7 +29,7 @@ export default function ThemeToggle() {
       aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
       className="inline-flex items-center justify-center w-[40px] h-[40px]"
     >
-      <span aria-hidden="true" className="inline-block h-full w-full">
+      <span aria-hidden="true" className="spin-slow inline-block h-full w-full">
         <img
           src={asset('/logo.svg')}
           alt=""
