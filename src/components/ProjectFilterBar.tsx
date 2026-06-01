@@ -1,10 +1,15 @@
 'use client';
 
+import { useState } from 'react';
+
 /**
- * Homepage filter strip. Renders one clickable pill per role tag plus an
- * "All" reset. OR semantics: a project matches if it has any active tag.
- * Sits fixed under the nav; blend-difference keeps it legible over both
- * the solid desktop background and the mobile hero images.
+ * Homepage filter strip. OR semantics: a project matches if it has any
+ * active tag.
+ *
+ * Desktop: an inline wrapping row of pills, parked top-left (where the nav
+ * used to be).
+ * Mobile / iPad: the pills are packed behind a circular button the same
+ * size as the rotating logo; tapping it reveals all the pills.
  */
 export default function ProjectFilterBar({
   tags,
@@ -17,33 +22,70 @@ export default function ProjectFilterBar({
   onToggle: (tag: string) => void;
   onClear: () => void;
 }) {
+  const [open, setOpen] = useState(false);
   if (tags.length === 0) return null;
 
-  return (
-    <div className="fixed z-30 top-[68px] lg:top-[92px] left-0 right-0 px-5 lg:px-8 pointer-events-none">
-      <div
-        className="flex flex-nowrap lg:flex-wrap gap-2 overflow-x-auto no-scrollbar pointer-events-auto blend-difference"
-        style={{ color: 'var(--color-white)' }}
+  const pills = (
+    <>
+      <button
+        type="button"
+        onClick={onClear}
+        data-active={active.length === 0}
+        className="tag-pill tag-pill--btn shrink-0"
       >
+        All
+      </button>
+      {tags.map((tag) => (
         <button
+          key={tag}
           type="button"
-          onClick={onClear}
-          data-active={active.length === 0}
+          onClick={() => onToggle(tag)}
+          data-active={active.includes(tag)}
           className="tag-pill tag-pill--btn shrink-0"
         >
-          All
+          {tag}
         </button>
-        {tags.map((tag) => (
-          <button
-            key={tag}
-            type="button"
-            onClick={() => onToggle(tag)}
-            data-active={active.includes(tag)}
-            className="tag-pill tag-pill--btn shrink-0"
-          >
-            {tag}
-          </button>
-        ))}
+      ))}
+    </>
+  );
+
+  return (
+    <div
+      className="fixed z-30 top-6 left-5 lg:top-8 lg:left-8 pointer-events-none blend-difference"
+      style={{ color: 'var(--color-white)' }}
+    >
+      {/* Desktop / large: inline wrapping pill row. */}
+      <div className="hidden lg:flex flex-wrap gap-2 max-w-[42ch] pointer-events-auto">
+        {pills}
+      </div>
+
+      {/* Mobile / iPad: circular toggle + expandable pill stack. */}
+      <div className="lg:hidden pointer-events-auto">
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+          aria-label={open ? 'Hide filters' : 'Filter projects'}
+          data-active={active.length > 0}
+          className="filter-toggle w-[40px] h-[40px] rounded-full border border-current flex items-center justify-center"
+        >
+          {/* Funnel glyph */}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <path
+              d="M3 5h18l-7 8v6l-4 2v-8L3 5z"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
+
+        {open && (
+          <div className="mt-3 flex flex-col items-start gap-2 max-h-[60vh] overflow-y-auto no-scrollbar">
+            {pills}
+          </div>
+        )}
       </div>
     </div>
   );

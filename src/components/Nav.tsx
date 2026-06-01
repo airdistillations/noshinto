@@ -58,32 +58,32 @@ export default function Nav() {
         className="fixed inset-x-0 top-0 z-20 px-5 py-6 lg:px-8 lg:py-8 blend-difference"
         style={{ color: 'var(--color-white)' }}
       >
-        <div className="flex items-start justify-between gap-6">
-          <div className="flex-1 min-w-0">
-            <nav aria-label="Primary" className="text-16 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              {links.map((l, i) => {
-                const active = isActive(l.href);
-                return (
-                  <span key={l.href} className="inline-flex items-baseline gap-x-3">
-                    <Link
-                      href={l.href}
-                      onClick={(e) => onNavClick(e, l.href)}
-                      className="link-hover"
-                      style={{ opacity: active ? 0.4 : 1 }}
-                      aria-current={active ? 'page' : undefined}
-                    >
-                      {l.label}
-                    </Link>
-                    {i < links.length - 1 && (
-                      <span aria-hidden className="opacity-60 select-none">&mdash;</span>
-                    )}
-                  </span>
-                );
-              })}
-            </nav>
-          </div>
+        {/* Nav links sit on the right, next to the rotating logo. The
+            top-left corner is left free for the homepage filter strip. */}
+        <div className="flex items-center justify-end gap-4 lg:gap-5">
+          <nav aria-label="Primary" className="text-16 flex flex-wrap items-baseline justify-end gap-x-3 gap-y-1">
+            {links.map((l, i) => {
+              const active = isActive(l.href);
+              return (
+                <span key={l.href} className="inline-flex items-baseline gap-x-3">
+                  <Link
+                    href={l.href}
+                    onClick={(e) => onNavClick(e, l.href)}
+                    className="link-hover"
+                    style={{ opacity: active ? 0.4 : 1 }}
+                    aria-current={active ? 'page' : undefined}
+                  >
+                    {l.label}
+                  </Link>
+                  {i < links.length - 1 && (
+                    <span aria-hidden className="opacity-60 select-none">&mdash;</span>
+                  )}
+                </span>
+              );
+            })}
+          </nav>
 
-          <div className="flex items-center gap-4 shrink-0">
+          <div className="shrink-0">
             <ThemeToggle />
           </div>
         </div>

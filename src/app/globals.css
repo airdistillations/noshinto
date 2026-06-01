@@ -181,6 +181,16 @@ img { display: block; }
     background-color: color-mix(in oklab, currentColor 22%, transparent);
   }
 
+  /* Circular filter toggle (mobile/iPad). Mirrors the active fill of the
+     pills so it reads as "selected" when any filter is on. */
+  .filter-toggle {
+    cursor: pointer;
+    transition: background-color 200ms var(--ease-out-quint), opacity 200ms var(--ease-out-quint);
+  }
+  .filter-toggle[data-active='true'] {
+    background-color: color-mix(in oklab, currentColor 22%, transparent);
+  }
+
   /* Horizontal scroll container without a visible scrollbar (mobile filter). */
   .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
   .no-scrollbar::-webkit-scrollbar { display: none; }

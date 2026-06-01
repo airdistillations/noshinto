@@ -74,12 +74,13 @@ export default function ActiveProjectTitle({ projects }: { projects: ProjectSumm
       className="fixed inset-0 z-20 pointer-events-none blend-difference"
       style={{ color: 'var(--color-white)' }}
     >
-      {/* Mobile: title alone, centred in the viewport. */}
+      {/* Mobile: title centred, with the project's tag pills below it. */}
       <div className="lg:hidden h-full flex items-center justify-center px-5">
-        <div key={`m-${index}`} className="counter-tick">
+        <div key={`m-${index}`} className="counter-tick flex flex-col items-center gap-5">
           <h2 className="text-[3em] leading-[1.05] tracking-tight text-center">
             <WigglingTitle>{project.title}</WigglingTitle>
           </h2>
+          <TagPills value={project.role} className="justify-center" />
         </div>
       </div>
 
