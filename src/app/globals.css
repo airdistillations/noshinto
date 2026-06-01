@@ -153,6 +153,19 @@ img { display: block; }
     margin: 0 0 10px 0;
   }
   .masonry-flow > *:last-child { margin-bottom: 0; }
+
+  /* Tag pills (project role tags). Outlined / stroke style; uses
+     currentColor so it inverts correctly under blend-difference. */
+  .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 1.2rem;
+    line-height: 1.5rem;
+    padding: 0.3rem 0.9rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
 }
 
 /* ---------- Utilities ---------- */

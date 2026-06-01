@@ -1,6 +1,7 @@
 'use client';
 
 import { Fragment, useEffect, useState } from 'react';
+import TagPills from './TagPills';
 
 type ProjectSummary = {
   title: string;
@@ -61,7 +62,8 @@ export default function ActiveProjectTitle({ projects }: { projects: ProjectSumm
   const project = projects[index - 1];
   if (!project) return null;
 
-  const meta = [project.role, project.location, project.year]
+  // Location + year stay as a plain text line; role is broken into pills.
+  const meta = [project.location, project.year]
     .filter(Boolean)
     .map(String)
     .join(' — ');
@@ -99,6 +101,7 @@ export default function ActiveProjectTitle({ projects }: { projects: ProjectSumm
                     {project.description}
                   </p>
                 )}
+                <TagPills value={project.role} className="pt-3" />
                 {meta && <p className="copy-sm pt-2 opacity-50">{meta}</p>}
               </div>
             </div>

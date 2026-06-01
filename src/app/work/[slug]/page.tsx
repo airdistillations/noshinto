@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getAllProjects, getAllSlugs, getProject, type Project } from '@/lib/work';
 import { asset } from '@/lib/asset';
 import ImageZoom from '@/components/ImageZoom';
+import TagPills from '@/components/TagPills';
 
 export function generateStaticParams() {
   return getAllSlugs().map((slug) => ({ slug }));
@@ -29,13 +30,11 @@ function ProjectInfo({ project }: { project: Project }) {
         {project.year && (
           <div className="flex gap-2"><dt>Year</dt><dd>{project.year}</dd></div>
         )}
-        {project.role && (
-          <div className="flex gap-2"><dt>Role</dt><dd>{project.role}</dd></div>
-        )}
         {project.location && (
           <div className="flex gap-2"><dt>Location</dt><dd>{project.location}</dd></div>
         )}
       </dl>
+      {project.role && <TagPills value={project.role} className="pt-4" />}
       <p className="pt-10 copy-sm">
         <Link href="/" className="link-hover">← Back to work</Link>
       </p>
