@@ -28,8 +28,14 @@ jobs:
       - name: Derive base path
         id: base
         run: |
+          # A custom domain (public/CNAME present) serves from the root,
+          # so the basePath must be empty. Likewise for a user/org
+          # *.github.io repo. Otherwise the project lives under
+          # /<repo-name>/ on github.io and needs that prefix.
           REPO_NAME="${GITHUB_REPOSITORY##*/}"
-          if [ "${REPO_NAME}" = "${GITHUB_REPOSITORY_OWNER}.github.io" ]; then
+          if [ -f public/CNAME ]; then
+            echo "base=" >> "$GITHUB_OUTPUT"
+          elif [ "${REPO_NAME}" = "${GITHUB_REPOSITORY_OWNER}.github.io" ]; then
             echo "base=" >> "$GITHUB_OUTPUT"
           else
             echo "base=/${REPO_NAME}" >> "$GITHUB_OUTPUT"
