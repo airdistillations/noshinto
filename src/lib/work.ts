@@ -12,6 +12,8 @@ export type Project = {
   title: string;
   year?: string | number;
   role?: string;
+  /** `role` split on commas — the filterable tag list. */
+  tags: string[];
   location?: string;
   description?: string;
   cover: string;
@@ -19,6 +21,14 @@ export type Project = {
   order: number;
   body: string;
 };
+
+/** Parse a comma-separated role string into trimmed, non-empty tags. */
+export function parseTags(role?: string): string[] {
+  return (role || '')
+    .split(',')
+    .map((t) => t.trim())
+    .filter(Boolean);
+}
 
 const CONTENT_DIR = path.join(process.cwd(), 'public', 'work');
 const IMAGE_EXT = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif', '.gif', '.svg']);
@@ -83,11 +93,14 @@ export function getProject(slug: string): Project {
     ? publicImagePath(slug, explicitCover)
     : images[0]?.src || '';
 
+  const role = data.role as string | undefined;
+
   return {
     slug,
     title,
     year: data.year as string | number | undefined,
-    role: data.role as string | undefined,
+    role,
+    tags: parseTags(role),
     location: data.location as string | undefined,
     description: data.description as string | undefined,
     cover,
@@ -95,6 +108,13 @@ export function getProject(slug: string): Project {
     order: typeof data.order === 'number' ? data.order : 999,
     body: content.trim(),
   };
+}
+
+/** Unique, alphabetically-sorted set of every role tag across all projects. */
+export function getAllRoleTags(): string[] {
+  const set = new Set<string>();
+  for (const p of getAllProjects()) p.tags.forEach((t) => set.add(t));
+  return [...set].sort((a, b) => a.localeCompare(b));
 }
 
 export function getAllSlugs(): string[] {

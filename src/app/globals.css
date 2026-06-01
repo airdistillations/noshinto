@@ -166,6 +166,24 @@ img { display: block; }
     border-radius: 999px;
     white-space: nowrap;
   }
+  /* Interactive variant used in the homepage filter bar. */
+  .tag-pill--btn {
+    cursor: pointer;
+    transition: background-color 200ms var(--ease-out-quint), opacity 200ms var(--ease-out-quint);
+    opacity: 0.65;
+  }
+  .tag-pill--btn:hover { opacity: 1; }
+  /* Active = selected filter: subtle currentColor fill + full opacity.
+     A translucent fill (not solid) keeps the label readable and behaves
+     predictably under mix-blend-difference. */
+  .tag-pill--btn[data-active='true'] {
+    opacity: 1;
+    background-color: color-mix(in oklab, currentColor 22%, transparent);
+  }
+
+  /* Horizontal scroll container without a visible scrollbar (mobile filter). */
+  .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
 }
 
 /* ---------- Utilities ---------- */
