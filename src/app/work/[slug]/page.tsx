@@ -62,9 +62,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
   return (
     <main className="grid-layout pt-[50vh] pb-24">
-      {/* DESKTOP: project info pinned to the top-left corner. */}
+      {/* DESKTOP: project info pinned to the top-left corner. top-8
+          matches the header's lg:py-8 so this block sits on the same
+          baseline as the rotating logo in the top-right. */}
       <aside
-        className="hidden lg:block fixed top-24 left-0 z-10 pl-8 pr-4 max-w-[280px] text-16 blend-difference"
+        className="hidden lg:block fixed top-8 left-0 z-10 pl-8 pr-4 max-w-[280px] text-16 blend-difference"
         style={{ color: 'var(--color-white)' }}
       >
         <h1 className="text-16">{project.title}</h1>
