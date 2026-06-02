@@ -63,14 +63,16 @@ export default function MobileMenu() {
             data-active={!!(filter && filter.active.length > 0)}
             className="filter-toggle w-[40px] h-[40px] rounded-full flex items-center justify-center shrink-0"
           >
-            {/* Menu glyph — dot constellation, inherits theme colour. */}
+            {/* Menu glyph — dot constellation, inherits theme colour.
+                Slow infinite spin via .spin-slow keeps it gently rotating. */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 240.9 240.9"
               fill="currentColor"
-              width="40"
-              height="40"
+              width="35"
+              height="35"
               aria-hidden
+              className="spin-slow"
             >
               <circle cx="119.9" cy="120.5" r="16" />
               <circle cx="162.1" cy="120.5" r="13.4" />
