@@ -3,7 +3,7 @@ title: "Rush Rush Coffee Roasters"
 year: 2020
 role: "Videography, Web development"
 location: "Antwerp"
-order: 3
+order: 5
 description: |
   Antwerp's finest coffee roastery
 cover: 01.svg
