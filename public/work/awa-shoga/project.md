@@ -1,7 +1,7 @@
 ---
 title: "Awa Shoga"
 year: 2026
-role: "Product Design"
+role: "Product Design, Recipe Creation"
 location: "Antwerp"
 order: 2
 description: |
