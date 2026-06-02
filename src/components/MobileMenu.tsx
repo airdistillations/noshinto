@@ -61,15 +61,15 @@ export default function MobileMenu() {
             aria-expanded={open}
             aria-label={open ? 'Hide menu' : 'Open menu'}
             data-active={!!(filter && filter.active.length > 0)}
-            className="filter-toggle w-[40px] h-[40px] rounded-full border border-current flex items-center justify-center shrink-0"
+            className="filter-toggle w-[40px] h-[40px] rounded-full flex items-center justify-center shrink-0"
           >
             {/* Menu glyph — dot constellation, inherits theme colour. */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 240.9 240.9"
               fill="currentColor"
-              width="22"
-              height="22"
+              width="40"
+              height="40"
               aria-hidden
             >
               <circle cx="119.9" cy="120.5" r="16" />
