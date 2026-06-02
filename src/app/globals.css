@@ -159,9 +159,9 @@ img { display: block; }
   .tag-pill {
     display: inline-flex;
     align-items: center;
-    font-size: 1.2rem;
-    line-height: 1.5rem;
-    padding: 0.3rem 0.9rem;
+    font-size: 1rem;
+    line-height: 1.3rem;
+    padding: 0.25rem 0.8rem;
     border: 1px solid currentColor;
     border-radius: 999px;
     white-space: nowrap;

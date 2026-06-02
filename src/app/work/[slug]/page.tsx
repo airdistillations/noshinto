@@ -34,7 +34,9 @@ function ProjectInfo({ project }: { project: Project }) {
           <div className="flex gap-2"><dt>Location</dt><dd>{project.location}</dd></div>
         )}
       </dl>
-      {project.role && <TagPills value={project.role} className="pt-4" />}
+      {project.role && (
+        <TagPills value={project.role} className="pt-4 pb-2 lg:pt-8 lg:pb-4" />
+      )}
       <p className="pt-10 copy-sm">
         <Link href="/" className="link-hover">← Back to work</Link>
       </p>

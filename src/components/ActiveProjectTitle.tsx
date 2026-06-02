@@ -102,8 +102,11 @@ export default function ActiveProjectTitle({ projects }: { projects: ProjectSumm
                     {project.description}
                   </p>
                 )}
-                <TagPills value={project.role} className="pt-3" />
-                {meta && <p className="copy-sm pt-2 opacity-50">{meta}</p>}
+                {/* Desktop: extra breathing room above (pt-6) and below
+                    (the meta below gets pt-5) so the smaller pills sit in
+                    their own zone instead of hugging the description. */}
+                <TagPills value={project.role} className="pt-6" />
+                {meta && <p className="copy-sm pt-5 opacity-50">{meta}</p>}
               </div>
             </div>
           </div>
