@@ -181,6 +181,17 @@ img { display: block; }
     background-color: color-mix(in oklab, currentColor 22%, transparent);
   }
 
+  /* Mobile / iPad: bump the interactive pill size so it's easier to
+     tap. The decorative .tag-pill (without --btn) under project
+     titles keeps the smaller default size. */
+  @media (max-width: 63.99rem) {
+    .tag-pill--btn {
+      font-size: 1.4rem;
+      line-height: 1.7rem;
+      padding: 0.5rem 1.1rem;
+    }
+  }
+
   /* Circular filter toggle (mobile/iPad). Mirrors the active fill of the
      pills so it reads as "selected" when any filter is on. */
   .filter-toggle {
@@ -407,6 +418,20 @@ img { display: block; }
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
+
+/* Mobile menu open animation: nav links slide-right out of the
+   filter button; pills cascade downward out of it. Each child is
+   given a per-item animation-delay inline so they stagger. */
+@keyframes menu-out-right {
+  0%   { opacity: 0; transform: translateX(-16px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes menu-out-down {
+  0%   { opacity: 0; transform: translateY(-12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.menu-out-right { animation: menu-out-right 320ms var(--ease-out-quint) both; }
+.menu-out-down  { animation: menu-out-down  340ms var(--ease-out-quint) both; }
 .spin-slow {
   animation: spin-slow 32s linear infinite;
 }

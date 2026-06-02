@@ -69,7 +69,11 @@ export default function MobileMenu() {
               {NAV_LINKS.map((l, i) => {
                 const linkActive = isActive(l.href);
                 return (
-                  <span key={l.href} className="inline-flex items-baseline gap-x-3">
+                  <span
+                    key={l.href}
+                    className="menu-out-right inline-flex items-baseline gap-x-3"
+                    style={{ animationDelay: `${i * 60}ms` }}
+                  >
                     <Link
                       href={l.href}
                       onClick={() => setOpen(false)}
@@ -94,17 +98,19 @@ export default function MobileMenu() {
               type="button"
               onClick={filter.clear}
               data-active={filter.active.length === 0}
-              className="tag-pill tag-pill--btn shrink-0"
+              className="tag-pill tag-pill--btn menu-out-down shrink-0"
+              style={{ animationDelay: '0ms' }}
             >
               All
             </button>
-            {filter.tags.map((tag) => (
+            {filter.tags.map((tag, i) => (
               <button
                 key={tag}
                 type="button"
                 onClick={() => filter.toggle(tag)}
                 data-active={filter.active.includes(tag)}
-                className="tag-pill tag-pill--btn shrink-0"
+                className="tag-pill tag-pill--btn menu-out-down shrink-0"
+                style={{ animationDelay: `${(i + 1) * 50}ms` }}
               >
                 {tag}
               </button>
