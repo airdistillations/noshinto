@@ -1,7 +1,7 @@
 ---
 title: "Marrakech"
 location: "Marrakech"
-order: 10
+order: 3
 description: |
   Quick visit to Marrakech
 cover: marrakech086-small.jpg
