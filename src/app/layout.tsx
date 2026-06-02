@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import Nav from '@/components/Nav';
+import MobileMenu from '@/components/MobileMenu';
 import ThemeBoot from '@/components/ThemeBoot';
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen">
         <ThemeBoot />
         <Nav />
+        <MobileMenu />
         {children}
 
         {/* Reusable SVG filters: liquid-glass dispersion/refraction for .glass-btn */}

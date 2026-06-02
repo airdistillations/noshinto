@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { asset } from '@/lib/asset';
 import ScrollCounter from './ScrollCounter';
 import ActiveProjectTitle from './ActiveProjectTitle';
@@ -36,11 +36,14 @@ export default function HomeGallery({
     return projects.filter((p) => activeTags.some((t) => p.tags.includes(t)));
   }, [projects, activeTags]);
 
-  function toggle(tag: string) {
+  // Stable callbacks so the filterStore subscription in ProjectFilterBar
+  // doesn't re-register on every parent render.
+  const toggle = useCallback((tag: string) => {
     setActiveTags((cur) =>
       cur.includes(tag) ? cur.filter((t) => t !== tag) : [...cur, tag],
     );
-  }
+  }, []);
+  const clearTags = useCallback(() => setActiveTags([]), []);
 
   // Changing this remounts the observer-driven overlays so they re-scan the
   // newly-rendered set of [data-project-index] sections from scratch.
@@ -53,7 +56,7 @@ export default function HomeGallery({
         tags={allTags}
         active={activeTags}
         onToggle={toggle}
-        onClear={() => setActiveTags([])}
+        onClear={clearTags}
       />
 
       {/* MOBILE: full-bleed snap-scroll stack. */}
