@@ -1,5 +1,7 @@
 ---
 title: "Marrakech"
+year: 2025
+role: "Photography"
 location: "Marrakech"
 order: 3
 description: |
