@@ -54,7 +54,7 @@ export default function MobileMenu() {
         {/* Button + nav links keep blend-difference for auto-invert.
             The pill stack below sits OUTSIDE this wrapper so pills
             render in plain white on any background. */}
-        <div className="flex items-center gap-7 blend-difference">
+        <div className="flex items-center gap-14 blend-difference">
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
@@ -78,7 +78,7 @@ export default function MobileMenu() {
           {mounted && (
             <nav
               aria-label="Primary"
-              className="text-[1.3rem] flex flex-wrap items-baseline gap-x-6 gap-y-1"
+              className="text-[1.3rem] flex flex-wrap items-baseline gap-x-12 gap-y-1"
             >
               {NAV_LINKS.map((l, i) => {
                 const linkActive = isActive(l.href);
