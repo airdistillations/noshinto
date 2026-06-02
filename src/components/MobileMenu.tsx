@@ -33,11 +33,14 @@ export default function MobileMenu() {
 
   return (
     <div
-      className="lg:hidden fixed z-30 top-6 left-5 pointer-events-none blend-difference"
+      className="lg:hidden fixed z-30 top-6 left-5 pointer-events-none"
       style={{ color: 'var(--color-white)' }}
     >
       <div className="pointer-events-auto">
-        <div className="flex items-center gap-4">
+        {/* Button + nav links keep blend-difference for auto-invert.
+            The pill stack below sits OUTSIDE this wrapper so pills
+            render in plain white on any background. */}
+        <div className="flex items-center gap-4 blend-difference">
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
