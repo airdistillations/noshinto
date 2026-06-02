@@ -33,7 +33,7 @@ export default function MobileMenu() {
 
   return (
     <div
-      className="lg:hidden fixed z-30 top-6 left-5 pointer-events-none blend-difference"
+      className="lg:hidden fixed z-30 top-6 left-5 pointer-events-none"
       style={{ color: 'var(--color-white)' }}
     >
       <div className="pointer-events-auto">

@@ -154,11 +154,9 @@ img { display: block; }
   }
   .masonry-flow > *:last-child { margin-bottom: 0; }
 
-  /* Tag pills (project role tags). Outlined / stroke style; uses
-     currentColor so it inverts correctly under blend-difference.
-     A subtle backdrop blur + brightness drop ensures the area
-     beneath each pill is dark enough for mix-blend-mode: difference
-     to produce visible text on any background image. */
+  /* Tag pills (project role tags). Outlined / stroke style; the
+     backdrop-filter darkens what's behind so white text (set by the
+     parent UI's color) stays readable on any background image. */
   .tag-pill {
     display: inline-flex;
     align-items: center;
@@ -168,8 +166,8 @@ img { display: block; }
     border: 1px solid currentColor;
     border-radius: 999px;
     white-space: nowrap;
-    -webkit-backdrop-filter: blur(10px) brightness(0.6) saturate(0.85);
-    backdrop-filter: blur(10px) brightness(0.6) saturate(0.85);
+    -webkit-backdrop-filter: blur(12px) brightness(0.45) saturate(0.85);
+    backdrop-filter: blur(12px) brightness(0.45) saturate(0.85);
   }
   /* Interactive variant used in the homepage filter bar. */
   .tag-pill--btn {
@@ -193,8 +191,8 @@ img { display: block; }
   .filter-toggle {
     cursor: pointer;
     transition: background-color 200ms var(--ease-out-quint), opacity 200ms var(--ease-out-quint);
-    -webkit-backdrop-filter: blur(10px) brightness(0.6) saturate(0.85);
-    backdrop-filter: blur(10px) brightness(0.6) saturate(0.85);
+    -webkit-backdrop-filter: blur(12px) brightness(0.45) saturate(0.85);
+    backdrop-filter: blur(12px) brightness(0.45) saturate(0.85);
   }
   .filter-toggle[data-active='true'] {
     background-color: color-mix(in oklab, currentColor 22%, transparent);
@@ -204,8 +202,8 @@ img { display: block; }
      "work — about — contact" row gets the same readable backdrop
      treatment as .tag-pill / .filter-toggle. */
   .menu-chip {
-    -webkit-backdrop-filter: blur(10px) brightness(0.6) saturate(0.85);
-    backdrop-filter: blur(10px) brightness(0.6) saturate(0.85);
+    -webkit-backdrop-filter: blur(12px) brightness(0.45) saturate(0.85);
+    backdrop-filter: blur(12px) brightness(0.45) saturate(0.85);
     border-radius: 999px;
     padding: 0.35rem 0.9rem;
   }
