@@ -154,9 +154,8 @@ img { display: block; }
   }
   .masonry-flow > *:last-child { margin-bottom: 0; }
 
-  /* Tag pills (project role tags). Outlined / stroke style; the
-     backdrop-filter darkens what's behind so white text (set by the
-     parent UI's color) stays readable on any background image. */
+  /* Tag pills (project role tags). Outlined / stroke style; uses
+     currentColor so it inverts correctly under blend-difference. */
   .tag-pill {
     display: inline-flex;
     align-items: center;
@@ -166,8 +165,6 @@ img { display: block; }
     border: 1px solid currentColor;
     border-radius: 999px;
     white-space: nowrap;
-    -webkit-backdrop-filter: blur(12px) brightness(0.45) saturate(0.85);
-    backdrop-filter: blur(12px) brightness(0.45) saturate(0.85);
   }
   /* Interactive variant used in the homepage filter bar. */
   .tag-pill--btn {
@@ -185,27 +182,13 @@ img { display: block; }
   }
 
   /* Circular filter toggle (mobile/iPad). Mirrors the active fill of the
-     pills so it reads as "selected" when any filter is on. The same
-     backdrop-filter trick as .tag-pill keeps the border and glyph
-     legible on any background under mix-blend-mode: difference. */
+     pills so it reads as "selected" when any filter is on. */
   .filter-toggle {
     cursor: pointer;
     transition: background-color 200ms var(--ease-out-quint), opacity 200ms var(--ease-out-quint);
-    -webkit-backdrop-filter: blur(12px) brightness(0.45) saturate(0.85);
-    backdrop-filter: blur(12px) brightness(0.45) saturate(0.85);
   }
   .filter-toggle[data-active='true'] {
     background-color: color-mix(in oklab, currentColor 22%, transparent);
-  }
-
-  /* Pill-shaped chip wrapping the mobile menu's nav links so the inline
-     "work — about — contact" row gets the same readable backdrop
-     treatment as .tag-pill / .filter-toggle. */
-  .menu-chip {
-    -webkit-backdrop-filter: blur(12px) brightness(0.45) saturate(0.85);
-    backdrop-filter: blur(12px) brightness(0.45) saturate(0.85);
-    border-radius: 999px;
-    padding: 0.35rem 0.9rem;
   }
 
   /* Horizontal scroll container without a visible scrollbar (mobile filter). */

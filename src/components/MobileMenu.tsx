@@ -33,7 +33,7 @@ export default function MobileMenu() {
 
   return (
     <div
-      className="lg:hidden fixed z-30 top-6 left-5 pointer-events-none"
+      className="lg:hidden fixed z-30 top-6 left-5 pointer-events-none blend-difference"
       style={{ color: 'var(--color-white)' }}
     >
       <div className="pointer-events-auto">
@@ -61,7 +61,7 @@ export default function MobileMenu() {
           {open && (
             <nav
               aria-label="Primary"
-              className="menu-chip text-16 flex flex-wrap items-baseline gap-x-3 gap-y-1"
+              className="text-16 flex flex-wrap items-baseline gap-x-3 gap-y-1"
             >
               {NAV_LINKS.map((l, i) => {
                 const linkActive = isActive(l.href);
