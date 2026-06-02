@@ -48,13 +48,13 @@ export default function MobileMenu() {
   return (
     <div
       className="lg:hidden fixed z-30 top-6 left-5 pointer-events-none"
-      style={{ color: 'var(--color-white)' }}
+      style={{ color: 'var(--color-text)' }}
     >
       <div className="pointer-events-auto">
-        {/* Button + nav links keep blend-difference for auto-invert.
-            The pill stack below sits OUTSIDE this wrapper so pills
-            render in plain white on any background. */}
-        <div className="flex items-center gap-14 blend-difference">
+        {/* Theme-driven colour: white in dark mode, charcoal in light
+            mode. blend-difference removed so the literal colour shows
+            instead of an inverted derivative. */}
+        <div className="flex items-center gap-14">
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
