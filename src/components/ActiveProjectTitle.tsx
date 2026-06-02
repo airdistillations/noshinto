@@ -71,15 +71,14 @@ export default function ActiveProjectTitle({ projects }: { projects: ProjectSumm
   return (
     <div
       aria-hidden
-      className="fixed inset-0 z-20 pointer-events-none"
+      className="fixed inset-0 z-20 pointer-events-none blend-difference"
       style={{ color: 'var(--color-white)' }}
     >
-      {/* Mobile: title (blended) + tag pills (plain white). The pills sit
-          outside the blend-difference wrapper so they render in pure
-          white regardless of the background image. */}
+      {/* Mobile: title + tag pills, both blended via the outer wrapper so
+          the title and the role pills auto-invert against the page image. */}
       <div className="lg:hidden h-full flex items-center justify-center px-5">
         <div key={`m-${index}`} className="counter-tick flex flex-col items-center gap-5">
-          <h2 className="text-[3em] leading-[1.05] tracking-tight text-center blend-difference">
+          <h2 className="text-[3em] leading-[1.05] tracking-tight text-center">
             <WigglingTitle>{project.title}</WigglingTitle>
           </h2>
           <TagPills value={project.role} className="justify-center" />
@@ -90,18 +89,16 @@ export default function ActiveProjectTitle({ projects }: { projects: ProjectSumm
           via absolute positioning, so the title alone is what gets
           centred and lines up with the watermark + counter at top-1/2.
           content-center (not items-center) is what actually centres the
-          auto-sized row within the full-height grid container.
-          blend-difference lives directly on the <h2> so the title's
-          auto-invert behaviour is independent of the surrounding info
-          block; description / pills / meta carry it on their own wrapper. */}
+          auto-sized row within the full-height grid container. The
+          blend-difference comes from the outer wrapper. */}
       <div className="hidden lg:block h-full">
         <div className="grid-layout h-full content-center">
           <div className="col-start-4 col-span-6">
             <div key={`d-${index}`} className="counter-tick relative">
-              <h2 className="text-[3em] leading-[1.05] blend-difference">
+              <h2 className="text-[3em] leading-[1.05]">
                 <WigglingTitle>{project.title}</WigglingTitle>
               </h2>
-              <div className="absolute top-full left-0 w-full mt-6 max-w-[44ch] blend-difference">
+              <div className="absolute top-full left-0 w-full mt-6 max-w-[44ch]">
                 {project.description && (
                   <p className="copy-sm whitespace-pre-line opacity-80">
                     {project.description}
