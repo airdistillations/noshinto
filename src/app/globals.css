@@ -181,14 +181,14 @@ img { display: block; }
     background-color: color-mix(in oklab, currentColor 22%, transparent);
   }
 
-  /* Mobile / iPad: bump the interactive pill size so it's easier to
-     tap. The decorative .tag-pill (without --btn) under project
-     titles keeps the smaller default size. */
+  /* Mobile / iPad: bump the interactive pill size slightly so it's
+     easier to tap. The decorative .tag-pill (without --btn) under
+     project titles keeps the smaller default size. */
   @media (max-width: 63.99rem) {
     .tag-pill--btn {
-      font-size: 1.4rem;
-      line-height: 1.7rem;
-      padding: 0.5rem 1.1rem;
+      font-size: 1.2rem;
+      line-height: 1.5rem;
+      padding: 0.35rem 0.9rem;
     }
   }
 
