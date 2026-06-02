@@ -10,4 +10,6 @@ cover: 01.svg
 images:
   - src: ecuador-still1-low.jpg
     alt: ""
+  - src: extravaga-still-small.jpg
+    alt: ""
 ---
