@@ -3,7 +3,7 @@ title: "Glassware"
 year: 2022
 role: "Product Design"
 location: "Antwerp"
-order: 2
+order: 4
 description: |
   New drinking behaviour with focus on Non-Alcoholic drinks
 cover: 01.svg
