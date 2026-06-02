@@ -11,8 +11,10 @@ cover: AwaShoga11-square-small.jpg
 images:
   - src: AwaShoga11-square-small.jpg
     alt: "awa shoga"
-  - src: may-golf021.jpg
-    alt: ""
+  - src: studio-shoga-flag003-small.jpg
+    alt: "Making of Awa Shoga label"
   - src: shoga-ginger005-small.jpg
-    alt: ""
+    alt: "Fresh cut ginger"
+  - src: may-golf021.jpg
+    alt: "Awa Shoga serve"
 ---
