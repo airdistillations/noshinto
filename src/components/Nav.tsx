@@ -11,6 +11,13 @@ const links = [
   { href: '/contact/', label: 'contact' },
 ];
 
+// Desktop side-stack on non-project pages: Noshinto IS the work link,
+// so we don't repeat it; about + contact sit beneath.
+const sideLinks = [
+  { href: '/about/', label: 'about' },
+  { href: '/contact/', label: 'contact' },
+];
+
 function scrollEverythingToTop() {
   try {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -39,14 +46,6 @@ export default function Nav() {
     }
   }
 
-  function onSignatureClick(e: React.MouseEvent) {
-    // "Noshinto" links to About, but if we're already on About, scroll to top instead.
-    if (pathname.startsWith('/about')) {
-      e.preventDefault();
-      scrollEverythingToTop();
-    }
-  }
-
   return (
     <>
       {/* Frosted glass scrim behind nav */}
@@ -58,10 +57,18 @@ export default function Nav() {
         className="fixed inset-x-0 top-0 z-20 px-5 py-6 lg:px-8 lg:py-8 blend-difference"
         style={{ color: 'var(--color-white)' }}
       >
-        {/* Nav links sit on the right, next to the rotating logo. The
-            top-left corner is left free for the homepage filter strip. */}
+        {/* Nav links sit on the right, next to the rotating logo. Hidden on
+            desktop for non-project pages — those use the side-stack under
+            the Noshinto watermark instead. Project pages keep the header
+            nav on desktop because the watermark slot is taken by the
+            project info aside. */}
         <div className="flex items-center justify-end gap-4 lg:gap-5">
-          <nav aria-label="Primary" className="text-16 flex flex-wrap items-baseline justify-end gap-x-3 gap-y-1">
+          <nav
+            aria-label="Primary"
+            className={`text-16 flex flex-wrap items-baseline justify-end gap-x-3 gap-y-1 ${
+              pathname.startsWith('/work/') ? '' : 'lg:hidden'
+            }`}
+          >
             {links.map((l, i) => {
               const active = isActive(l.href);
               return (
@@ -69,8 +76,7 @@ export default function Nav() {
                   <Link
                     href={l.href}
                     onClick={(e) => onNavClick(e, l.href)}
-                    className="link-hover"
-                    style={{ opacity: active ? 0.4 : 1 }}
+                    className={`link-hover ${active ? 'underline underline-offset-4' : ''}`}
                     aria-current={active ? 'page' : undefined}
                   >
                     {l.label}
@@ -89,18 +95,38 @@ export default function Nav() {
         </div>
       </header>
 
-      {/* Left-column "Noshinto" watermark — links to About. Hidden on
-          project detail pages where the project info takes this slot. */}
+      {/* Desktop side stack — "Noshinto" (work/home) with about + contact
+          beneath. Hidden on project pages where the project info aside
+          takes this slot; those pages keep the header nav above. */}
       {!pathname.startsWith('/work/') && (
-        <Link
-          href="/about/"
-          onClick={onSignatureClick}
-          className="hidden lg:block fixed left-0 top-1/2 -translate-y-1/2 z-10 pl-8 text-16 blend-difference link-hover"
+        <nav
+          aria-label="Primary"
+          className="hidden lg:flex fixed left-0 top-1/2 -translate-y-1/2 z-10 pl-8 flex-col gap-2 text-16 blend-difference"
           style={{ color: 'var(--color-white)' }}
-          aria-label="About"
         >
-          <span className="tracking-tight">Noshinto</span>
-        </Link>
+          <Link
+            href="/"
+            onClick={(e) => onNavClick(e, '/')}
+            className={`link-hover tracking-tight ${isActive('/') ? 'underline underline-offset-4' : ''}`}
+            aria-current={isActive('/') ? 'page' : undefined}
+          >
+            Noshinto
+          </Link>
+          {sideLinks.map((l) => {
+            const active = isActive(l.href);
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                onClick={(e) => onNavClick(e, l.href)}
+                className={`link-hover ${active ? 'underline underline-offset-4' : ''}`}
+                aria-current={active ? 'page' : undefined}
+              >
+                {l.label}
+              </Link>
+            );
+          })}
+        </nav>
       )}
 
     </>
