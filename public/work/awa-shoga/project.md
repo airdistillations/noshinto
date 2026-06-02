@@ -11,4 +11,8 @@ cover: AwaShoga11-square-small.jpg
 images:
   - src: AwaShoga11-square-small.jpg
     alt: "awa shoga"
+  - src: may-golf021.jpg
+    alt: ""
+  - src: shoga-ginger005-small.jpg
+    alt: ""
 ---
