@@ -78,7 +78,7 @@ export default function MobileMenu() {
           {mounted && (
             <nav
               aria-label="Primary"
-              className="text-16 flex flex-wrap items-baseline gap-x-3 gap-y-1"
+              className="text-[1.3rem] flex flex-wrap items-baseline gap-x-4 gap-y-1"
             >
               {NAV_LINKS.map((l, i) => {
                 const linkActive = isActive(l.href);
@@ -90,20 +90,23 @@ export default function MobileMenu() {
                 return (
                   <span
                     key={l.href}
-                    className={`${linkAnimClass} inline-flex items-baseline gap-x-3`}
+                    className={`${linkAnimClass} relative inline-flex items-baseline`}
                     style={{ animationDelay: `${delay}ms` }}
                   >
+                    {linkActive && (
+                      <span
+                        aria-hidden
+                        className="absolute -left-[14px] top-1/2 -translate-y-1/2 w-[5px] h-[5px] rounded-full bg-current"
+                      />
+                    )}
                     <Link
                       href={l.href}
                       onClick={() => setOpen(false)}
-                      className={`link-hover ${linkActive ? 'underline underline-offset-4' : ''}`}
+                      className="link-hover"
                       aria-current={linkActive ? 'page' : undefined}
                     >
                       {l.label}
                     </Link>
-                    {i < NAV_LINKS.length - 1 && (
-                      <span aria-hidden className="opacity-60 select-none">&mdash;</span>
-                    )}
                   </span>
                 );
               })}
@@ -112,7 +115,7 @@ export default function MobileMenu() {
         </div>
 
         {mounted && filter && filter.tags.length > 0 && (
-          <div className="mt-3 flex flex-col items-start gap-2 max-h-[60vh] overflow-y-auto no-scrollbar">
+          <div className="mt-3 flex flex-col items-start gap-2">
             {(() => {
               const n = filter.tags.length;
               // "All" leads on open (0ms) and trails on close (after every tag).
