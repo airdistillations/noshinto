@@ -10,4 +10,6 @@ cover: 01.svg
 images:
   - src: Square-00-00-00-21222.jpg
     alt: ""
+  - src: BOTAGA-glass-small.jpg
+    alt: ""
 ---
