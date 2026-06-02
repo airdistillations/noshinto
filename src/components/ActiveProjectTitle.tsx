@@ -90,15 +90,18 @@ export default function ActiveProjectTitle({ projects }: { projects: ProjectSumm
           via absolute positioning, so the title alone is what gets
           centred and lines up with the watermark + counter at top-1/2.
           content-center (not items-center) is what actually centres the
-          auto-sized row within the full-height grid container. */}
-      <div className="hidden lg:block h-full blend-difference">
+          auto-sized row within the full-height grid container.
+          blend-difference lives directly on the <h2> so the title's
+          auto-invert behaviour is independent of the surrounding info
+          block; description / pills / meta carry it on their own wrapper. */}
+      <div className="hidden lg:block h-full">
         <div className="grid-layout h-full content-center">
           <div className="col-start-4 col-span-6">
             <div key={`d-${index}`} className="counter-tick relative">
-              <h2 className="text-[3em] leading-[1.05]">
+              <h2 className="text-[3em] leading-[1.05] blend-difference">
                 <WigglingTitle>{project.title}</WigglingTitle>
               </h2>
-              <div className="absolute top-full left-0 w-full mt-6 max-w-[44ch]">
+              <div className="absolute top-full left-0 w-full mt-6 max-w-[44ch] blend-difference">
                 {project.description && (
                   <p className="copy-sm whitespace-pre-line opacity-80">
                     {project.description}
