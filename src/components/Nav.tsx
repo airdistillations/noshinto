@@ -5,12 +5,6 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import ThemeToggle from './ThemeToggle';
 
-const links = [
-  { href: '/', label: 'work' },
-  { href: '/about/', label: 'about' },
-  { href: '/contact/', label: 'contact' },
-];
-
 // Desktop side-stack on non-project pages: Noshinto IS the work link,
 // so we don't repeat it; about + contact sit beneath.
 const sideLinks = [
@@ -57,39 +51,12 @@ export default function Nav() {
         className="fixed inset-x-0 top-0 z-20 px-5 py-6 lg:px-8 lg:py-8 blend-difference"
         style={{ color: 'var(--color-white)' }}
       >
-        {/* Header keeps only the rotating logo at the right on every
-            viewport. Mobile nav lives in the global <MobileMenu />.
-            Project pages on desktop still get a header nav (work / about
-            / contact) because the watermark slot is taken by the project
-            info aside, so the side-stack isn't rendered. */}
+        {/* Header is just the rotating logo on every viewport now.
+            Desktop nav for non-project pages lives in the side-stack
+            under the Noshinto watermark; project pages get their own
+            nav stack rendered inside the project layout itself.
+            Mobile nav lives in the global <MobileMenu />. */}
         <div className="flex items-center justify-end gap-4 lg:gap-5">
-          {pathname.startsWith('/work/') && (
-            <nav
-              aria-label="Primary"
-              className="hidden lg:flex text-[1.3rem] flex-wrap items-baseline justify-end gap-x-3 gap-y-1"
-            >
-              {links.map((l, i) => {
-                const active = isActive(l.href);
-                return (
-                  <span key={l.href} className="inline-flex items-baseline gap-x-3 relative">
-                    {active && <ActiveDot />}
-                    <Link
-                      href={l.href}
-                      onClick={(e) => onNavClick(e, l.href)}
-                      className="link-hover"
-                      aria-current={active ? 'page' : undefined}
-                    >
-                      {l.label}
-                    </Link>
-                    {i < links.length - 1 && (
-                      <span aria-hidden className="opacity-60 select-none">&mdash;</span>
-                    )}
-                  </span>
-                );
-              })}
-            </nav>
-          )}
-
           <div className="shrink-0">
             <ThemeToggle />
           </div>

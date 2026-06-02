@@ -19,7 +19,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
-function ProjectInfo({ project }: { project: Project }) {
+/** Mobile-only version of project metadata — still rendered inline
+ *  above the images. Desktop uses three fixed corner blocks instead. */
+function ProjectInfoMobile({ project }: { project: Project }) {
   return (
     <div className="text-16">
       <h1 className="text-16">{project.title}</h1>
@@ -35,7 +37,7 @@ function ProjectInfo({ project }: { project: Project }) {
         )}
       </dl>
       {project.role && (
-        <TagPills value={project.role} className="pt-4 pb-2 lg:pt-8 lg:pb-4" />
+        <TagPills value={project.role} className="pt-4 pb-2" />
       )}
       <p className="pt-10 copy-sm">
         <Link href="/" className="link-hover">← Back to work</Link>
@@ -60,17 +62,54 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
   return (
     <main className="grid-layout pt-[50vh] pb-24">
-      {/* DESKTOP: fixed info aside in the "Noshinto" watermark slot, auto-inverts over images */}
+      {/* DESKTOP: project info pinned to the top-left corner. */}
       <aside
-        className="hidden lg:block fixed left-0 top-1/2 -translate-y-1/2 z-10 pl-8 pr-4 max-w-[260px] max-h-[calc(100vh-4rem)] overflow-y-auto blend-difference"
+        className="hidden lg:block fixed top-24 left-0 z-10 pl-8 pr-4 max-w-[280px] text-16 blend-difference"
         style={{ color: 'var(--color-white)' }}
       >
-        <ProjectInfo project={project} />
+        <h1 className="text-16">{project.title}</h1>
+        {project.description && (
+          <p className="copy-sm pt-2 whitespace-pre-line opacity-80">{project.description}</p>
+        )}
+        <dl className="pt-6 copy-sm space-y-1 opacity-70">
+          {project.year && (
+            <div className="flex gap-2"><dt>Year</dt><dd>{project.year}</dd></div>
+          )}
+          {project.location && (
+            <div className="flex gap-2"><dt>Location</dt><dd>{project.location}</dd></div>
+          )}
+        </dl>
+        {project.role && <TagPills value={project.role} className="pt-6" />}
       </aside>
 
-      {/* MOBILE: info inline above the images (no blend) */}
+      {/* DESKTOP: nav stack vertically centred on the left — Back to work,
+          about, contact. Replaces the header nav on project pages so the
+          top-right corner can hold only the rotating logo. */}
+      <nav
+        aria-label="Primary"
+        className="hidden lg:flex fixed left-0 top-1/2 -translate-y-1/2 z-10 pl-8 pr-4 flex-col gap-2 text-[1.3rem] blend-difference"
+        style={{ color: 'var(--color-white)' }}
+      >
+        <Link href="/" className="link-hover">← Back to work</Link>
+        <Link href="/about/" className="link-hover">about</Link>
+        <Link href="/contact/" className="link-hover">contact</Link>
+      </nav>
+
+      {/* DESKTOP: project body / copy pinned to the bottom-left corner.
+          max-h + overflow-y-auto keeps long bodies from running off the
+          screen. */}
+      {project.body && (
+        <div
+          className="hidden lg:block fixed bottom-12 left-0 z-10 pl-8 pr-4 max-w-[280px] max-h-[40vh] overflow-y-auto text-16 blend-difference"
+          style={{ color: 'var(--color-white)' }}
+        >
+          <div className="copy-sm whitespace-pre-line opacity-80">{project.body}</div>
+        </div>
+      )}
+
+      {/* MOBILE: info inline above the images (no blend). */}
       <div className="col-span-full lg:hidden">
-        <ProjectInfo project={project} />
+        <ProjectInfoMobile project={project} />
       </div>
 
       {/* Stacked images, cols 4-12 on desktop */}
