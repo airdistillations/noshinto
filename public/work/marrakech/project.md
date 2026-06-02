@@ -8,4 +8,6 @@ cover: marrakech086-small.jpg
 images:
   - src: marrakech086-small.jpg
     alt: ""
+  - src: marrakech114-small.jpg
+    alt: ""
 ---
