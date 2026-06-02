@@ -12,6 +12,8 @@ images:
     alt: ""
   - src: marrakech051-small.jpg
     alt: ""
+  - src: marrakech012-small.jpg
+    alt: ""
   - src: marrakech114-small.jpg
     alt: ""
   - src: marrakech049-small.jpg
