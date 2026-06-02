@@ -419,19 +419,31 @@ img { display: block; }
   to   { transform: rotate(360deg); }
 }
 
-/* Mobile menu open animation: nav links slide-right out of the
-   filter button; pills cascade downward out of it. Each child is
-   given a per-item animation-delay inline so they stagger. */
-@keyframes menu-out-right {
-  0%   { opacity: 0; transform: translateX(-16px); }
+/* Mobile menu open/close animations.
+   Nav links: gentle slide out of the filter button (horizontal).
+   Filter pills: slide in from outside the viewport on the left.
+   Each child gets a per-item animation-delay inline so they
+   stagger. The "out" variants reverse the motion for closing. */
+@keyframes menu-link-in {
+  0%   { opacity: 0; transform: translateX(-24px); }
   100% { opacity: 1; transform: translateX(0); }
 }
-@keyframes menu-out-down {
-  0%   { opacity: 0; transform: translateY(-12px); }
-  100% { opacity: 1; transform: translateY(0); }
+@keyframes menu-link-out {
+  0%   { opacity: 1; transform: translateX(0); }
+  100% { opacity: 0; transform: translateX(-24px); }
 }
-.menu-out-right { animation: menu-out-right 320ms var(--ease-out-quint) both; }
-.menu-out-down  { animation: menu-out-down  340ms var(--ease-out-quint) both; }
+@keyframes menu-pill-in {
+  0%   { opacity: 0; transform: translateX(-100vw); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes menu-pill-out {
+  0%   { opacity: 1; transform: translateX(0); }
+  100% { opacity: 0; transform: translateX(-100vw); }
+}
+.menu-link-in  { animation: menu-link-in  300ms var(--ease-out-quint) both; }
+.menu-link-out { animation: menu-link-out 240ms var(--ease-out-quint) both; }
+.menu-pill-in  { animation: menu-pill-in  460ms var(--ease-out-quint) both; }
+.menu-pill-out { animation: menu-pill-out 380ms var(--ease-out-quint) both; }
 .spin-slow {
   animation: spin-slow 32s linear infinite;
 }

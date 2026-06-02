@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFilterState } from '@/lib/filterStore';
 
 const NAV_LINKS = [
@@ -11,25 +11,39 @@ const NAV_LINKS = [
   { href: '/contact/', label: 'contact' },
 ];
 
+// Longest close-side animation + the largest staggered delay we use.
+// Keeps the children rendered until the closing animation has finished.
+const CLOSE_LIFETIME_MS = 800;
+
 /**
- * Global mobile / iPad menu button.
- *
- * - Always visible on mobile (fixed top-left), regardless of page.
- * - Tap to open: reveals nav links horizontally to the right of the
- *   button.
- * - If a filter has been registered with the store (only on the home
- *   gallery), the role pills also appear stacked vertically below the
- *   button.
- *
- * Replaces the old mobile branch of ProjectFilterBar plus the mobile
- * header nav in Nav.tsx.
+ * Global mobile / iPad menu button. Tap reveals nav links (slide out of
+ * the button) + filter pills (slide in from off-screen left). Tap again
+ * to close: the same items slide back the way they came before unmounting.
  */
 export default function MobileMenu() {
   const [open, setOpen] = useState(false);
+  // Mounted lags behind `open` on close, so the exit animation can play.
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname() || '/';
   const isActive = (href: string) =>
     href === '/' ? pathname === '/' : pathname.startsWith(href);
   const filter = useFilterState();
+
+  useEffect(() => {
+    if (open) {
+      setMounted(true);
+      return;
+    }
+    if (!mounted) return;
+    const t = window.setTimeout(() => setMounted(false), CLOSE_LIFETIME_MS);
+    return () => window.clearTimeout(t);
+    // mounted intentionally excluded — we only want to schedule the
+    // unmount when `open` flips to false.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  const linkAnimClass = open ? 'menu-link-in' : 'menu-link-out';
+  const pillAnimClass = open ? 'menu-pill-in' : 'menu-pill-out';
 
   return (
     <div
@@ -61,18 +75,23 @@ export default function MobileMenu() {
             </svg>
           </button>
 
-          {open && (
+          {mounted && (
             <nav
               aria-label="Primary"
               className="text-16 flex flex-wrap items-baseline gap-x-3 gap-y-1"
             >
               {NAV_LINKS.map((l, i) => {
                 const linkActive = isActive(l.href);
+                // Stagger forward on open, reverse on close — first to
+                // appear is the last to leave, so the motion feels mirrored.
+                const delay = open
+                  ? i * 60
+                  : (NAV_LINKS.length - 1 - i) * 50;
                 return (
                   <span
                     key={l.href}
-                    className="menu-out-right inline-flex items-baseline gap-x-3"
-                    style={{ animationDelay: `${i * 60}ms` }}
+                    className={`${linkAnimClass} inline-flex items-baseline gap-x-3`}
+                    style={{ animationDelay: `${delay}ms` }}
                   >
                     <Link
                       href={l.href}
@@ -92,29 +111,43 @@ export default function MobileMenu() {
           )}
         </div>
 
-        {open && filter && filter.tags.length > 0 && (
+        {mounted && filter && filter.tags.length > 0 && (
           <div className="mt-3 flex flex-col items-start gap-2 max-h-[60vh] overflow-y-auto no-scrollbar">
-            <button
-              type="button"
-              onClick={filter.clear}
-              data-active={filter.active.length === 0}
-              className="tag-pill tag-pill--btn menu-out-down shrink-0"
-              style={{ animationDelay: '0ms' }}
-            >
-              All
-            </button>
-            {filter.tags.map((tag, i) => (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => filter.toggle(tag)}
-                data-active={filter.active.includes(tag)}
-                className="tag-pill tag-pill--btn menu-out-down shrink-0"
-                style={{ animationDelay: `${(i + 1) * 50}ms` }}
-              >
-                {tag}
-              </button>
-            ))}
+            {(() => {
+              const n = filter.tags.length;
+              // "All" leads on open (0ms) and trails on close (after every tag).
+              const allDelay = open ? 0 : n * 55;
+              return (
+                <>
+                  <button
+                    type="button"
+                    onClick={filter.clear}
+                    data-active={filter.active.length === 0}
+                    className={`tag-pill tag-pill--btn ${pillAnimClass} shrink-0`}
+                    style={{ animationDelay: `${allDelay}ms` }}
+                  >
+                    All
+                  </button>
+                  {filter.tags.map((tag, i) => {
+                    const delay = open
+                      ? (i + 1) * 55
+                      : (n - 1 - i) * 55;
+                    return (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => filter.toggle(tag)}
+                        data-active={filter.active.includes(tag)}
+                        className={`tag-pill tag-pill--btn ${pillAnimClass} shrink-0`}
+                        style={{ animationDelay: `${delay}ms` }}
+                      >
+                        {tag}
+                      </button>
+                    );
+                  })}
+                </>
+              );
+            })()}
           </div>
         )}
       </div>
