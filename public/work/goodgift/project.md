@@ -10,6 +10,8 @@ cover: MVIMG-20190503-160940.jpg
 images:
   - src: MVIMG-20190503-160940.jpg
     alt: "giftcard goodgift"
+  - src: gg-poster-mockup.jpg
+    alt: ""
   - src: gg-logo.jpg
     alt: "logo goodgift"
 ---
