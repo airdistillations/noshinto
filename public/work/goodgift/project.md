@@ -9,5 +9,7 @@ description: |
 cover: MVIMG-20190503-160940.jpg
 images:
   - src: MVIMG-20190503-160940.jpg
-    alt: ""
+    alt: "giftcard goodgift"
+  - src: gg-logo.jpg
+    alt: "logo goodgift"
 ---
