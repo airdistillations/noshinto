@@ -1,7 +1,7 @@
 ---
 title: "Awa Shoga"
 year: 2026
-role: "Product Design, Recipe Creation"
+role: "Product Design, Recipe Creation, 3D"
 location: "Antwerp"
 order: 2
 description: |
@@ -13,8 +13,15 @@ images:
     alt: "awa shoga"
   - src: studio-shoga-flag003-small.jpg
     alt: "Making of Awa Shoga label"
+  - src: shoga-ginger010-small.jpg
+    alt: ""
   - src: shoga-ginger005-small.jpg
     alt: "Fresh cut ginger"
   - src: may-golf021.jpg
     alt: "Awa Shoga serve"
 ---
+
+The Yellow Spritz
+Sparkling Non-Alcoholic Aperitif 
+“Awa” (泡) stands for delicate, sparkling bubbles.
+Delicate Ginger – Yuzu – Fruity Japanese quince – Allspice
