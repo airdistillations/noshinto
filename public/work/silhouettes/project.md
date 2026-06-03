@@ -1,7 +1,7 @@
 ---
 title: "Rush Rush Coffee Roasters"
 year: 2020
-role: "Videography, Web development"
+role: "3D, Videography, Web development, Photography"
 location: "Antwerp"
 order: 5
 description: |
@@ -9,7 +9,9 @@ description: |
 cover: 01.svg
 images:
   - src: ecuador-still1-low.jpg
-    alt: ""
+    alt: "Coffee packaging"
+  - src: rr-studioshot.jpg
+    alt: "simon Rush Rush"
   - src: extravaga-still-small.jpg
-    alt: ""
+    alt: "3D"
 ---
