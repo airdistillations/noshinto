@@ -44,9 +44,18 @@ export default function MobileMenu() {
 
   const riseClass = open ? 'menu-rise-in' : 'menu-rise-out';
 
-  const navLink = (link: { href: string; label: string }, delay: number) => (
+  // side: which side of the centred button the link hangs off. Links are
+  // absolutely positioned so mounting/unmounting them never shifts the
+  // button itself.
+  const navLink = (
+    link: { href: string; label: string },
+    side: 'left' | 'right',
+    delay: number,
+  ) => (
     <span
-      className={`${riseClass} relative inline-flex items-baseline`}
+      className={`${riseClass} absolute top-1/2 -translate-y-1/2 inline-flex items-baseline whitespace-nowrap ${
+        side === 'left' ? 'right-[calc(50%+48px)]' : 'left-[calc(50%+48px)]'
+      }`}
       style={{ animationDelay: `${delay}ms` }}
     >
       {isActive(link.href) && (
@@ -68,7 +77,7 @@ export default function MobileMenu() {
 
   return (
     <div
-      className="lg:hidden fixed z-30 bottom-6 inset-x-0 pointer-events-none"
+      className="lg:hidden fixed z-30 bottom-[104px] inset-x-0 pointer-events-none"
       style={{ color: 'var(--color-text)' }}
     >
       <div className="pointer-events-auto flex flex-col items-center gap-6 px-5">
@@ -111,9 +120,11 @@ export default function MobileMenu() {
           </div>
         )}
 
-        {/* Bottom row: WORK — button — ABOUT. Links only when open. */}
-        <div className="flex items-center justify-center gap-12">
-          {mounted && navLink(LEFT_LINK, open ? 60 : 40)}
+        {/* Bottom row: WORK — button — ABOUT. The button is the only
+            in-flow child (always dead-centre); the links hang off it
+            absolutely so opening/closing never nudges the button. */}
+        <div className="relative flex items-center justify-center">
+          {mounted && navLink(LEFT_LINK, 'left', open ? 60 : 40)}
 
           <button
             type="button"
@@ -178,7 +189,7 @@ export default function MobileMenu() {
             </svg>
           </button>
 
-          {mounted && navLink(RIGHT_LINK, open ? 60 : 40)}
+          {mounted && navLink(RIGHT_LINK, 'right', open ? 60 : 40)}
         </div>
       </div>
     </div>
