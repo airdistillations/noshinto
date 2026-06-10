@@ -77,7 +77,7 @@ export default function MobileMenu() {
 
   return (
     <div
-      className="lg:hidden fixed z-30 bottom-[104px] inset-x-0 pointer-events-none"
+      className="lg:hidden fixed z-30 bottom-[89px] inset-x-0 pointer-events-none"
       style={{ color: 'var(--color-text)' }}
     >
       <div className="pointer-events-auto flex flex-col items-center gap-6 px-5">
@@ -140,8 +140,8 @@ export default function MobileMenu() {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 240.9 240.9"
               fill="currentColor"
-              width="35"
-              height="35"
+              width="40"
+              height="40"
               aria-hidden
               className="spin-slow"
             >
