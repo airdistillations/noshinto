@@ -213,7 +213,7 @@ function PagesList({
         <li className="flex items-center gap-4 border border-current/15 p-4">
           <div className="flex-1 min-w-0">
             <p className="text-16">Contact</p>
-            <p className="copy-sm opacity-50">/contact/ · bio, e-mail, location, clock, socials</p>
+            <p className="copy-sm opacity-50">shown on /about/ · bio, e-mail, location, clock, socials</p>
           </div>
           <button onClick={onEditContact} className="copy-sm link-hover underline underline-offset-4">
             Edit

@@ -5,20 +5,20 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useFilterState } from '@/lib/filterStore';
 
-const NAV_LINKS = [
-  { href: '/', label: 'work' },
-  { href: '/about/', label: 'about' },
-  { href: '/contact/', label: 'contact' },
-];
+// About and contact are merged into a single page, so the bottom
+// nav is just the two destinations flanking the menu button.
+const LEFT_LINK = { href: '/', label: 'work' };
+const RIGHT_LINK = { href: '/about/', label: 'about' };
 
 // Longest close-side animation + the largest staggered delay we use.
 // Keeps the children rendered until the closing animation has finished.
 const CLOSE_LIFETIME_MS = 800;
 
 /**
- * Global mobile / iPad menu button. Tap reveals nav links (slide out of
- * the button) + filter pills (slide in from off-screen left). Tap again
- * to close: the same items slide back the way they came before unmounting.
+ * Global mobile / iPad menu. The dot-constellation button sits fixed at
+ * the bottom-centre of the viewport. Tapping it raises the filter pills
+ * (home page only — picked up from the filter store) in centred rows
+ * above the button, and reveals WORK / ABOUT on either side of it.
  */
 export default function MobileMenu() {
   const [open, setOpen] = useState(false);
@@ -42,19 +42,79 @@ export default function MobileMenu() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  const linkAnimClass = open ? 'menu-link-in' : 'menu-link-out';
-  const pillAnimClass = open ? 'menu-pill-in' : 'menu-pill-out';
+  const riseClass = open ? 'menu-rise-in' : 'menu-rise-out';
+
+  const navLink = (link: { href: string; label: string }, delay: number) => (
+    <span
+      className={`${riseClass} relative inline-flex items-baseline`}
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      {isActive(link.href) && (
+        <span
+          aria-hidden
+          className="absolute -left-[14px] top-1/2 -translate-y-1/2 w-[5px] h-[5px] rounded-full bg-current"
+        />
+      )}
+      <Link
+        href={link.href}
+        onClick={() => setOpen(false)}
+        className="link-hover uppercase tracking-[0.18em] text-[1.3rem]"
+        aria-current={isActive(link.href) ? 'page' : undefined}
+      >
+        {link.label}
+      </Link>
+    </span>
+  );
 
   return (
     <div
-      className="lg:hidden fixed z-30 top-6 left-5 pointer-events-none"
+      className="lg:hidden fixed z-30 bottom-6 inset-x-0 pointer-events-none"
       style={{ color: 'var(--color-text)' }}
     >
-      <div className="pointer-events-auto">
-        {/* Theme-driven colour: white in dark mode, charcoal in light
-            mode. blend-difference removed so the literal colour shows
-            instead of an inverted derivative. */}
-        <div className="flex items-center gap-14">
+      <div className="pointer-events-auto flex flex-col items-center gap-6 px-5">
+        {/* Filter pills (home only): centred wrapped rows above the button. */}
+        {mounted && filter && filter.tags.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-2 max-w-[480px]">
+            {(() => {
+              const n = filter.tags.length;
+              // "All" leads on open (0ms) and trails on close.
+              const allDelay = open ? 0 : n * 45;
+              return (
+                <>
+                  <button
+                    type="button"
+                    onClick={filter.clear}
+                    data-active={filter.active.length === 0}
+                    className={`tag-pill tag-pill--btn ${riseClass} shrink-0`}
+                    style={{ animationDelay: `${allDelay}ms` }}
+                  >
+                    All
+                  </button>
+                  {filter.tags.map((tag, i) => {
+                    const delay = open ? (i + 1) * 45 : (n - 1 - i) * 45;
+                    return (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => filter.toggle(tag)}
+                        data-active={filter.active.includes(tag)}
+                        className={`tag-pill tag-pill--btn ${riseClass} shrink-0`}
+                        style={{ animationDelay: `${delay}ms` }}
+                      >
+                        {tag}
+                      </button>
+                    );
+                  })}
+                </>
+              );
+            })()}
+          </div>
+        )}
+
+        {/* Bottom row: WORK — button — ABOUT. Links only when open. */}
+        <div className="flex items-center justify-center gap-12">
+          {mounted && navLink(LEFT_LINK, open ? 60 : 40)}
+
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
@@ -118,84 +178,8 @@ export default function MobileMenu() {
             </svg>
           </button>
 
-          {mounted && (
-            <nav
-              aria-label="Primary"
-              className="text-[1.3rem] flex flex-wrap items-baseline gap-x-12 gap-y-1"
-            >
-              {NAV_LINKS.map((l, i) => {
-                const linkActive = isActive(l.href);
-                // Stagger forward on open, reverse on close — first to
-                // appear is the last to leave, so the motion feels mirrored.
-                const delay = open
-                  ? i * 60
-                  : (NAV_LINKS.length - 1 - i) * 50;
-                return (
-                  <span
-                    key={l.href}
-                    className={`${linkAnimClass} relative inline-flex items-baseline`}
-                    style={{ animationDelay: `${delay}ms` }}
-                  >
-                    {linkActive && (
-                      <span
-                        aria-hidden
-                        className="absolute -left-[14px] top-1/2 -translate-y-1/2 w-[5px] h-[5px] rounded-full bg-current"
-                      />
-                    )}
-                    <Link
-                      href={l.href}
-                      onClick={() => setOpen(false)}
-                      className="link-hover"
-                      aria-current={linkActive ? 'page' : undefined}
-                    >
-                      {l.label}
-                    </Link>
-                  </span>
-                );
-              })}
-            </nav>
-          )}
+          {mounted && navLink(RIGHT_LINK, open ? 60 : 40)}
         </div>
-
-        {mounted && filter && filter.tags.length > 0 && (
-          <div className="mt-3 flex flex-col items-start gap-2">
-            {(() => {
-              const n = filter.tags.length;
-              // "All" leads on open (0ms) and trails on close (after every tag).
-              const allDelay = open ? 0 : n * 55;
-              return (
-                <>
-                  <button
-                    type="button"
-                    onClick={filter.clear}
-                    data-active={filter.active.length === 0}
-                    className={`tag-pill tag-pill--btn ${pillAnimClass} shrink-0`}
-                    style={{ animationDelay: `${allDelay}ms` }}
-                  >
-                    All
-                  </button>
-                  {filter.tags.map((tag, i) => {
-                    const delay = open
-                      ? (i + 1) * 55
-                      : (n - 1 - i) * 55;
-                    return (
-                      <button
-                        key={tag}
-                        type="button"
-                        onClick={() => filter.toggle(tag)}
-                        data-active={filter.active.includes(tag)}
-                        className={`tag-pill tag-pill--btn ${pillAnimClass} shrink-0`}
-                        style={{ animationDelay: `${delay}ms` }}
-                      >
-                        {tag}
-                      </button>
-                    );
-                  })}
-                </>
-              );
-            })()}
-          </div>
-        )}
       </div>
     </div>
   );

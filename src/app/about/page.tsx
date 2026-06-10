@@ -1,5 +1,6 @@
 import Collapsible from '@/components/Collapsible';
-import { getAbout, type AboutEntry } from '@/lib/pages';
+import LocalClock from '@/components/LocalClock';
+import { getAbout, getContact, type AboutEntry } from '@/lib/pages';
 
 export const metadata = { title: 'About — Noshinto' };
 
@@ -42,6 +43,7 @@ function ExperienceBody({ entry }: { entry: AboutEntry }) {
 
 export default function AboutPage() {
   const about = getAbout();
+  const contact = getContact();
 
   return (
     <main className="grid-layout pt-[50vh] pb-24">
@@ -49,7 +51,7 @@ export default function AboutPage() {
         <Paragraphs text={about.intro} />
 
         {about.experience.length > 0 && (
-          <section className="mt-32 mb-40">
+          <section className="mt-32">
             <h2 className="eyebrow uppercase tracking-wider">{about.experienceTitle}</h2>
 
             <div className="mt-10">
@@ -61,6 +63,62 @@ export default function AboutPage() {
             </div>
           </section>
         )}
+
+        {/* Contact — merged from the former /contact/ page. */}
+        <section className="mt-32 mb-24">
+          <h2 className="eyebrow uppercase tracking-wider">Contact</h2>
+
+          <div className="mt-10">
+            {contact.bio && <Paragraphs text={contact.bio} />}
+
+            <div className="mt-10 grid gap-10 sm:grid-cols-2">
+              <div>
+                {contact.email && (
+                  <>
+                    <p className="copy-sm opacity-60">E-mail</p>
+                    <p className="pt-1">
+                      <a href={`mailto:${contact.email}`} className="link-hover break-all">
+                        {contact.email}
+                      </a>
+                    </p>
+                  </>
+                )}
+
+                {contact.location && (
+                  <>
+                    <p className="pt-8 copy-sm opacity-60">Based in</p>
+                    <p className="pt-1">{contact.location}</p>
+                  </>
+                )}
+
+                {contact.city && contact.timezone && (
+                  <>
+                    <p className="pt-8 copy-sm opacity-60">Local time</p>
+                    <LocalClock city={contact.city} timeZone={contact.timezone} className="pt-1" />
+                  </>
+                )}
+              </div>
+
+              <div>
+                {contact.socials.length > 0 && (
+                  <>
+                    <p className="copy-sm opacity-60">Socials</p>
+                    <ul className="pt-1 flex flex-wrap gap-x-4 gap-y-1">
+                      {contact.socials.map((s, i) => (
+                        <li key={`${s.href}-${i}`} className="inline-flex">
+                          <a className="link-hover" href={s.href} target="_blank" rel="noreferrer">
+                            {s.label}
+                          </a>
+                          {i < contact.socials.length - 1 && <span aria-hidden>,</span>}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   );

@@ -94,7 +94,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       >
         <Link href="/" className="link-hover">← Back to work</Link>
         <Link href="/about/" className="link-hover">about</Link>
-        <Link href="/contact/" className="link-hover">contact</Link>
       </nav>
 
       {/* DESKTOP: project body / copy pinned to the bottom-left corner.

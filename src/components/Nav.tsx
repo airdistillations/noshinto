@@ -6,10 +6,10 @@ import { useState } from 'react';
 import ThemeToggle from './ThemeToggle';
 
 // Desktop side-stack on non-project pages: Noshinto IS the work link,
-// so we don't repeat it; about + contact sit beneath.
+// so we don't repeat it. Contact is merged into the About page, so a
+// single "about" entry covers both.
 const sideLinks = [
   { href: '/about/', label: 'about' },
-  { href: '/contact/', label: 'contact' },
 ];
 
 function scrollEverythingToTop() {
