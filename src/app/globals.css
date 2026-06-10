@@ -165,6 +165,11 @@ img { display: block; }
     border: 1px solid currentColor;
     border-radius: 999px;
     white-space: nowrap;
+    /* Frosted backdrop: blurs whatever sits behind the pill so the
+       label stays readable over busy image areas. Blur-only — no
+       darkening, the background keeps its own colour. */
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    backdrop-filter: blur(14px) saturate(160%);
   }
   /* Interactive variant used in the homepage filter bar. */
   .tag-pill--btn {
