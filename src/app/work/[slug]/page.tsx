@@ -84,12 +84,13 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         {project.role && <TagPills value={project.role} className="pt-6" />}
       </aside>
 
-      {/* DESKTOP: nav stack vertically centred on the left — Back to work,
-          about, contact. Replaces the header nav on project pages so the
-          top-right corner can hold only the rotating logo. */}
+      {/* DESKTOP: nav stack vertically centred on the left — Back to work
+          and about. Replaces the header nav on project pages so the
+          top-right corner can hold only the rotating logo. Uppercase +
+          tracking to match the global nav style. */}
       <nav
         aria-label="Primary"
-        className="hidden lg:flex fixed left-0 top-1/2 -translate-y-1/2 z-10 pl-8 pr-4 flex-col gap-2 text-[1.3rem] blend-difference"
+        className="hidden lg:flex fixed left-0 top-1/2 -translate-y-1/2 z-10 pl-8 pr-4 flex-col gap-2 text-[1.1rem] uppercase tracking-[0.18em] blend-difference"
         style={{ color: 'var(--color-white)' }}
       >
         <Link href="/" className="link-hover">← Back to work</Link>
