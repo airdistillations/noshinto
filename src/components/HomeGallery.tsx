@@ -84,7 +84,7 @@ export default function HomeGallery({
 
       {/* DESKTOP: 12-col editorial grid. */}
       <div className="hidden lg:block">
-        <div className="grid-layout pt-[50vh]">
+        <div className="grid-layout pt-[50vh] pb-48">
           {filtered.map((p, i) => (
             <section
               key={p.slug}
