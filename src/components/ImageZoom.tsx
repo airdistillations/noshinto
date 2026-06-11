@@ -1,6 +1,8 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import DotConstellation from './DotConstellation';
 
 /**
  * Each zoom step pins the exact column count — every "−" tap adds one
@@ -29,8 +31,8 @@ function scrollEverythingToTop() {
 type BtnProps = {
   onClick: () => void;
   label: string;
-  symbol: string;
-  float: 'float-a' | 'float-b' | 'float-c';
+  symbol: React.ReactNode;
+  float: 'float-a' | 'float-b' | 'float-c' | 'float-d';
   disabled?: boolean;
 };
 
@@ -54,6 +56,7 @@ function GlassButton({ onClick, label, symbol, float, disabled }: BtnProps) {
 }
 
 export default function ImageZoom({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const [idx, setIdx] = useState(0);
   const step = STEPS[idx];
   // Track idx synchronously so rapid clicks see the latest value before React re-renders.
@@ -117,6 +120,16 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
       </div>
 
       <div className="fixed inset-x-0 bottom-[20px] lg:bottom-[40px] z-30 flex justify-center items-end gap-5 lg:gap-6 pointer-events-none">
+        {/* Mobile only: glass "home" button — straight back to the work
+            grid, no menu. Same glass styling/animations as the others. */}
+        <div className="pointer-events-auto lg:hidden">
+          <GlassButton
+            onClick={() => router.push('/')}
+            label="Back to work overview"
+            symbol={<DotConstellation size={26} className="spin-slow" />}
+            float="float-d"
+          />
+        </div>
         <div className="pointer-events-auto">
           <GlassButton onClick={zoomIn}  label="Larger images — fewer columns"  symbol="+" float="float-a" disabled={atMax} />
         </div>
