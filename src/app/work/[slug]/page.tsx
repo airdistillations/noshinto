@@ -39,8 +39,9 @@ function ProjectInfoMobile({ project }: { project: Project }) {
       {project.role && (
         <TagPills value={project.role} className="pt-4 pb-2" />
       )}
-      <p className="pt-10 copy-sm">
+      <p className="pt-10 flex items-baseline gap-8 text-[1.3rem] uppercase tracking-[0.18em]">
         <Link href="/" className="link-hover">← Back to work</Link>
+        <Link href="/about/" className="link-hover">about</Link>
       </p>
       {project.body && (
         <div className="pt-10 copy-sm whitespace-pre-line opacity-80">{project.body}</div>
@@ -61,7 +62,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   const next = all.length > 1 ? all[(idx + 1) % all.length] : undefined;
 
   return (
-    <main className="grid-layout pt-[50vh] pb-24">
+    // Mobile starts the info block near the top-left (clearing the header
+    // logo); desktop keeps the original 50vh editorial offset.
+    <main className="grid-layout pt-24 lg:pt-[50vh] pb-24">
       {/* DESKTOP: project info pinned to the top-left corner. top-8
           matches the header's lg:py-8 so this block sits on the same
           baseline as the rotating logo in the top-right. */}
