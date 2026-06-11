@@ -432,6 +432,16 @@ img { display: block; }
   animation: title-wiggle 7.4s cubic-bezier(.45,.05,.55,.95) infinite;
 }
 
+/* ImageZoom uses the View Transitions API to cross-fade the masonry
+   between column-count steps (since column-count itself can't be
+   transitioned). Slow the default fade to something more deliberate
+   and ease it with the project's standard out-quint curve. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(.22, 1, .36, 1);
+}
+
 /* Slow infinite spin — applied to the logo wrapper so the icon
    keeps turning gently regardless of theme state. Linear easing
    keeps the rotation perfectly steady. */

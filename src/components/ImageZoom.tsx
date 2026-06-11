@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import DotConstellation from './DotConstellation';
 
 /**
@@ -62,13 +63,28 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
   // Track idx synchronously so rapid clicks see the latest value before React re-renders.
   const idxRef = useRef(0);
 
+  // Run the column-count change inside a View Transition so the browser
+  // cross-fades between layouts. column-count can't be transitioned with
+  // plain CSS; this is the simplest path to a subtle animation that also
+  // gracefully degrades (the typeof check) on browsers without support.
+  const setIdxAnimated = (next: number) => {
+    if (typeof document !== 'undefined' && 'startViewTransition' in document) {
+      (document as Document & {
+        startViewTransition: (cb: () => void) => unknown;
+      }).startViewTransition(() => {
+        flushSync(() => setIdx(next));
+      });
+    } else {
+      setIdx(next);
+    }
+  };
   const zoomIn = () => {
     idxRef.current = Math.max(0, idxRef.current - 1);
-    setIdx(idxRef.current);
+    setIdxAnimated(idxRef.current);
   };
   const zoomOut = () => {
     idxRef.current = Math.min(STEPS.length - 1, idxRef.current + 1);
-    setIdx(idxRef.current);
+    setIdxAnimated(idxRef.current);
   };
   const atMax = idx === 0;
   const atMin = idx === STEPS.length - 1;
