@@ -39,7 +39,8 @@ function ProjectInfoMobile({ project }: { project: Project }) {
       {project.role && (
         <TagPills value={project.role} className="pt-4 pb-2" />
       )}
-      <p className="pt-10 flex items-baseline gap-8 text-[1.3rem] uppercase tracking-[0.18em]">
+      {/* Generous air above and below the nav links row. */}
+      <p className="pt-16 pb-6 flex items-baseline gap-8 text-[1.3rem] uppercase tracking-[0.18em]">
         <Link href="/" className="link-hover">← Back to work</Link>
         <Link href="/about/" className="link-hover">about</Link>
       </p>
@@ -113,7 +114,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       )}
 
       {/* MOBILE: info inline above the images (no blend). */}
-      <div className="col-span-full lg:hidden">
+      {/* relative z-20 lifts the text above the fixed top/bottom scrims
+          (z-10) so it never gets caught in their backdrop blur. */}
+      <div className="col-span-full lg:hidden relative z-20">
         <ProjectInfoMobile project={project} />
       </div>
 
@@ -139,7 +142,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
       {/* Prev / Next footer */}
       {(prev || next) && (
-        <div className="col-span-full lg:col-start-2 lg:col-span-10 mt-24 pt-10 border-t border-current/10 flex items-baseline justify-between gap-6">
+        <div className="col-span-full lg:col-start-2 lg:col-span-10 relative z-20 mt-24 pt-10 border-t border-current/10 flex items-baseline justify-between gap-6">
           {prev ? (
             <Link href={`/work/${prev.slug}/`} className="link-hover text-16 min-w-0">
               <span className="copy-sm opacity-60 block">← Previous project</span>
