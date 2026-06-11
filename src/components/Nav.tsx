@@ -63,10 +63,9 @@ export default function Nav() {
         </div>
       </header>
 
-      {/* Desktop side stack — "Noshinto" (work/home) with about + contact
-          beneath. Hidden on project pages where the project info aside
-          takes this slot; those pages keep the header nav above. The
-          dot before the active link replaces the underline state. */}
+      {/* Desktop side stack — WORK (home) with ABOUT beneath. Hidden on
+          project pages where the project info aside takes this slot.
+          The dot before the active link replaces the underline state. */}
       {!pathname.startsWith('/work/') && (
         <nav
           aria-label="Primary"
@@ -78,10 +77,10 @@ export default function Nav() {
             <Link
               href="/"
               onClick={(e) => onNavClick(e, '/')}
-              className="link-hover tracking-tight"
+              className="link-hover uppercase tracking-[0.18em]"
               aria-current={isActive('/') ? 'page' : undefined}
             >
-              Noshinto
+              work
             </Link>
           </span>
           {sideLinks.map((l) => {
@@ -92,7 +91,7 @@ export default function Nav() {
                 <Link
                   href={l.href}
                   onClick={(e) => onNavClick(e, l.href)}
-                  className="link-hover"
+                  className="link-hover uppercase tracking-[0.18em]"
                   aria-current={active ? 'page' : undefined}
                 >
                   {l.label}
