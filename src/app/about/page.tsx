@@ -1,4 +1,6 @@
+import Link from 'next/link';
 import Collapsible from '@/components/Collapsible';
+import GlassHomeButton from '@/components/GlassHomeButton';
 import LocalClock from '@/components/LocalClock';
 import { getAbout, getContact, type AboutEntry } from '@/lib/pages';
 
@@ -46,8 +48,14 @@ export default function AboutPage() {
   const contact = getContact();
 
   return (
-    <main className="grid-layout pt-[50vh] pb-24">
-      <div className="col-span-full lg:col-start-4 lg:col-span-6 text-16">
+    <main className="grid-layout pt-24 lg:pt-[50vh] pb-24">
+      <div className="col-span-full lg:col-start-4 lg:col-span-6 text-16 relative z-20">
+        {/* Mobile: same nav-links row as the project pages. */}
+        <p className="lg:hidden pb-16 flex items-baseline gap-8 text-[1.3rem] uppercase tracking-[0.18em]">
+          <Link href="/" className="link-hover">← Back to work</Link>
+          <Link href="/about/" className="link-hover">about</Link>
+        </p>
+
         <Paragraphs text={about.intro} />
 
         {about.experience.length > 0 && (
@@ -120,6 +128,9 @@ export default function AboutPage() {
           </div>
         </section>
       </div>
+
+      {/* Mobile: fixed glass dot button → straight back to the work grid. */}
+      <GlassHomeButton />
     </main>
   );
 }

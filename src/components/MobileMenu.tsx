@@ -45,9 +45,10 @@ export default function MobileMenu() {
 
   const riseClass = open ? 'menu-rise-in' : 'menu-rise-out';
 
-  // Project pages don't show the floating menu: there the "home" action
-  // is a glass button inside the ImageZoom cluster instead.
-  if (pathname.startsWith('/work/')) return null;
+  // Project + about pages don't show the floating menu: there the
+  // "home" action is a glass dot button instead (in the ImageZoom
+  // cluster on project pages, standalone on about).
+  if (pathname.startsWith('/work/') || pathname.startsWith('/about')) return null;
 
   // side: which side of the centred button the link hangs off. Links are
   // absolutely positioned so mounting/unmounting them never shifts the

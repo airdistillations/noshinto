@@ -36,7 +36,7 @@ type BtnProps = {
   disabled?: boolean;
 };
 
-function GlassButton({ onClick, label, symbol, float, disabled }: BtnProps) {
+export function GlassButton({ onClick, label, symbol, float, disabled }: BtnProps) {
   return (
     <span className={float}>
       <button
