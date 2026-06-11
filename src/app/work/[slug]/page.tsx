@@ -41,7 +41,7 @@ function ProjectInfoMobile({ project }: { project: Project }) {
       )}
       {/* Generous air above and below the nav links row. */}
       <p className="pt-16 pb-6 flex items-baseline gap-8 text-[1.3rem] uppercase tracking-[0.18em]">
-        <Link href="/" className="link-hover">← Back to work</Link>
+        <Link href="/" className="link-hover"><span className="arrow-drift" aria-hidden>←</span> Back to work</Link>
         <Link href="/about/" className="link-hover">about</Link>
       </p>
       {project.body && (
@@ -97,7 +97,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         className="hidden lg:flex fixed left-0 top-1/2 -translate-y-1/2 z-10 pl-8 pr-4 flex-col gap-2 text-[1.1rem] uppercase tracking-[0.18em] blend-difference"
         style={{ color: 'var(--color-white)' }}
       >
-        <Link href="/" className="link-hover">← Back to work</Link>
+        <Link href="/" className="link-hover"><span className="arrow-drift" aria-hidden>←</span> Back to work</Link>
         <Link href="/about/" className="link-hover">about</Link>
       </nav>
 

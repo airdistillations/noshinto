@@ -432,6 +432,18 @@ img { display: block; }
   animation: title-wiggle 7.4s cubic-bezier(.45,.05,.55,.95) infinite;
 }
 
+/* "← Back to work" arrow drift — gentle horizontal oscillation so the
+   arrow keeps pointing without being distracting. Wrap the arrow in
+   a <span class="arrow-drift" aria-hidden>. */
+@keyframes arrow-drift {
+  0%, 100% { transform: translateX(-3px); }
+  50%      { transform: translateX(3px); }
+}
+.arrow-drift {
+  display: inline-block;
+  animation: arrow-drift 1.8s cubic-bezier(.45,.05,.55,.95) infinite;
+}
+
 /* ImageZoom uses the View Transitions API to cross-fade the masonry
    between column-count steps (since column-count itself can't be
    transitioned). Slow the default fade to something more deliberate

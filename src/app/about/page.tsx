@@ -52,7 +52,7 @@ export default function AboutPage() {
       <div className="col-span-full lg:col-start-4 lg:col-span-6 text-16 relative z-20">
         {/* Mobile: same nav-links row as the project pages. */}
         <p className="lg:hidden pb-16 flex items-baseline gap-8 text-[1.3rem] uppercase tracking-[0.18em]">
-          <Link href="/" className="link-hover">← Back to work</Link>
+          <Link href="/" className="link-hover"><span className="arrow-drift" aria-hidden>←</span> Back to work</Link>
           <Link href="/about/" className="link-hover">about</Link>
         </p>
 

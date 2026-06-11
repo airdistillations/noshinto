@@ -7,7 +7,7 @@ export default function NotFound() {
         <p className="copy-sm opacity-60">404</p>
         <p className="pt-2">Not found.</p>
         <p className="pt-6">
-          <Link href="/" className="link-hover">← Back to work</Link>
+          <Link href="/" className="link-hover"><span className="arrow-drift" aria-hidden>←</span> Back to work</Link>
         </p>
       </div>
     </main>
