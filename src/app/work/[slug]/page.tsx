@@ -142,7 +142,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
       {/* Prev / Next footer */}
       {(prev || next) && (
-        <div className="col-span-full lg:col-start-2 lg:col-span-10 relative z-20 mt-24 pt-10 border-t border-current/10 flex items-baseline justify-between gap-6">
+        {/* Aligned to the image strip (cols 4-12) so the divider matches
+            the images' left edge and clears the fixed left-side text
+            blocks. Extra top margin on desktop for breathing room. */}
+        <div className="col-span-full lg:col-start-4 lg:col-span-9 relative z-20 mt-24 lg:mt-48 pt-10 border-t border-current/10 flex items-baseline justify-between gap-6">
           {prev ? (
             <Link href={`/work/${prev.slug}/`} className="link-hover text-16 min-w-0">
               <span className="copy-sm opacity-60 block">← Previous project</span>
