@@ -201,7 +201,16 @@ img { display: block; }
      pills so it reads as "selected" when any filter is on. */
   .filter-toggle {
     cursor: pointer;
-    transition: background-color 200ms var(--ease-out-quint), opacity 200ms var(--ease-out-quint);
+    transition:
+      background-color 200ms var(--ease-out-quint),
+      opacity 200ms var(--ease-out-quint),
+      transform 300ms var(--ease-out-quint);
+  }
+  /* Grow on hover (iPad pointer / desktop) and on press (touch),
+     animated by the transform transition above. */
+  .filter-toggle:hover,
+  .filter-toggle:active {
+    transform: scale(1.18);
   }
   .filter-toggle[data-active='true'] {
     background-color: color-mix(in oklab, currentColor 22%, transparent);
