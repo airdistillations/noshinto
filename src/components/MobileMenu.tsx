@@ -46,32 +46,38 @@ export default function MobileMenu() {
 
   // side: which side of the centred button the link hangs off. Links are
   // absolutely positioned so mounting/unmounting them never shifts the
-  // button itself.
+  // button itself. Vertical centring is done with flex (inset-y-0 +
+  // items-center) rather than a translate, because the rise animation
+  // animates `transform` and would overwrite a -translate-y-1/2.
   const navLink = (
     link: { href: string; label: string },
     side: 'left' | 'right',
     delay: number,
   ) => (
     <span
-      className={`${riseClass} absolute top-1/2 -translate-y-1/2 inline-flex items-baseline whitespace-nowrap ${
+      className={`absolute inset-y-0 flex items-center whitespace-nowrap ${
         side === 'left' ? 'right-[calc(50%+48px)]' : 'left-[calc(50%+48px)]'
       }`}
-      style={{ animationDelay: `${delay}ms` }}
     >
-      {isActive(link.href) && (
-        <span
-          aria-hidden
-          className="absolute -left-[14px] top-1/2 -translate-y-1/2 w-[5px] h-[5px] rounded-full bg-current"
-        />
-      )}
-      <Link
-        href={link.href}
-        onClick={() => setOpen(false)}
-        className="link-hover uppercase tracking-[0.18em] text-[1.3rem]"
-        aria-current={isActive(link.href) ? 'page' : undefined}
+      <span
+        className={`${riseClass} relative inline-flex items-center`}
+        style={{ animationDelay: `${delay}ms` }}
       >
-        {link.label}
-      </Link>
+        {isActive(link.href) && (
+          <span
+            aria-hidden
+            className="absolute -left-[14px] top-1/2 -translate-y-1/2 w-[5px] h-[5px] rounded-full bg-current"
+          />
+        )}
+        <Link
+          href={link.href}
+          onClick={() => setOpen(false)}
+          className="link-hover uppercase tracking-[0.18em] text-[1.3rem]"
+          aria-current={isActive(link.href) ? 'page' : undefined}
+        >
+          {link.label}
+        </Link>
+      </span>
     </span>
   );
 
