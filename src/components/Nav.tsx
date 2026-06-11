@@ -69,7 +69,7 @@ export default function Nav() {
       {!pathname.startsWith('/work/') && (
         <nav
           aria-label="Primary"
-          className="hidden lg:flex fixed left-0 top-1/2 -translate-y-1/2 z-10 pl-8 flex-col gap-2 text-[1.3rem] blend-difference"
+          className="hidden lg:flex fixed left-0 top-1/2 -translate-y-1/2 z-10 pl-8 flex-col gap-2 text-[1.1rem] blend-difference"
           style={{ color: 'var(--color-white)' }}
         >
           <span className="relative inline-flex items-baseline">
