@@ -119,7 +119,7 @@ export default function ImageZoom({ children }: { children: React.ReactNode }) {
         {children}
       </div>
 
-      <div className="fixed inset-x-0 bottom-[20px] lg:bottom-[40px] z-30 flex justify-center items-end gap-5 lg:gap-6 pointer-events-none">
+      <div className="fixed inset-x-0 bottom-[95px] lg:bottom-[40px] z-30 flex justify-center items-end gap-5 lg:gap-6 pointer-events-none">
         {/* Mobile only: glass "home" button — straight back to the work
             grid, no menu. Same glass styling/animations as the others. */}
         <div className="pointer-events-auto lg:hidden">
