@@ -3,7 +3,7 @@ title: "Marseille [TripTips]"
 year: 2026
 role: "Photography, Personal Work"
 location: "Marseille"
-order: 10
+order: 8
 description: |
   Coffee, lunch, and the places worth a detour, each selected for its authenticity and sense of place.
 cover: Artboard-1-copy-40marseille.jpg
