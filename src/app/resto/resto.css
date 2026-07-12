@@ -10,6 +10,8 @@
   --ink-soft: #787774;
   --line: #eaeaea;
   --leader: #c9c6bf;
+  --accent: #b4532a; /* warm terracotta — the one colour next to ink/grey/white */
+  --accent-dark: #93401f;
   --serif: var(--font-newsreader), Georgia, serif;
   --sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace;
@@ -33,6 +35,9 @@
   padding: 28px clamp(20px, 5vw, 64px);
 }
 .resto .wordmark { font-family: var(--sans); font-weight: 600; letter-spacing: 0.01em; }
+/* Spinning site logo: the source SVG is white, invert it to ink here. */
+.resto .logo-spin { display: inline-block; width: 40px; height: 40px; }
+.resto .logo-spin img { width: 100%; height: 100%; object-fit: contain; filter: invert(1); }
 
 .resto main { max-width: 840px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 40px) 120px; }
 
@@ -40,7 +45,7 @@
 .resto .hero { padding: clamp(64px, 12vh, 140px) 0 clamp(56px, 9vh, 96px); }
 .resto .eyebrow {
   font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--ink-soft); margin-bottom: 24px;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 24px;
 }
 .resto h1 {
   font-family: var(--serif); font-weight: 500;
@@ -69,7 +74,7 @@
   padding: 26px 0; border-bottom: 1px solid var(--line);
 }
 .resto .steps li:last-child { border-bottom: none; }
-.resto .steps .num { font-family: var(--mono); font-size: 13px; color: var(--ink-soft); padding-top: 5px; }
+.resto .steps .num { font-family: var(--mono); font-size: 13px; color: var(--accent); padding-top: 5px; }
 .resto .steps h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
 .resto .steps p { color: var(--ink-soft); font-size: 15px; }
 
@@ -91,7 +96,7 @@
   flex: 1; min-width: 24px; border-bottom: 1px dotted var(--leader);
   transform: translateY(-5px);
 }
-.resto .menu-row .price { font-family: var(--mono); font-size: 15px; white-space: nowrap; }
+.resto .menu-row .price { font-family: var(--mono); font-size: 15px; white-space: nowrap; color: var(--accent); }
 .resto .fineprint { color: var(--ink-soft); font-size: 13px; margin-top: 22px; }
 
 /* ---------- inbegrepen ---------- */
@@ -120,7 +125,7 @@
 .resto .plan h3 { font-size: 16px; font-weight: 600; }
 .resto .plan .price {
   font-family: var(--serif); font-size: clamp(30px, 4vw, 38px); font-weight: 500;
-  letter-spacing: -0.02em; margin: 14px 0 4px;
+  letter-spacing: -0.02em; margin: 14px 0 4px; color: var(--accent);
 }
 .resto .plan .per { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); }
 .resto .plan ul { list-style: none; margin-top: 24px; }
@@ -128,7 +133,8 @@
   display: grid; grid-template-columns: 20px 1fr; gap: 10px;
   padding: 11px 0; border-top: 1px solid var(--line); font-size: 14.5px;
 }
-.resto .plan li .mark { font-family: var(--mono); color: var(--ink-soft); }
+.resto .plan li .mark { font-family: var(--mono); color: var(--accent); }
+.resto .plan li.absent .mark { color: var(--ink-soft); }
 .resto .plan li.absent { color: var(--ink-soft); }
 
 /* ---------- uitgangspunten & praktisch ---------- */
@@ -150,6 +156,7 @@
   transition: padding 0.2s ease;
 }
 .resto .projects a:hover { padding-left: 10px; }
+.resto .projects a:hover .name { color: var(--accent); }
 .resto .projects .name { font-family: var(--serif); font-size: clamp(19px, 2.6vw, 24px); font-weight: 500; }
 .resto .projects .url { font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft); white-space: nowrap; }
 @media (max-width: 520px) { .resto .projects .url { display: none; } }
@@ -158,11 +165,11 @@
 .resto .contact { text-align: left; }
 .resto .contact p { color: var(--ink-soft); max-width: 52ch; margin-bottom: 32px; }
 .resto .btn {
-  display: inline-block; background: var(--ink); color: #fff;
+  display: inline-block; background: var(--accent); color: #fff;
   font-size: 15px; padding: 14px 26px; border-radius: 6px;
   transition: background 0.2s ease, transform 0.1s ease;
 }
-.resto .btn:hover { background: #333; }
+.resto .btn:hover { background: var(--accent-dark); }
 .resto .btn:active { transform: scale(0.98); }
 
 .resto footer {

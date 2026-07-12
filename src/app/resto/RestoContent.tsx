@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { asset } from '@/lib/asset';
 
 /**
  * Standalone /resto page body. Deliberately no links to the rest of the
@@ -27,7 +28,12 @@ export default function RestoContent() {
   return (
     <>
       <header>
-        <span className="wordmark">noshinto</span>
+        {/* Same continuously spinning logo as the main site; the white
+            SVG is inverted to ink for this light page. Decorative only —
+            deliberately not a link. */}
+        <span className="logo-spin" aria-label="Noshinto">
+          <img src={asset('/logo.svg')} alt="" className="spin-slow" draggable={false} />
+        </span>
       </header>
 
       <main>
@@ -327,7 +333,7 @@ export default function RestoContent() {
         <section id="contact" className="reveal contact">
           <h2>Zin om samen te werken?</h2>
           <p>Vertel kort over uw zaak, dan plannen we een intake ter plaatse.</p>
-          <a className="btn" href="mailto:hi@noshinto.com?subject=Restaurantwebsite%20—%20intake">
+          <a className="btn" href="mailto:hi@noshinto.com">
             Plan een intake
           </a>
         </section>
