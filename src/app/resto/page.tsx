@@ -11,7 +11,7 @@ const newsreader = Newsreader({
 });
 
 export const metadata = {
-  title: 'Websites voor restaurants — Noshinto',
+  title: 'Tailormade restaurant website — Noshinto',
   description:
     "Een website op het niveau van uw keuken: eigen design, standaard in drie talen, en een systeem waarmee u zelf uw menu en foto's beheert.",
 };

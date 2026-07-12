@@ -130,11 +130,18 @@
 .resto .plan .per { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); }
 .resto .plan ul { list-style: none; margin-top: 24px; }
 .resto .plan li {
-  display: grid; grid-template-columns: 20px 1fr; gap: 10px;
+  display: grid; grid-template-columns: 26px 1fr; gap: 10px;
   padding: 11px 0; border-top: 1px solid var(--line); font-size: 14.5px;
+  align-items: baseline;
 }
-.resto .plan li .mark { font-family: var(--mono); color: var(--accent); }
-.resto .plan li.absent .mark { color: var(--ink-soft); }
+/* Clear, unambiguous tick: bold accent check, no box, sized to read at
+   a glance. (Named .tick — .mark collides with the site-wide marker-pen
+   highlight utility, which painted dark boxes behind these.) */
+.resto .plan li .tick {
+  font-family: var(--sans); font-size: 16px; font-weight: 700;
+  color: var(--accent); background: none; line-height: 1;
+}
+.resto .plan li.absent .tick { color: var(--leader); font-weight: 400; }
 .resto .plan li.absent { color: var(--ink-soft); }
 
 /* ---------- uitgangspunten & praktisch ---------- */

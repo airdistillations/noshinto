@@ -29,18 +29,18 @@ export default function RestoContent() {
     <>
       <header>
         {/* Same continuously spinning logo as the main site; the white
-            SVG is inverted to ink for this light page. Decorative only —
-            deliberately not a link. */}
-        <span className="logo-spin" aria-label="Noshinto">
+            SVG is inverted to ink for this light page. Links to the
+            noshinto.com homepage. */}
+        <a className="logo-spin" href="/" aria-label="Noshinto — home">
           <img src={asset('/logo.svg')} alt="" className="spin-slow" draggable={false} />
-        </span>
+        </a>
       </header>
 
       <main>
         {/* HERO */}
         <div className="hero reveal">
           <p className="eyebrow">Aanpak &amp; prijzen</p>
-          <h1>Websites voor restaurants</h1>
+          <h1>Tailormade restaurant website</h1>
           <p>
             Een website op het niveau van uw keuken: eigen design, standaard in drie talen, en een
             systeem waarmee u zelf uw menu en foto&rsquo;s beheert.
@@ -202,15 +202,15 @@ export default function RestoContent() {
               <p className="per">per maand, excl. btw</p>
               <ul>
                 <li>
-                  <span className="mark">✓</span>
+                  <span className="tick">✓</span>
                   <span>Hosting, SSL, dagelijkse back-ups &amp; updates</span>
                 </li>
                 <li>
-                  <span className="mark">✓</span>
+                  <span className="tick">✓</span>
                   <span>CMS-toegang &amp; support via e-mail</span>
                 </li>
                 <li className="absent">
-                  <span className="mark">—</span>
+                  <span className="tick">—</span>
                   <span>Wij voeren uw wijzigingen door</span>
                 </li>
               </ul>
@@ -221,15 +221,15 @@ export default function RestoContent() {
               <p className="per">per maand, excl. btw</p>
               <ul>
                 <li>
-                  <span className="mark">✓</span>
+                  <span className="tick">✓</span>
                   <span>Hosting, SSL, dagelijkse back-ups &amp; updates</span>
                 </li>
                 <li>
-                  <span className="mark">✓</span>
+                  <span className="tick">✓</span>
                   <span>CMS-toegang &amp; support via e-mail</span>
                 </li>
                 <li>
-                  <span className="mark">✓</span>
+                  <span className="tick">✓</span>
                   <span>Wij voeren uw wijzigingen door (menu binnen 48u, tot 2u/mnd)</span>
                 </li>
               </ul>
