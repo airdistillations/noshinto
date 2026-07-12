@@ -47,8 +47,14 @@ export default function MobileMenu() {
 
   // Project + about pages don't show the floating menu: there the
   // "home" action is a glass dot button instead (in the ImageZoom
-  // cluster on project pages, standalone on about).
-  if (pathname.startsWith('/work/') || pathname.startsWith('/about')) return null;
+  // cluster on project pages, standalone on about). /resto is a
+  // standalone page with no site chrome at all.
+  if (
+    pathname.startsWith('/work/') ||
+    pathname.startsWith('/about') ||
+    pathname.startsWith('/resto')
+  )
+    return null;
 
   // side: which side of the centred button the link hangs off. Links are
   // absolutely positioned so mounting/unmounting them never shifts the

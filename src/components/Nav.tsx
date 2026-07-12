@@ -31,6 +31,9 @@ export default function Nav() {
     return href === '/' ? pathname === '/' : pathname.startsWith(href);
   }
 
+  // /resto is a standalone page — no site chrome (header, scrims, nav).
+  if (pathname.startsWith('/resto')) return null;
+
   function onNavClick(e: React.MouseEvent, href: string) {
     setOpen(false);
     // If already on this route, prevent the navigation and scroll to top.

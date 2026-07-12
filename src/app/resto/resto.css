@@ -1,0 +1,183 @@
+/* /resto — standalone page styles, ported from the supplied artifact.
+   Every selector is scoped under .resto so nothing leaks into the main
+   site (this CSS is global once bundled). The artifact's body/root
+   rules live on .resto itself. */
+
+.resto {
+  --bg: #fbfbfa;
+  --surface: #ffffff;
+  --ink: #111111;
+  --ink-soft: #787774;
+  --line: #eaeaea;
+  --leader: #c9c6bf;
+  --serif: var(--font-newsreader), Georgia, serif;
+  --sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace;
+
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100svh;
+}
+.resto * { box-sizing: border-box; margin: 0; padding: 0; }
+.resto a { color: inherit; text-decoration: none; }
+.resto a:focus-visible,
+.resto button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 2px; }
+
+/* ---------- header ---------- */
+.resto header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 28px clamp(20px, 5vw, 64px);
+}
+.resto .wordmark { font-family: var(--sans); font-weight: 600; letter-spacing: 0.01em; }
+
+.resto main { max-width: 840px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 40px) 120px; }
+
+/* ---------- hero ---------- */
+.resto .hero { padding: clamp(64px, 12vh, 140px) 0 clamp(56px, 9vh, 96px); }
+.resto .eyebrow {
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-soft); margin-bottom: 24px;
+}
+.resto h1 {
+  font-family: var(--serif); font-weight: 500;
+  font-size: clamp(38px, 6vw, 64px); line-height: 1.08; letter-spacing: -0.02em;
+  max-width: 14ch;
+}
+.resto .hero p:not(.eyebrow) {
+  font-family: var(--serif); font-style: italic; font-size: clamp(19px, 2.4vw, 23px);
+  line-height: 1.5; color: var(--ink-soft); margin-top: 28px; max-width: 34ch;
+}
+
+/* ---------- sections ---------- */
+.resto section { padding: clamp(56px, 9vh, 96px) 0; border-top: 1px solid var(--line); }
+.resto h2 {
+  font-family: var(--serif); font-weight: 500;
+  font-size: clamp(26px, 3.4vw, 34px); letter-spacing: -0.015em; line-height: 1.15;
+  margin-bottom: 8px;
+}
+.resto .section-note { color: var(--ink-soft); font-size: 15px; margin-bottom: 40px; }
+.resto .section-body { margin-top: 40px; }
+
+/* ---------- aanpak: 5 stappen ---------- */
+.resto .steps { list-style: none; counter-reset: step; }
+.resto .steps li {
+  display: grid; grid-template-columns: 56px 1fr; gap: 20px;
+  padding: 26px 0; border-bottom: 1px solid var(--line);
+}
+.resto .steps li:last-child { border-bottom: none; }
+.resto .steps .num { font-family: var(--mono); font-size: 13px; color: var(--ink-soft); padding-top: 5px; }
+.resto .steps h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+.resto .steps p { color: var(--ink-soft); font-size: 15px; }
+
+/* ---------- menukaart-stijl prijsregels ---------- */
+.resto .menu-card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  padding: clamp(28px, 5vw, 48px);
+}
+.resto .menu-card + .menu-card { margin-top: 20px; }
+.resto .menu-heading {
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-soft); margin-bottom: 26px;
+}
+.resto .menu-row { display: flex; align-items: baseline; gap: 12px; padding: 13px 0; }
+.resto .menu-row .item { max-width: 62ch; }
+.resto .menu-row .item strong { font-weight: 600; }
+.resto .menu-row .item .desc { display: block; color: var(--ink-soft); font-size: 14px; margin-top: 3px; }
+.resto .menu-row .leader {
+  flex: 1; min-width: 24px; border-bottom: 1px dotted var(--leader);
+  transform: translateY(-5px);
+}
+.resto .menu-row .price { font-family: var(--mono); font-size: 15px; white-space: nowrap; }
+.resto .fineprint { color: var(--ink-soft); font-size: 13px; margin-top: 22px; }
+
+/* ---------- inbegrepen ---------- */
+.resto .included { margin-top: 36px; }
+.resto .included h3 {
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-soft); font-weight: 400; margin-bottom: 18px;
+}
+.resto .included ul { list-style: none; columns: 2; column-gap: 48px; }
+.resto .included li {
+  break-inside: avoid; padding: 10px 0 10px 22px; position: relative;
+  font-size: 15px; border-bottom: 1px solid var(--line);
+}
+.resto .included li::before { content: '—'; position: absolute; left: 0; color: var(--ink-soft); }
+@media (max-width: 640px) { .resto .included ul { columns: 1; } }
+
+/* ---------- beheer ---------- */
+.resto .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 8px; }
+@media (max-width: 640px) { .resto .plans { grid-template-columns: 1fr; } }
+.resto .plan {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  padding: clamp(26px, 4vw, 38px);
+  transition: box-shadow 0.2s ease;
+}
+.resto .plan:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); }
+.resto .plan h3 { font-size: 16px; font-weight: 600; }
+.resto .plan .price {
+  font-family: var(--serif); font-size: clamp(30px, 4vw, 38px); font-weight: 500;
+  letter-spacing: -0.02em; margin: 14px 0 4px;
+}
+.resto .plan .per { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); }
+.resto .plan ul { list-style: none; margin-top: 24px; }
+.resto .plan li {
+  display: grid; grid-template-columns: 20px 1fr; gap: 10px;
+  padding: 11px 0; border-top: 1px solid var(--line); font-size: 14.5px;
+}
+.resto .plan li .mark { font-family: var(--mono); color: var(--ink-soft); }
+.resto .plan li.absent { color: var(--ink-soft); }
+
+/* ---------- uitgangspunten & praktisch ---------- */
+.resto .terms { list-style: none; }
+.resto .terms li {
+  padding: 20px 0 20px 26px; position: relative; border-bottom: 1px solid var(--line);
+  font-size: 15px; color: var(--ink); max-width: 68ch;
+}
+.resto .terms li::before { content: '—'; position: absolute; left: 0; color: var(--ink-soft); }
+.resto .terms li:last-child { border-bottom: none; }
+.resto .terms strong { font-weight: 600; }
+
+/* ---------- voorgaande projecten ---------- */
+.resto .projects { list-style: none; }
+.resto .projects li { border-bottom: 1px solid var(--line); }
+.resto .projects a {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+  padding: 20px 2px;
+  transition: padding 0.2s ease;
+}
+.resto .projects a:hover { padding-left: 10px; }
+.resto .projects .name { font-family: var(--serif); font-size: clamp(19px, 2.6vw, 24px); font-weight: 500; }
+.resto .projects .url { font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft); white-space: nowrap; }
+@media (max-width: 520px) { .resto .projects .url { display: none; } }
+
+/* ---------- contact ---------- */
+.resto .contact { text-align: left; }
+.resto .contact p { color: var(--ink-soft); max-width: 52ch; margin-bottom: 32px; }
+.resto .btn {
+  display: inline-block; background: var(--ink); color: #fff;
+  font-size: 15px; padding: 14px 26px; border-radius: 6px;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+.resto .btn:hover { background: #333; }
+.resto .btn:active { transform: scale(0.98); }
+
+.resto footer {
+  border-top: 1px solid var(--line);
+  padding: 32px clamp(20px, 5vw, 64px);
+  display: flex; justify-content: space-between;
+  font-size: 13px; color: var(--ink-soft);
+}
+
+/* ---------- scroll entry ---------- */
+.resto .reveal {
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.resto .reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .resto .reveal { opacity: 1; transform: none; transition: none; }
+}
