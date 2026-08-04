@@ -1,0 +1,407 @@
+/* ---------------------------------------------------------------------------
+   IR — private monogram viewer
+
+   Warm ivory paper, ink black, one antique-gold accent held in reserve for
+   focus and error. Italiana carries the display voice (fine, art-nouveau
+   capitals that sit naturally beside a calligraphic monogram); Cormorant
+   Garamond handles everything read at text size.
+
+   Two layers only: the gate, and the stage behind it. The gate lifts.
+--------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Italiana';
+  src: url('fonts/italiana-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('fonts/cormorant-garamond-var.woff2') format('woff2-variations');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --paper:       #f2eee6;
+  --paper-deep:  #e6e0d3;
+  --ink:         #14110d;
+  --ink-soft:    rgba(20, 17, 13, 0.56);
+  --ink-faint:   rgba(20, 17, 13, 0.16);
+  --ink-hair:    rgba(20, 17, 13, 0.22);
+  --gold:        #9c8654;
+
+  --display: 'Italiana', 'Didot', 'Bodoni MT', Garamond, serif;
+  --body:    'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+
+  /* Long, slow, unhurried — matches the pace of the spin. */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --lift: 1400ms;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---------------------------------------------------------------- stage --- */
+
+.stage {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+
+  /* A soft studio pool of light, brightest just behind the monogram, falling
+     to a warm shadow at the corners. This is what gives the glossy black
+     material something to be glossy against. */
+  background:
+    radial-gradient(120% 90% at 50% 42%,
+      #fbf9f5 0%,
+      var(--paper) 38%,
+      var(--paper-deep) 78%,
+      #d8d1c1 100%);
+
+  /* Held back until the password lands. */
+  opacity: 0;
+  transform: scale(1.045);
+  transition:
+    opacity   var(--lift) var(--ease),
+    transform 2600ms      var(--ease);
+}
+
+body.unlocked .stage {
+  opacity: 1;
+  transform: scale(1);
+}
+
+#canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Corner falloff, drawn over the canvas so the monogram's edges sink into
+   the paper rather than stopping at a hard rectangle. */
+.stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    100% 75% at 50% 45%,
+    transparent 52%,
+    rgba(101, 90, 68, 0.10) 82%,
+    rgba(60, 52, 38, 0.20) 100%);
+}
+
+/* ----------------------------------------------------------------- gate --- */
+
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 300; /* above .grain (250) — see the note there */
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background: var(--paper);
+  transition:
+    opacity    var(--lift) var(--ease),
+    filter     var(--lift) var(--ease),
+    visibility 0s linear var(--lift);
+}
+
+body.unlocked .gate {
+  opacity: 0;
+  filter: blur(14px);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.gate__inner {
+  width: min(30rem, 100%);
+  text-align: center;
+}
+
+/* Page load: eyebrow, mark, form, in that order. One orchestrated entrance
+   rather than a scatter of micro-animations. */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(0.9rem); }
+  to   { opacity: 1; transform: none; }
+}
+
+.gate__eyebrow,
+.gate__mark,
+.gate__form {
+  animation: rise 1100ms var(--ease) backwards;
+}
+
+.gate__eyebrow { animation-delay: 120ms; }
+.gate__mark    { animation-delay: 260ms; }
+.gate__form    { animation-delay: 460ms; }
+
+.gate__eyebrow {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 0.6875rem;
+  letter-spacing: 0.62em;
+  text-indent: 0.62em; /* re-centre against the trailing letterspace */
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.gate__mark {
+  margin: 1.75rem 0 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(4.5rem, 17vw, 7.5rem);
+  line-height: 0.94;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.5rem, 2.2vw, 1rem);
+}
+
+.gate__amp {
+  font-size: 0.34em;
+  color: var(--gold);
+  transform: translateY(-0.22em);
+  font-style: italic;
+  font-family: var(--body);
+}
+
+.gate__form {
+  margin-top: 2.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.25rem;
+}
+
+/* ---------------------------------------------------------------- field --- */
+
+.field {
+  position: relative;
+  width: min(19rem, 100%);
+}
+
+.field__input {
+  width: 100%;
+  padding: 0.35rem 0 0.7rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 1.375rem;
+  font-weight: 400;
+  letter-spacing: 0.5em;
+  text-indent: 0.5em;
+  text-align: center;
+  caret-color: var(--gold);
+  outline: none;
+  border-radius: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* The rule under the field is the whole affordance — it grows from the
+   centre on focus and is the thing that reacts when a password is wrong. */
+.field__rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--ink-faint);
+}
+
+.field__rule::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  transform: scaleX(0);
+  transition: transform 700ms var(--ease), background-color 400ms ease;
+}
+
+.field:focus-within .field__rule::after { transform: scaleX(1); }
+
+.field__placeholder {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0.35rem;
+  pointer-events: none;
+  font-size: 1.0625rem;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  color: var(--ink-soft);
+  opacity: 0.72;
+  transition: opacity 400ms var(--ease), transform 500ms var(--ease);
+}
+
+/* Only cleared once something has been typed. The field is autofocused on
+   load, so hiding this on :focus-within would leave an unlabelled line. */
+.field.filled .field__placeholder {
+  opacity: 0;
+  transform: translateY(-0.3rem);
+}
+
+/* Wrong password. Short, sharp, then still. */
+@keyframes refuse {
+  0%, 100% { transform: translateX(0); }
+  15%      { transform: translateX(-7px); }
+  30%      { transform: translateX(6px); }
+  45%      { transform: translateX(-4px); }
+  60%      { transform: translateX(3px); }
+  80%      { transform: translateX(-1px); }
+}
+
+.field.refused { animation: refuse 520ms cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+.field.refused .field__rule::after { background: var(--gold); transform: scaleX(1); }
+
+/* ---------------------------------------------------------------- enter --- */
+
+.enter {
+  position: relative;
+  padding: 0.9rem 3.25rem;
+  border: 1px solid var(--ink-hair);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 0.75rem;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: color 600ms var(--ease), border-color 600ms var(--ease);
+}
+
+/* Ink wipes up from the baseline on hover. */
+.enter::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  transform: translateY(101%);
+  transition: transform 620ms var(--ease);
+}
+
+.enter__label { position: relative; }
+
+.enter:hover,
+.enter:focus-visible {
+  color: var(--paper);
+  border-color: var(--ink);
+  outline: none;
+}
+
+.enter:hover::before,
+.enter:focus-visible::before { transform: translateY(0); }
+
+.enter:disabled {
+  cursor: default;
+  color: var(--ink-soft);
+  border-color: var(--ink-faint);
+}
+
+.enter:disabled::before { transform: translateY(101%); }
+
+/* -------------------------------------------------------------- message --- */
+
+.gate__message {
+  min-height: 1.4em;
+  margin: 1.75rem 0 0;
+  font-size: 0.875rem;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  opacity: 0;
+  transition: opacity 400ms var(--ease);
+}
+
+.gate__message.visible { opacity: 1; }
+.gate__message.error   { color: var(--gold); font-style: normal; letter-spacing: 0.16em; font-size: 0.75rem; text-transform: uppercase; font-family: var(--display); }
+
+/* ---------------------------------------------------------------- grain --- */
+
+/* Sits above the stage to give the flat gradient some tooth, below the gate.
+   pointer-events:none is load-bearing: a full-viewport fixed overlay without
+   it eats every tap on touch devices. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  pointer-events: none;
+  opacity: 0.38;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+/* ------------------------------------------------------------- noscript --- */
+
+.noscript {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: grid;
+  place-items: center;
+  background: var(--paper);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+/* -------------------------------------------------------------- motion --- */
+
+/* The spin is the content, so it is not simply removed — main.js parks the
+   monogram at a three-quarter view instead. Here we drop the page-level
+   transitions to match. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .stage { transform: none; }
+}
+
+/* --------------------------------------------------------------- mobile --- */
+
+@media (max-width: 30rem) {
+  .gate { padding: 1.5rem; }
+  .gate__eyebrow { letter-spacing: 0.5em; text-indent: 0.5em; }
+  .field__input { font-size: 1.25rem; letter-spacing: 0.4em; text-indent: 0.4em; }
+  .enter { padding: 0.85rem 2.5rem; }
+}
+
+/* Landscape phones: the mark alone would push the field off-screen. */
+@media (max-height: 34rem) {
+  .gate__mark  { font-size: clamp(3rem, 11vh, 4.5rem); margin-top: 1rem; }
+  .gate__form  { margin-top: 1.75rem; gap: 1.5rem; }
+  .gate__message { margin-top: 1rem; }
+}

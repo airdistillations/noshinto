@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>IR</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#f2eee6" />
+<meta name="description" content="Private." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23f2eee6'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='18' text-anchor='middle' fill='%2314110d'%3ER%3C/text%3E%3C/svg%3E" />
+<link rel="preload" href="fonts/italiana-400.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="fonts/cormorant-garamond-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- The viewer. Present from the start but veiled; the gate lifts to reveal it. -->
+  <main class="stage" id="stage" aria-hidden="true">
+    <canvas id="canvas"></canvas>
+  </main>
+
+  <!-- The gate. -->
+  <section class="gate" id="gate">
+    <div class="gate__inner">
+      <p class="gate__eyebrow">Private</p>
+
+      <h1 class="gate__mark" aria-label="I R">
+        <span>I</span><span class="gate__amp">&amp;</span><span>R</span>
+      </h1>
+
+      <form class="gate__form" id="form" novalidate>
+        <div class="field" id="field">
+          <input
+            id="password"
+            class="field__input"
+            type="password"
+            inputmode="text"
+            autocomplete="current-password"
+            aria-label="Password"
+            aria-describedby="message"
+            spellcheck="false"
+            autocapitalize="off"
+            autofocus
+          />
+          <span class="field__rule" aria-hidden="true"></span>
+          <span class="field__placeholder" id="placeholder" aria-hidden="true">password</span>
+        </div>
+
+        <button class="enter" id="submit" type="submit">
+          <span class="enter__label">Enter</span>
+        </button>
+      </form>
+
+      <p class="gate__message" id="message" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- Paper grain. pointer-events:none, or it swallows every tap. -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <noscript>
+    <div class="noscript">This page needs JavaScript.</div>
+  </noscript>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
