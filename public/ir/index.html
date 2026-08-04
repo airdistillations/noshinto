@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>IR</title>
 <meta name="robots" content="noindex, nofollow" />
-<meta name="theme-color" content="#e8e8e6" />
+<meta name="theme-color" content="#bebebe" />
 <meta name="description" content="Private." />
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
@@ -58,11 +58,46 @@ the code
         <div class="open" id="open">
           <button class="open__btn" type="button" id="enter">enter</button>
         </div>
-
-        <div class="glow" id="glow" aria-hidden="true"></div>
       </div>
     </div>
+
+    <!-- Outside the panel, and outside the element that shakes: with the device
+         frame gone there is nothing to clip this to, so it washes the whole
+         screen rather than a 393x852 rectangle of it. -->
+    <div class="glow" id="glow" aria-hidden="true"></div>
   </section>
+
+  <!-- Bottom player, revealed with the monogram. -->
+  <div class="player" id="player" aria-hidden="true">
+    <button class="player__btn" type="button" id="playBtn" aria-label="Pause">
+      <svg class="player__icon player__icon--pause" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="7" y="5" width="3.4" height="14" rx="1.1" fill="currentColor" />
+        <rect x="13.6" y="5" width="3.4" height="14" rx="1.1" fill="currentColor" />
+      </svg>
+      <svg class="player__icon player__icon--play" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M8.5 5.4a1 1 0 0 1 1.52-.85l8.1 5.6a1 1 0 0 1 0 1.7l-8.1 5.6a1 1 0 0 1-1.52-.85V5.4Z" fill="currentColor" />
+      </svg>
+    </button>
+
+    <div class="player__ticker">
+      <!-- Two identical halves; the track slides exactly -50% and loops, so the
+           seam never lands anywhere visible. -->
+      <div class="player__track">
+        <span class="player__half">
+          <span class="player__title">I Love You Always Forever</span>
+          <span class="player__dot">·</span>
+          <span class="player__artist">Donna Lewis</span>
+        </span>
+        <span class="player__half" aria-hidden="true">
+          <span class="player__title">I Love You Always Forever</span>
+          <span class="player__dot">·</span>
+          <span class="player__artist">Donna Lewis</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <audio id="audio" src="audio/donna-lewis-i-love-you-always-forever.mp3" preload="auto" loop></audio>
 
   <noscript>
     <div class="noscript">This page needs JavaScript.</div>

@@ -29,8 +29,10 @@
 }
 
 :root {
-  /* Straight from the design. */
-  --page:   rgb(232, 232, 230);
+  /* The design framed the keypad in a device on a lighter page. That frame is
+     gone by request, so the device's own grey now runs edge to edge and --page
+     and --panel are the same value. */
+  --page:   rgb(190, 190, 190);
   --panel:  rgb(190, 190, 190);
   --ink:    rgb(0, 0, 0);
   --dot:    rgb(217, 217, 217);
@@ -129,18 +131,15 @@ body.unlocked .gate {
   pointer-events: none;
 }
 
-/* The design's device. Fixed pixel geometry; main.js sets --fit to scale it. */
+/* The design's device, now unframed: no radius, no shadow, no fill of its own —
+   it survives purely as the 393x852 coordinate space the keypad is laid out in.
+   main.js sets --fit to scale that space to the viewport. */
 .phone {
   position: relative;
   width: 393px;
   height: 852px;
   flex: none;
-  border-radius: 46px;
-  overflow: hidden;
-  background: var(--panel);
-  box-shadow:
-    0 30px 70px rgba(0, 0, 0, 0.20),
-    0 2px 0 rgba(255, 255, 255, 0.35) inset;
+  background: transparent;
 
   transform: scale(var(--fit, 1));
   transform-origin: center;
@@ -405,8 +404,9 @@ body.unlocked .phone {
 
 /* ----------------------------------------------------------------- glow --- */
 
+/* Full-viewport now that there is no device to sit inside. */
 .glow {
-  position: absolute;
+  position: fixed;
   inset: 0;
   pointer-events: none;
   opacity: 0;
@@ -474,6 +474,137 @@ body.unlocked .phone {
   50%      { transform: scale(1.035); }
 }
 
+/* --------------------------------------------------------------- player --- */
+
+/* A Spotify-shaped bar — control on the left, track info scrolling beside it —
+   but wearing the page's own materials: the keypad's glass on the button, the
+   studio's warmth in the bar. Above everything, so nothing can swallow the tap. */
+.player {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 400;
+
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 18px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+
+  background: rgba(246, 243, 236, 0.72);
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  box-shadow: 0 -1px 0 rgba(20, 17, 13, 0.10);
+
+  /* Held back until the monogram is revealed. */
+  opacity: 0;
+  transform: translateY(100%);
+  visibility: hidden;
+  transition:
+    opacity    600ms cubic-bezier(0.22, 1, 0.36, 1) 300ms,
+    transform  700ms cubic-bezier(0.22, 1, 0.36, 1) 300ms,
+    visibility 0s linear 1000ms;
+}
+
+body.unlocked .player {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  transition-delay: 700ms, 700ms, 0s;
+}
+
+.player__btn {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow:
+    0 3px 8px rgba(20, 17, 13, 0.10),
+    inset 0 1px 1px rgba(255, 255, 255, 0.8),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.05);
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform        0.13s cubic-bezier(0.2, 0.8, 0.3, 1),
+    background-color 0.2s ease,
+    box-shadow       0.2s ease;
+}
+
+.player__btn:hover,
+.player__btn:focus-visible {
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 5px 14px rgba(20, 17, 13, 0.14), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+  outline: none;
+}
+
+.player__btn:active { transform: scale(0.92); }
+
+.player__icon {
+  grid-area: 1 / 1;
+  width: 17px;
+  height: 17px;
+}
+
+/* Which glyph shows is driven by the bar's state, not the button's. */
+.player__icon--play  { display: none; }
+.player.paused .player__icon--play  { display: block; }
+.player.paused .player__icon--pause { display: none; }
+
+.player__ticker {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  /* Let the text dissolve at both ends rather than hit a hard edge. */
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.player__track {
+  display: flex;
+  width: max-content;
+  animation: ticker 22s linear infinite;
+}
+
+/* Both halves are identical, so translating exactly -50% returns the track to a
+   pixel-identical position — the loop has no seam to spot. */
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.player:hover .player__track { animation-play-state: paused; }
+
+.player__half {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-right: 48px; /* the gap that reads as spacing between repeats */
+  white-space: nowrap;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.player__artist { opacity: 0.55; }
+.player__dot    { opacity: 0.35; }
+
+@media (max-width: 30rem) {
+  .player { gap: 12px; padding-left: 14px; padding-right: 14px; }
+  .player__half { font-size: 10px; letter-spacing: 0.16em; padding-right: 36px; }
+}
+
 /* ------------------------------------------------------------- noscript --- */
 
 .noscript {
@@ -510,4 +641,9 @@ body.unlocked .phone {
   .phone { transition-duration: 200ms; }
   .stage { transform: none; }
   body.unlocked .phone { transform: scale(var(--fit, 1)); }
+
+  /* The ticker would otherwise scroll forever. Park it and let the title sit
+     still — it fits on one line at this size anyway. */
+  .player__track { animation: none; }
+  .player { transition-duration: 200ms; }
 }
