@@ -2,24 +2,32 @@
    IR — private monogram viewer
 
    Warm ivory paper, ink black, one antique-gold accent held in reserve for
-   focus and error. Italiana carries the display voice (fine, art-nouveau
-   capitals that sit naturally beside a calligraphic monogram); Cormorant
-   Garamond handles everything read at text size.
+   focus and error.
+
+   Two voices. Rubik Mono One is the interface — eyebrow, field, button — and
+   Space Grotesk carries the display mark and body copy. Keeping the gate to one
+   blunt, technical register is deliberate: it saves the contrast for the moment
+   it opens onto the calligraphic monogram, rather than spending it on competing
+   typefaces inside the gate itself.
 
    Two layers only: the gate, and the stage behind it. The gate lifts.
 --------------------------------------------------------------------------- */
 
+/* Both self-hosted rather than pulled through the Google Fonts @import: an
+   @import inside a stylesheet blocks CSS parsing on a third-party round trip,
+   and this way the page carries no external dependency at all. Both are SIL
+   Open Font License. */
 @font-face {
-  font-family: 'Italiana';
-  src: url('fonts/italiana-400.woff2') format('woff2');
+  font-family: 'Rubik Mono One';
+  src: url('fonts/rubik-mono-one-400.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Cormorant Garamond';
-  src: url('fonts/cormorant-garamond-var.woff2') format('woff2-variations');
+  font-family: 'Space Grotesk';
+  src: url('fonts/space-grotesk-var.woff2') format('woff2-variations');
   font-weight: 300 700;
   font-style: normal;
   font-display: swap;
@@ -34,8 +42,14 @@
   --ink-hair:    rgba(20, 17, 13, 0.22);
   --gold:        #9c8654;
 
-  --display: 'Italiana', 'Didot', 'Bodoni MT', Garamond, serif;
-  --body:    'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+  /* Display mark and body copy. */
+  --body:    'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+
+  /* Interface voice: eyebrow, field, button. A heavy techno face against the
+     calligraphic monogram — the contrast is the point. It runs far wider and
+     blacker than the serifs it replaced, so every slot using it is set smaller
+     and much more tightly tracked than a serif would want. */
+  --ui:      'Rubik Mono One', 'Courier New', monospace;
 
   /* Long, slow, unhurried — matches the pace of the spin. */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -167,33 +181,38 @@ body.unlocked .gate {
 
 .gate__eyebrow {
   margin: 0;
-  font-family: var(--display);
-  font-size: 0.6875rem;
-  letter-spacing: 0.62em;
-  text-indent: 0.62em; /* re-centre against the trailing letterspace */
+  font-family: var(--ui);
+  font-size: 0.5rem;
+  letter-spacing: 0.36em;
+  text-indent: 0.36em; /* re-centre against the trailing letterspace */
   text-transform: uppercase;
   color: var(--ink-soft);
 }
 
 .gate__mark {
-  margin: 1.75rem 0 0;
-  font-family: var(--display);
-  font-weight: 400;
-  font-size: clamp(4.5rem, 17vw, 7.5rem);
+  margin: 1.6rem 0 0;
+  font-family: var(--body);
+  font-weight: 700;
+  /* Set well below the old serif size: Space Grotesk Bold carries far more
+     weight per em than Italiana's hairline capitals, so matching the previous
+     size would turn the mark into a slab. */
+  font-size: clamp(3rem, 11vw, 4.75rem);
   line-height: 0.94;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.01em;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(0.5rem, 2.2vw, 1rem);
+  gap: clamp(0.4rem, 1.6vw, 0.75rem);
 }
 
 .gate__amp {
-  font-size: 0.34em;
+  font-size: 0.46em;
   color: var(--gold);
-  transform: translateY(-0.22em);
-  font-style: italic;
-  font-family: var(--body);
+  transform: translateY(-0.06em);
+  font-weight: 500;
+  /* Deliberately upright: Space Grotesk ships no true italic, so `italic` here
+     would get a synthesised slant — visibly wrong on a glyph this decorative.
+     A lighter weight than the letters keeps it a joint, not a third initial. */
 }
 
 .gate__form {
@@ -217,11 +236,11 @@ body.unlocked .gate {
   border: 0;
   background: transparent;
   color: var(--ink);
-  font-family: var(--body);
-  font-size: 1.375rem;
+  font-family: var(--ui);
+  font-size: 0.875rem;
   font-weight: 400;
-  letter-spacing: 0.5em;
-  text-indent: 0.5em;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
   text-align: center;
   caret-color: var(--gold);
   outline: none;
@@ -256,13 +275,15 @@ body.unlocked .gate {
   position: absolute;
   left: 0;
   right: 0;
-  top: 0.35rem;
+  top: 0.55rem;
   pointer-events: none;
-  font-size: 1.0625rem;
-  letter-spacing: 0.42em;
-  text-indent: 0.42em;
+  font-family: var(--ui);
+  font-size: 0.5625rem;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  text-transform: uppercase;
   color: var(--ink-soft);
-  opacity: 0.72;
+  opacity: 0.62;
   transition: opacity 400ms var(--ease), transform 500ms var(--ease);
 }
 
@@ -294,10 +315,10 @@ body.unlocked .gate {
   border: 1px solid var(--ink-hair);
   background: transparent;
   color: var(--ink);
-  font-family: var(--display);
-  font-size: 0.75rem;
-  letter-spacing: 0.42em;
-  text-indent: 0.42em;
+  font-family: var(--ui);
+  font-size: 0.5625rem;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
   text-transform: uppercase;
   cursor: pointer;
   overflow: hidden;
@@ -351,7 +372,7 @@ body.unlocked .gate {
 }
 
 .gate__message.visible { opacity: 1; }
-.gate__message.error   { color: var(--gold); font-style: normal; letter-spacing: 0.16em; font-size: 0.75rem; text-transform: uppercase; font-family: var(--display); }
+.gate__message.error   { color: var(--gold); font-style: normal; letter-spacing: 0.22em; text-indent: 0.22em; font-size: 0.5rem; text-transform: uppercase; font-family: var(--ui); }
 
 /* ---------------------------------------------------------------- grain --- */
 
@@ -403,9 +424,10 @@ body.unlocked .gate {
 
 @media (max-width: 30rem) {
   .gate { padding: 1.5rem; }
-  .gate__eyebrow { letter-spacing: 0.5em; text-indent: 0.5em; }
-  .field__input { font-size: 1.25rem; letter-spacing: 0.4em; text-indent: 0.4em; }
-  .enter { padding: 0.85rem 2.5rem; }
+  .gate__eyebrow { letter-spacing: 0.28em; text-indent: 0.28em; }
+  .field__input { font-size: 0.8125rem; letter-spacing: 0.24em; text-indent: 0.24em; }
+  .field__placeholder { letter-spacing: 0.24em; text-indent: 0.24em; }
+  .enter { padding: 0.85rem 2.25rem; letter-spacing: 0.24em; text-indent: 0.24em; }
 }
 
 /* Landscape phones: the mark alone would push the field off-screen. */
