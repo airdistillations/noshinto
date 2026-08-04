@@ -5,59 +5,64 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>IR</title>
 <meta name="robots" content="noindex, nofollow" />
-<meta name="theme-color" content="#f2eee6" />
+<meta name="theme-color" content="#e8e8e6" />
 <meta name="description" content="Private." />
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-<link rel="preload" href="fonts/rubik-mono-one-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="fonts/space-grotesk-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="fonts/space-mono-400.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <!-- The viewer. Present from the start but veiled; the gate lifts to reveal it. -->
+  <!-- The viewer. Present from the start but veiled; the passcode opens onto it. -->
   <main class="stage" id="stage" aria-hidden="true">
     <canvas id="canvas"></canvas>
   </main>
 
-  <!-- The gate. -->
+  <!-- The gate: a passcode keypad on a device-shaped panel.
+       Laid out in the design's own 393x852 coordinate space and scaled to fit
+       the viewport, so the proportions survive at any size. -->
   <section class="gate" id="gate">
-    <div class="gate__inner">
-      <p class="gate__eyebrow">Private</p>
+    <div class="phone" id="phone">
+      <!-- Everything that shakes on a wrong code lives inside this element. -->
+      <div class="phone__body" id="body">
 
-      <h1 class="gate__mark" aria-label="I R">
-        <span>I</span><span class="gate__amp">&amp;</span><span>R</span>
-      </h1>
+        <p class="prompt" id="prompt">Do you
+have
+the code
+?</p>
 
-      <form class="gate__form" id="form" novalidate>
-        <div class="field" id="field">
-          <input
-            id="password"
-            class="field__input"
-            type="password"
-            inputmode="text"
-            autocomplete="current-password"
-            aria-label="Password"
-            aria-describedby="message"
-            spellcheck="false"
-            autocapitalize="off"
-            autofocus
-          />
-          <span class="field__rule" aria-hidden="true"></span>
-          <span class="field__placeholder" id="placeholder" aria-hidden="true">password</span>
+        <div class="slots" id="slots" role="status" aria-live="polite" aria-label="Passcode entry"></div>
+
+        <div class="tick" id="tick" aria-hidden="true">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+            <path transform="translate(3.85,5.975)" d="M 5.7 12.025 L 0 6.325 L 1.425 4.9 L 5.7 9.175 L 14.875 0 L 16.3 1.425 L 5.7 12.025 Z" fill="currentColor" fill-rule="evenodd"></path>
+          </svg>
         </div>
 
-        <button class="enter" id="submit" type="submit">
-          <span class="enter__label">Enter</span>
-        </button>
-      </form>
+        <div class="pad" id="pad">
+          <button class="key" type="button" data-digit="1">1</button>
+          <button class="key" type="button" data-digit="2">2</button>
+          <button class="key" type="button" data-digit="3">3</button>
+          <button class="key" type="button" data-digit="4">4</button>
+          <button class="key" type="button" data-digit="5">5</button>
+          <button class="key" type="button" data-digit="6">6</button>
+          <button class="key" type="button" data-digit="7">7</button>
+          <button class="key" type="button" data-digit="8">8</button>
+          <button class="key" type="button" data-digit="9">9</button>
+          <button class="key key--zero" type="button" data-digit="0">0</button>
+          <button class="key key--del" type="button" id="del" aria-label="Delete">del</button>
+        </div>
 
-      <p class="gate__message" id="message" role="status" aria-live="polite"></p>
+        <div class="open" id="open">
+          <button class="open__btn" type="button" id="enter">enter</button>
+        </div>
+
+        <div class="glow" id="glow" aria-hidden="true"></div>
+      </div>
     </div>
   </section>
-
-  <!-- Paper grain. pointer-events:none, or it swallows every tap. -->
-  <div class="grain" aria-hidden="true"></div>
 
   <noscript>
     <div class="noscript">This page needs JavaScript.</div>
