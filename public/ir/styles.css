@@ -95,7 +95,16 @@ body.unlocked .stage {
   display: block;
   width: 100%;
   height: 100%;
+  cursor: grab;
+
+  /* Hand single-finger drags to the pointer handlers instead of the browser's
+     gesture machinery. `pinch-zoom` rather than `none` so two-finger zoom still
+     works — there is nothing to pan on this page, but there is something to
+     look at closely. */
+  touch-action: pinch-zoom;
 }
+
+#canvas.dragging { cursor: grabbing; }
 
 /* Corner falloff, drawn over the canvas so the monogram's edges sink into
    the paper rather than stopping at a hard rectangle. */
