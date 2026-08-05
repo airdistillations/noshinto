@@ -55,26 +55,27 @@
     <canvas id="canvas"></canvas>
   </main>
 
-  <!-- Navigation bar -->
+  <!-- Navigation: a floating logo top-left and an emoji square top-right that
+       grows into a vertical pill of emoji destinations. -->
   <header class="nav" id="nav" aria-hidden="true">
-    <div class="bar nav__bar" id="navBar">
-      <a class="bar__logo-link" id="logoLink" href="home" aria-label="Home">
-        <img class="bar__logo" src="img/nav-logo.png" alt="" width="49" height="47" />
-      </a>
+    <a class="nav__logo" id="logoLink" href="home" aria-label="Home">
+      <img src="img/nav-logo.png" alt="" width="59" height="57" />
+    </a>
 
-      <ul class="nav__menu" id="navMenu">
-        <li class="nav__item"><a class="nav__link" data-route="waaaaaat" href="waaaaaat">Waaaaaat?</a></li>
-        <li class="nav__item"><a class="nav__link" data-route="waar-ist-just-te-doen" href="waar-ist-just-te-doen">Waar is&rsquo;t Just Te Doen?</a></li>
-        <li class="nav__item"><a class="nav__link" data-route="seintje-geven" href="seintje-geven">Seintje Geven</a></li>
-        <li class="nav__item"><a class="nav__link" data-route="kadoooootjes" href="kadoooootjes">Kadoooootjes</a></li>
-      </ul>
-
-      <button class="bar__circle nav__toggle" id="navToggle" type="button" aria-expanded="false" aria-label="Open menu">
-        <img class="nav__emoji" src="img/emoji-wink.png" alt="" width="49" height="49" />
+    <div class="nav__pill" id="navBar">
+      <button class="nav__toggle" id="navToggle" type="button" aria-expanded="false" aria-label="Open menu">
+        <img class="nav__emoji" src="img/emoji-wink.png" alt="" width="41" height="41" />
         <svg class="nav__close" viewBox="0 0 15 15" aria-hidden="true">
           <path d="M0.5 0.5 L14.5 14.5 M14.5 0.5 L0.5 14.5" stroke="currentColor" stroke-width="1" />
         </svg>
       </button>
+
+      <ul class="nav__menu" id="navMenu">
+        <li><a class="nav__item" data-route="waaaaaat" href="waaaaaat" aria-label="Waaaaaat?"><img src="img/emoji-waaaaaat.png" alt="" width="42" height="42" /></a></li>
+        <li><a class="nav__item" data-route="waar-ist-just-te-doen" href="waar-ist-just-te-doen" aria-label="Waar is&rsquo;t Just Te Doen?"><img src="img/emoji-waar.png" alt="" width="42" height="42" /></a></li>
+        <li><a class="nav__item" data-route="seintje-geven" href="seintje-geven" aria-label="Seintje Geven"><img src="img/emoji-seintje.png" alt="" width="42" height="42" /></a></li>
+        <li><a class="nav__item" data-route="kadoooootjes" href="kadoooootjes" aria-label="Kadoooootjes"><img src="img/emoji-kado.png" alt="" width="42" height="42" /></a></li>
+      </ul>
     </div>
   </header>
 
