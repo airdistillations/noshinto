@@ -1,16 +1,34 @@
 /* ---------------------------------------------------------------------------
    IR — private monogram viewer
 
-   The gate is a passcode keypad ported from the Claude Design source
-   (Passcode.dc.html). Its geometry is kept verbatim — the design positions
-   everything absolutely inside a 393x852 device panel, so rather than reflow it
-   responsively (and drift from the original), the panel keeps that coordinate
-   space and is scaled to fit the viewport in one transform. See fitPhone() in
-   main.js.
+   Gate: the passcode keypad from the Claude Design source, flat grey, no
+   frame. Home: three rotating background compositions, a nav bar and a music
+   player, all ported from the Figma file ("ir", frames home 1/2/3, navbar
+   open, music player open) with that file's own values.
 
-   Two typefaces, both the design's own choices and both SIL Open Font License,
-   self-hosted: Space Grotesk for words, Space Mono for digits.
+   Two coordinate systems on purpose:
+
+   - The BACKGROUND compositions are Figma-absolute inside 393×852, so they
+     live in a .bg__space div of exactly that size, scaled to the viewport
+     height (see fitStage() in main.js). On an iPhone-sized screen that is
+     pixel-identical to the design; on desktop it reads as a centred poster.
+
+   - The CHROME (nav + player) is a real interface, so it is laid out in
+     native pixels — never scaled — using the design's own measurements:
+     pills min(380px, 100vw − 14px), radius 17, black at 24 % over
+     backdrop-blur, shadow 0 2 5.2 at 8 %.
+
+   Typefaces: Rubik Mono One carries the display compositions, Space Grotesk
+   the chrome and announcement wall, Space Mono the keypad digits.
 --------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Rubik Mono One';
+  src: url('fonts/rubik-mono-one-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
 @font-face {
   font-family: 'Space Grotesk';
@@ -29,20 +47,26 @@
 }
 
 :root {
-  /* The design framed the keypad in a device on a lighter page. That frame is
-     gone by request, so the device's own grey now runs edge to edge and --page
-     and --panel are the same value. */
-  --page:   rgb(190, 190, 190);
-  --panel:  rgb(190, 190, 190);
-  --ink:    rgb(0, 0, 0);
-  --dot:    rgb(217, 217, 217);
+  --page:  rgb(190, 190, 190);
+  --panel: rgb(190, 190, 190);
+  --ink:   rgb(0, 0, 0);
+  --dot:   rgb(217, 217, 217);
+  --light: rgb(227, 227, 227);   /* the pale type on home 2 and 3 */
 
   --sans: 'Space Grotesk', system-ui, sans-serif;
   --mono: 'Space Mono', ui-monospace, monospace;
+  --disp: 'Rubik Mono One', var(--mono);
 
-  /* The studio the monogram is lit against, once the gate opens. */
-  --paper:      #f2eee6;
-  --paper-deep: #e6e0d3;
+  /* Chrome material — the Figma GLASS pill. */
+  --pill-fill:   rgba(0, 0, 0, 0.24);
+  --pill-radius: 17px;
+  --pill-shadow: 0 2px 5.2px rgba(0, 0, 0, 0.08);
+  --pill-width:  min(380px, calc(100vw - 14px));
+
+  /* Set by fitStage(): viewport-height / 852. */
+  --bgfit: 1;
+  /* Set by the audio machinery: played fraction 0..1. */
+  --p: 0;
 }
 
 *,
@@ -69,12 +93,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: 1;
-  background:
-    radial-gradient(120% 90% at 50% 42%,
-      #fbf9f5 0%,
-      var(--paper) 38%,
-      var(--paper-deep) 78%,
-      #d8d1c1 100%);
+  background: var(--panel);
 
   opacity: 0;
   transform: scale(1.045);
@@ -89,26 +108,504 @@ body.unlocked .stage {
 }
 
 #canvas {
+  position: relative; /* above .bg */
   display: block;
   width: 100%;
   height: 100%;
   cursor: grab;
-  /* Hand single-finger drags to the pointer handlers; keep two-finger zoom. */
   touch-action: pinch-zoom;
 }
 
 #canvas.dragging { cursor: grabbing; }
 
-.stage::after {
-  content: '';
+/* ----------------------------------------------------------- backgrounds --- */
+
+.bg {
   position: absolute;
   inset: 0;
+  overflow: hidden;
+}
+
+.bg__variant {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bg__variant.is-active { opacity: 1; }
+
+/* The Figma frame, kept at its own size and scaled. Centred horizontally,
+   pinned to the top so the compositions crop at the bottom like the design. */
+.bg__space {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 393px;
+  height: 852px;
+  transform: translateX(-50%) scale(var(--bgfit));
+  transform-origin: top center;
+}
+
+/* home 1 — "I LOVE YOU ALWAYS FOR EVER", black, 90px Rubik Mono One.
+   Figma: box −17…414 (431 wide, centred), y 41, line-height 67. */
+.type-a {
+  position: absolute;
+  left: 50%;
+  top: 41px;
+  width: 431px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--disp);
+  font-size: 90px;
+  /* The node's declared line-height is stale (per-character overrides carry
+     the real one, which the API doesn't expose) — but the auto-sized box
+     doesn't lie: 741px / 6 lines. */
+  line-height: 123.5px;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* Per-row tracking from the file. CSS letter-spacing also trails the last
+   glyph, which shifts a centred row by half a space — the translate puts the
+   optical centre back. */
+.type-a__row {
+  letter-spacing: var(--rls, -9px);
+  transform: translateX(calc(var(--rls, -9px) / 2));
+}
+
+/* home 2 — the announcement wall. Native 16px on every screen (it is a
+   texture, not a poster), justified, bleeding slightly past every edge. */
+.type-b {
+  position: absolute;
+  inset: -26px -1px -10px 0; /* the design starts the wall 26px above the top */
+  margin: 0;
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 20.4px;
+  letter-spacing: 0.64px;
+  text-transform: uppercase;
+  text-align: justify;
+  color: var(--light);
+  overflow: hidden;
+}
+
+/* home 3 — Antwerpen and the date, pale, cropped by the viewport. */
+.type-c-digits,
+.type-c-words {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--disp);
+  text-align: center;
+  color: var(--light);
+  white-space: nowrap;
+}
+
+/* Both nodes are fixed-height boxes with vertical CENTER in Figma, so the
+   visible top is box-top + (box − content)/2. Words: 84 + (171 − 4·78)/2 =
+   13.5 — which is exactly what shoves ANTW half underneath the nav bar in
+   the design. Digits: 173 + (929 − 3·204)/2 = 331.5, cropping "26" at the
+   bottom of the screen. */
+.type-c-digits {
+  top: 331.5px;
+  font-size: 277px;
+  line-height: 204px;
+  letter-spacing: -44.32px;
+  /* recentre for the trailing letterspace, as above */
+  margin-left: -22px;
+}
+
+.type-c-words {
+  top: 13.5px;
+  font-size: 100px;
+  line-height: 78px;
+  letter-spacing: -10px;
+  margin-left: -5px;
+}
+
+/* ---------------------------------------------------------------- chrome --- */
+
+/* Shared pill. */
+.bar {
+  position: relative;
+  width: var(--pill-width);
+  margin: 0 auto;
+  border-radius: var(--pill-radius);
+  background: var(--pill-fill);
+  backdrop-filter: blur(4px) saturate(1.15);
+  -webkit-backdrop-filter: blur(4px) saturate(1.15);
+  box-shadow: var(--pill-shadow);
+}
+
+.bar__logo {
+  position: absolute;
+  left: 15px;
+  top: 12px;
+  width: 49px;
+  height: 47px;
+}
+
+.bar__circle {
+  position: absolute;
+  right: 13px;
+  top: 10px;
+  width: 51px;
+  height: 51px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 1);
+  border-radius: 50%;
+  background: transparent;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ------------------------------------------------------------------- nav --- */
+
+.nav {
+  position: fixed;
+  top: 7px;
+  left: 0;
+  right: 0;
+  z-index: 420;
+
+  opacity: 0;
+  transform: translateY(-16px);
+  visibility: hidden;
+  transition:
+    opacity    600ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform  700ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 700ms;
+}
+
+body.unlocked .nav {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  transition-delay: 700ms, 700ms, 0s;
+}
+
+.nav__bar {
+  height: 71px;
+  overflow: hidden;
+  transition: height 280ms cubic-bezier(0.4, 0, 0.2, 1),
+              backdrop-filter 280ms ease;
+}
+
+/* Open: the same pill grows downward; the glass thickens (the Figma open
+   panel blurs the monogram behind it far more than the slim bar does). */
+.nav.is-open .nav__bar {
+  height: 356px;
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+}
+
+.nav__menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  inset: 71px 0 0 0;
+  opacity: 0;
+  transition: opacity 220ms ease;
   pointer-events: none;
-  background: radial-gradient(
-    100% 75% at 50% 45%,
-    transparent 52%,
-    rgba(101, 90, 68, 0.10) 82%,
-    rgba(60, 52, 38, 0.20) 100%);
+}
+
+.nav.is-open .nav__menu {
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: 80ms;
+}
+
+/* Rows are 70px tall with a hairline on top: 72, 142, 212, 282. */
+.nav__item {
+  position: relative;
+  height: 70px;
+  padding: 12px 0 0 22px;
+  font-size: 16px;
+  line-height: 20.4px;
+  letter-spacing: 0.16px;
+  color: #fff;
+}
+
+.nav__item::before {
+  content: '';
+  position: absolute;
+  left: 13px;
+  right: 13px;
+  top: 1px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.nav__close { display: none; width: 15px; height: 15px; }
+.nav.is-open .nav__emoji { display: none; }
+.nav.is-open .nav__close { display: block; }
+
+/* ---------------------------------------------------------------- player --- */
+
+.player {
+  position: fixed;
+  bottom: 7px;
+  left: 0;
+  right: 0;
+  z-index: 410;
+
+  opacity: 0;
+  transform: translateY(16px);
+  visibility: hidden;
+  transition:
+    opacity    600ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform  700ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 700ms;
+}
+
+body.unlocked .player {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  transition-delay: 700ms, 700ms, 0s;
+}
+
+.player__bar {
+  height: 71px;
+  cursor: pointer;
+  transition: opacity 240ms ease, transform 240ms ease;
+}
+
+.player.is-open .player__bar {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.player__cover {
+  position: absolute;
+  left: 9px;
+  top: 9px;
+  width: 54px;
+  height: 54px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.player__meta {
+  position: absolute;
+  left: 76px;
+  top: 13px;
+  right: 76px;
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  line-height: 20.4px;
+  letter-spacing: 0.16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player__title  { color: #fff; font-weight: 700; }
+.player__artist { color: rgb(219, 219, 219); }
+
+.player__toggle,
+.sheet__play,
+.sheet__skip {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: rgb(238, 238, 238);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  display: grid;
+  place-items: center;
+}
+
+.player__toggle {
+  position: absolute;
+  right: 17px;
+  top: 13px;
+  width: 45px;
+  height: 45px;
+}
+
+.player__toggle svg,
+.sheet__play svg { width: 45px; height: 45px; fill: currentColor; }
+.player__toggle .ic-pause,
+.sheet__play .ic-pause { width: 33px; height: 38px; }
+
+/* Which glyph shows follows the audio, via a body class. */
+.ic-play  { display: none; }
+body.audio-paused .ic-play  { display: block; }
+body.audio-paused .ic-pause { display: none; }
+
+/* The design's small progress mark: an 85px line at the pill's bottom left,
+   with the dot riding it as the song advances. */
+.player__mini {
+  position: absolute;
+  left: 17px;
+  top: 67px;
+  width: 89px;
+  height: 6px;
+  pointer-events: none;
+}
+
+.player__mini-line {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 85px;
+  height: 2px;
+  background: #fff;
+}
+
+.player__mini-dot {
+  position: absolute;
+  top: 0;
+  left: calc(var(--p) * 79px);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* ----------------------------------------------------------------- sheet --- */
+
+.sheet {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  width: var(--pill-width);
+  max-width: 380px;
+  height: min(655px, calc(100vh - 14px));
+  border-radius: var(--pill-radius);
+  background: var(--pill-fill);
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  box-shadow: var(--pill-shadow);
+  overflow: hidden;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity    280ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform  320ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 320ms;
+}
+
+.player.is-open .sheet {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
+
+.sheet__collapse {
+  position: absolute;
+  left: calc(50% - 14px);
+  top: 6px;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  padding: 6px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sheet__collapse svg { display: block; width: 100%; height: 100%; }
+
+.sheet__cover {
+  position: absolute;
+  left: calc(50% - 152px);
+  top: 40px;
+  width: 304px;
+  height: 304px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.sheet__meta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 14px;
+  line-height: 17.9px;
+  letter-spacing: 0.14px;
+}
+
+.sheet__title  { color: #fff; font-weight: 700; }
+.sheet__artist { color: rgb(219, 219, 219); }
+
+.sheet__progress {
+  position: absolute;
+  left: 13px;
+  right: 13px;
+  top: 416px;
+  height: 14px;      /* generous hit target around the 2px line */
+  cursor: pointer;
+  touch-action: none;
+}
+
+.sheet__track,
+.sheet__played {
+  position: absolute;
+  top: 6px;
+  left: 0;
+  height: 2px;
+}
+
+.sheet__track  { right: 0; background: rgba(255, 255, 255, 0.42); }
+.sheet__played { width: calc(var(--p) * 100%); background: #fff; }
+
+.sheet__knob {
+  position: absolute;
+  top: 4px;
+  left: calc(var(--p) * (100% - 6px));
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  pointer-events: none;
+}
+
+.sheet__transport {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 461px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 33px;
+}
+
+.sheet__play { width: 45px; height: 45px; }
+.sheet__skip { width: 51px; height: 45px; }
+.sheet__skip svg { width: 51px; height: 45px; fill: currentColor; }
+
+.sheet__blurb {
+  position: absolute;
+  left: 13px;
+  right: 13px;
+  top: 539px;
+  margin: 0;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 17.9px;
+  color: #fff;
 }
 
 /* ----------------------------------------------------------------- gate --- */
@@ -116,7 +613,7 @@ body.unlocked .stage {
 .gate {
   position: fixed;
   inset: 0;
-  z-index: 300;
+  z-index: 500;
   display: grid;
   place-items: center;
   background: var(--page);
@@ -131,9 +628,6 @@ body.unlocked .gate {
   pointer-events: none;
 }
 
-/* The design's device, now unframed: no radius, no shadow, no fill of its own —
-   it survives purely as the 393x852 coordinate space the keypad is laid out in.
-   main.js sets --fit to scale that space to the viewport. */
 .phone {
   position: relative;
   width: 393px;
@@ -147,7 +641,6 @@ body.unlocked .gate {
               opacity   700ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* On success the whole device recedes rather than the page simply cutting. */
 body.unlocked .phone {
   transform: scale(calc(var(--fit, 1) * 0.94));
   opacity: 0;
@@ -157,8 +650,6 @@ body.unlocked .phone {
   position: absolute;
   inset: 0;
 }
-
-/* --------------------------------------------------------------- prompt --- */
 
 .prompt {
   position: absolute;
@@ -174,10 +665,8 @@ body.unlocked .phone {
   text-align: center;
   text-transform: uppercase;
   color: var(--ink);
-  white-space: pre-wrap; /* the prompt strings carry their own line breaks */
+  white-space: pre-wrap;
 }
-
-/* ---------------------------------------------------------------- slots --- */
 
 .slots {
   position: absolute;
@@ -217,8 +706,6 @@ body.unlocked .phone {
   animation: popIn 0.24s cubic-bezier(0.2, 1.4, 0.4, 1);
 }
 
-/* ----------------------------------------------------------------- tick --- */
-
 .tick {
   position: absolute;
   left: 271px;
@@ -233,8 +720,6 @@ body.unlocked .phone {
   display: block;
   animation: popIn 0.34s 0.12s cubic-bezier(0.2, 1.4, 0.4, 1) both;
 }
-
-/* ------------------------------------------------------------------ pad --- */
 
 .pad {
   position: absolute;
@@ -286,7 +771,6 @@ body.unlocked .phone {
   animation: keyIn 0.44s cubic-bezier(0.2, 1, 0.3, 1) both;
 }
 
-/* The design staggers the keys in, 30ms apart. */
 .key:nth-child(1)  { animation-delay: 0.02s; }
 .key:nth-child(2)  { animation-delay: 0.05s; }
 .key:nth-child(3)  { animation-delay: 0.08s; }
@@ -349,8 +833,6 @@ body.unlocked .phone {
 .key--del:active,
 .key--del.pressed { transform: scale(0.93); background: rgba(244, 244, 244, 0.56); box-shadow: none; }
 
-/* ----------------------------------------------------------------- open --- */
-
 .open {
   position: absolute;
   left: 104px;
@@ -402,9 +884,6 @@ body.unlocked .phone {
 
 .open__btn:active { background: rgba(255, 255, 255, 0.72); }
 
-/* ----------------------------------------------------------------- glow --- */
-
-/* Full-viewport now that there is no device to sit inside. */
 .glow {
   position: fixed;
   inset: 0;
@@ -417,7 +896,6 @@ body.unlocked .phone {
 
 .glow.pulse { animation: glowPulse 0.6s ease-out both; }
 
-/* Wrong code. Two identical keyframes so a repeat attempt restarts the shake. */
 .phone__body.shakeA { animation: shakeA 0.48s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
 .phone__body.shakeB { animation: shakeB 0.48s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
 
@@ -474,143 +952,12 @@ body.unlocked .phone {
   50%      { transform: scale(1.035); }
 }
 
-/* --------------------------------------------------------------- player --- */
-
-/* A Spotify-shaped bar — control on the left, track info scrolling beside it —
-   but wearing the page's own materials: the keypad's glass on the button, the
-   studio's warmth in the bar. Above everything, so nothing can swallow the tap. */
-.player {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 400;
-
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 12px 18px;
-  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-
-  background: rgba(246, 243, 236, 0.72);
-  backdrop-filter: blur(18px) saturate(1.3);
-  -webkit-backdrop-filter: blur(18px) saturate(1.3);
-  box-shadow: 0 -1px 0 rgba(20, 17, 13, 0.10);
-
-  /* Held back until the monogram is revealed. */
-  opacity: 0;
-  transform: translateY(100%);
-  visibility: hidden;
-  transition:
-    opacity    600ms cubic-bezier(0.22, 1, 0.36, 1) 300ms,
-    transform  700ms cubic-bezier(0.22, 1, 0.36, 1) 300ms,
-    visibility 0s linear 1000ms;
-}
-
-body.unlocked .player {
-  opacity: 1;
-  transform: translateY(0);
-  visibility: visible;
-  transition-delay: 700ms, 700ms, 0s;
-}
-
-.player__btn {
-  flex: none;
-  width: 42px;
-  height: 42px;
-  border: 0;
-  padding: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(14px) saturate(1.4);
-  -webkit-backdrop-filter: blur(14px) saturate(1.4);
-  box-shadow:
-    0 3px 8px rgba(20, 17, 13, 0.10),
-    inset 0 1px 1px rgba(255, 255, 255, 0.8),
-    inset 0 -1px 1px rgba(0, 0, 0, 0.05);
-  display: grid;
-  place-items: center;
-  color: var(--ink);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition:
-    transform        0.13s cubic-bezier(0.2, 0.8, 0.3, 1),
-    background-color 0.2s ease,
-    box-shadow       0.2s ease;
-}
-
-.player__btn:hover,
-.player__btn:focus-visible {
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 0 5px 14px rgba(20, 17, 13, 0.14), inset 0 1px 1px rgba(255, 255, 255, 0.9);
-  outline: none;
-}
-
-.player__btn:active { transform: scale(0.92); }
-
-.player__icon {
-  grid-area: 1 / 1;
-  width: 17px;
-  height: 17px;
-}
-
-/* Which glyph shows is driven by the bar's state, not the button's. */
-.player__icon--play  { display: none; }
-.player.paused .player__icon--play  { display: block; }
-.player.paused .player__icon--pause { display: none; }
-
-.player__ticker {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  /* Let the text dissolve at both ends rather than hit a hard edge. */
-  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-}
-
-.player__track {
-  display: flex;
-  width: max-content;
-  animation: ticker 22s linear infinite;
-}
-
-/* Both halves are identical, so translating exactly -50% returns the track to a
-   pixel-identical position — the loop has no seam to spot. */
-@keyframes ticker {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-.player:hover .player__track { animation-play-state: paused; }
-
-.player__half {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-right: 48px; /* the gap that reads as spacing between repeats */
-  white-space: nowrap;
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink);
-}
-
-.player__artist { opacity: 0.55; }
-.player__dot    { opacity: 0.35; }
-
-@media (max-width: 30rem) {
-  .player { gap: 12px; padding-left: 14px; padding-right: 14px; }
-  .player__half { font-size: 10px; letter-spacing: 0.16em; padding-right: 36px; }
-}
-
 /* ------------------------------------------------------------- noscript --- */
 
 .noscript {
   position: fixed;
   inset: 0;
-  z-index: 400;
+  z-index: 600;
   display: grid;
   place-items: center;
   background: var(--page);
@@ -620,9 +967,6 @@ body.unlocked .player {
 
 /* --------------------------------------------------------------- motion --- */
 
-/* The spin is the content, so main.js parks the monogram at a three-quarter
-   view rather than removing it. Here we drop the decorative motion to match —
-   the key press feedback stays, since it is a direct response to input. */
 @media (prefers-reduced-motion: reduce) {
   .key,
   .key--del,
@@ -638,12 +982,14 @@ body.unlocked .player {
   }
 
   .stage,
-  .phone { transition-duration: 200ms; }
+  .phone,
+  .nav,
+  .player,
+  .sheet,
+  .nav__bar { transition-duration: 200ms; }
   .stage { transform: none; }
   body.unlocked .phone { transform: scale(var(--fit, 1)); }
 
-  /* The ticker would otherwise scroll forever. Park it and let the title sit
-     still — it fits on one line at this size anyway. */
-  .player__track { animation: none; }
-  .player { transition-duration: 200ms; }
+  /* main.js also stops the background rotation under reduced motion. */
+  .bg__variant { transition-duration: 400ms; }
 }
