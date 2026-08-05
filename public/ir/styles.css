@@ -241,6 +241,18 @@ body.unlocked .stage {
   box-shadow: var(--pill-shadow);
 }
 
+/* The logo's fifth of the bar is the way home; the other four fifths open the
+   menu (see the nav click handler). The link box is bigger than the mark so
+   it is an easy thumb target. */
+.bar__logo-link {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 76px;
+  height: 71px;
+  display: block;
+}
+
 .bar__logo {
   position: absolute;
   left: 15px;
@@ -299,6 +311,9 @@ body.unlocked .nav {
   transition: height 280ms cubic-bezier(0.4, 0, 0.2, 1),
               backdrop-filter 280ms ease;
 }
+
+/* The whole closed pill opens the menu. */
+.nav:not(.is-open) .nav__bar { cursor: pointer; }
 
 /* Open: the same pill grows downward; the glass thickens (the Figma open
    panel blurs the monogram behind it far more than the slim bar does). */
@@ -516,13 +531,14 @@ body.unlocked .player {
 body.audio-paused .ic-play  { display: block; }
 body.audio-paused .ic-pause { display: none; }
 
-/* The design's small progress mark: an 85px line at the pill's bottom left,
-   with the dot riding it as the song advances. */
+/* The line at the pill's bottom IS the progress readout: it grows from the
+   left edge across the pill as the song plays. (The dot is gone — updated
+   design.) */
 .player__mini {
   position: absolute;
   left: 17px;
+  right: 17px;
   top: 67px;
-  width: 89px;
   height: 6px;
   pointer-events: none;
 }
@@ -531,18 +547,8 @@ body.audio-paused .ic-pause { display: none; }
   position: absolute;
   left: 0;
   top: 2px;
-  width: 85px;
+  width: calc(var(--p) * 100%);
   height: 2px;
-  background: #fff;
-}
-
-.player__mini-dot {
-  position: absolute;
-  top: 0;
-  left: calc(var(--p) * 79px);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
   background: #fff;
 }
 
@@ -552,11 +558,14 @@ body.audio-paused .ic-pause { display: none; }
   position: absolute;
   bottom: 0;
   left: 50%;
-  transform: translateX(-50%) translateY(12px);
+  /* Parked below the viewport; opening slides it up. The 80px clears the
+     player's bottom offset so no edge peeks while closed. Any inline
+     transform set by the drag handler must repeat the -50% X term. */
+  transform: translate(-50%, calc(100% + 80px));
   width: var(--pill-width);
-  height: min(655px, calc(100vh - 14px));
+  height: min(640px, calc(100vh - 14px));
   /* Prefer the dynamic viewport minus both safe insets where supported. */
-  height: min(655px, calc(100dvh - 14px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)));
+  height: min(640px, calc(100dvh - 14px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)));
   border-radius: var(--pill-radius);
   background: var(--pill-fill);
   backdrop-filter: blur(18px) saturate(1.15);
@@ -564,22 +573,24 @@ body.audio-paused .ic-pause { display: none; }
   box-shadow: var(--pill-shadow);
   overflow: hidden;
 
-  opacity: 0;
   visibility: hidden;
   pointer-events: none;
+  /* Drags need pointer deltas, not browser panning. */
+  touch-action: none;
   transition:
-    opacity    280ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform  320ms cubic-bezier(0.22, 1, 0.36, 1),
-    visibility 0s linear 320ms;
+    transform  420ms cubic-bezier(0.32, 0.72, 0, 1),
+    visibility 0s linear 420ms;
 }
 
 .player.is-open .sheet {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translate(-50%, 0);
   visibility: visible;
   pointer-events: auto;
   transition-delay: 0s;
 }
+
+/* While a finger owns the sheet, the transition gets out of the way. */
+.sheet.dragging { transition: none; }
 
 .sheet__collapse {
   position: absolute;
@@ -646,14 +657,30 @@ body.audio-paused .ic-pause { display: none; }
 
 .sheet__knob {
   position: absolute;
-  top: 4px;
-  left: calc(var(--p) * (100% - 6px));
-  width: 6px;
-  height: 6px;
+  top: 3px;
+  left: calc(var(--p) * (100% - 8px));
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: #fff;
   pointer-events: none;
 }
+
+/* Elapsed / total, tucked under the ends of the line. */
+.sheet__time {
+  position: absolute;
+  top: 429px;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0.11px;
+  color: rgb(212, 212, 212);
+  pointer-events: none;
+  font-variant-numeric: tabular-nums; /* 0:09 → 0:10 without wobble */
+}
+
+.sheet__time--start { left: 13px; }
+.sheet__time--end   { right: 13px; }
 
 .sheet__transport {
   position: absolute;
@@ -681,6 +708,9 @@ body.audio-paused .ic-pause { display: none; }
   line-height: 17.9px;
   color: #fff;
 }
+
+/* Tracks without a story just show nothing there. */
+.sheet__blurb:empty { display: none; }
 
 /* ----------------------------------------------------------------- gate --- */
 
