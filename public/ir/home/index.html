@@ -79,12 +79,142 @@
     </div>
   </header>
 
-  <!-- Menu destination placeholder — one URL each, content to come. -->
-  <div class="route" id="route" aria-hidden="true">
-    <p class="route__card">
-      <span class="route__title" id="routeTitle"></span>
-      <span class="route__soon">Binnenkort&hellip;</span>
-    </p>
+  <!-- The menu pages. Each is a full-screen scrollable layer under the fixed
+       chrome; the router shows one at a time. -->
+  <div id="pages">
+
+    <article class="pg" data-page="waaaaaat" aria-hidden="true">
+      <div class="pg__col">
+        <h1 class="pg__title">Waaaaat?</h1>
+        <div class="pg__intro">
+          <p>Na elf jaar liefde gaan wij<br />officieel ja zeggen!</p>
+          <p class="pg__date">12/09/2026</p>
+          <p>Dat doen we met een handtekening op &rsquo;t Schoon Verdiep. Daarna nodigen we jullie uit om te klinken in een van de mooiste parken in Antwerpen!</p>
+          <p><strong>We voorzien een mooie tafel in het park en zetten die vol lekkers:</strong></p>
+        </div>
+
+        <ul class="menu">
+          <li class="menu__item">
+            <h2 class="menu__name">Viennoiserie</h2>
+            <p class="menu__by">Door de beste van &lsquo;t stad (en daarbuiten)<br />legendary Sander Goossens - Leo Antwerpen</p>
+          </li>
+          <li class="menu__item">
+            <h2 class="menu__name">Pulled Pork</h2>
+            <p class="menu__by">Door de beste BBQ-vriend<br />Nathan De Hert</p>
+          </li>
+          <li class="menu__item">
+            <h2 class="menu__name">Champagne</h2>
+            <p class="menu__by">Sans sulfites ajout&eacute;s<br />Domaine Chavost</p>
+          </li>
+          <li class="menu__item">
+            <h2 class="menu__name">Specialty Coffee</h2>
+            <p class="menu__by">Door de allerbeste Roasters van Belgi&euml;<br />Simon &amp; Nanigui</p>
+          </li>
+          <li class="menu__item">
+            <h2 class="menu__name">Non-Alcohalic</h2>
+            <p class="menu__by">Spritz en Sparklings<br />van A.I.R. natuurlijk!</p>
+          </li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="pg" data-page="waar-ist-just-te-doen" aria-hidden="true">
+      <div class="pg__col">
+        <h1 class="pg__title">Waar is&rsquo;t hier te doen?</h1>
+
+        <img class="pg__emoji" src="img/emoji-park.png" alt="" width="32" height="32" />
+
+        <section class="where">
+          <h2 class="where__label">tijdstip</h2>
+          <p>Zaterdag 12 september 2026<br />10:30 tot 13:00</p>
+        </section>
+        <hr class="pg__rule" />
+        <section class="where">
+          <h2 class="where__label">locatie</h2>
+          <p><a class="pg__link" href="https://www.google.com/maps/search/?api=1&amp;query=Zuidpark%2C%202000%20Antwerpen" target="_blank" rel="noopener">Zuidpark 2000 Antwerpen</a><br />ter hoogte van Zuiderpershuis <a class="pg__link" href="https://www.google.com/maps/search/?api=1&amp;query=Waalsekaai%2014%2C%202000%20Antwerpen" target="_blank" rel="noopener">(Waalsekaai 14)</a></p>
+        </section>
+        <hr class="pg__rule" />
+        <section class="where">
+          <h2 class="where__label">parkeren</h2>
+          <p>Q-Park Kooldok<br /><a class="pg__link" href="https://www.google.com/maps/search/?api=1&amp;query=Q-Park%20Kooldok%2C%20Waalsekaai%201A%2C%202000%20Antwerpen" target="_blank" rel="noopener">Waalsekaai 1A, 2000 Antwerpen</a></p>
+        </section>
+        <hr class="pg__rule" />
+        <p class="pg__note">Wij rekenen alvast op een stralende dag.<br />Mocht het Belgische weer toch anders beslissen,<br />dan houden we jullie op de hoogte. :)</p>
+        <hr class="pg__rule pg__rule--double" />
+
+        <img class="pg__emoji pg__emoji--dove" src="img/emoji-dove.png" alt="" width="40" height="40" />
+
+        <p class="pg__intro-2">Voor de vroege vogels: om 9:15 gaan wij een kribbel zetten op &rsquo;t Schoon Verdiep. Altijd welkom maar zeker geen must!</p>
+
+        <section class="where">
+          <h2 class="where__label">tijdstip</h2>
+          <p>Zaterdag 12 september 2026<br />9:15 tot 9:30</p>
+        </section>
+        <hr class="pg__rule" />
+        <section class="where">
+          <h2 class="where__label">locatie</h2>
+          <p>Stadhuis Antwerpen<br /><a class="pg__link" href="https://www.google.com/maps/search/?api=1&amp;query=Stadhuis%20Antwerpen%2C%20Grote%20Markt%201%2C%202000%20Antwerpen" target="_blank" rel="noopener">Grote Markt 1, 2000 Antwerpen</a></p>
+        </section>
+        <hr class="pg__rule" />
+        <section class="where">
+          <h2 class="where__label">parkeren</h2>
+          <p>Indigo Antwerpen Grote Markt<br /><a class="pg__link" href="https://www.google.com/maps/search/?api=1&amp;query=Indigo%20Parking%20Grote%20Markt%2C%20Ernest%20Van%20Dijckkaai%203%2C%202000%20Antwerpen" target="_blank" rel="noopener">Ernest Van Dijckkaai 3, 2000 Antwerpen</a></p>
+        </section>
+      </div>
+    </article>
+
+    <article class="pg" data-page="seintje-geven" aria-hidden="true">
+      <div class="pg__col">
+        <h1 class="pg__title">Seintje geven</h1>
+
+        <form class="rsvp" id="rsvp" novalidate>
+          <fieldset class="rsvp__card" id="cardComing">
+            <legend class="rsvp__label">wij komen naar:</legend>
+            <div class="rsvp__row">
+              <button class="chip chip--half" type="button" id="chipPark" aria-pressed="false">
+                <img src="img/emoji-park.png" alt="" width="32" height="32" />
+                <span class="chip__text">Parkfeestje<br /><small>10:30 - 13:00</small></span>
+              </button>
+              <button class="chip chip--half" type="button" id="chipKribbel" aria-pressed="false">
+                <img src="img/emoji-dove.png" alt="" width="34" height="34" />
+                <span class="chip__text">Kribbel<br /><small>9:15 - 9:30</small></span>
+              </button>
+            </div>
+            <button class="chip chip--wide" type="button" id="chipNone" aria-pressed="false">
+              <span class="chip__text">We kunnen niet komen<br /><small>Toch sturen we heel veel warme groeten &lt;3</small></span>
+            </button>
+          </fieldset>
+
+          <div class="rsvp__card" id="cardName">
+            <label class="rsvp__label" for="rsvpName">Wie is ik of wij?</label>
+            <input class="chip chip--input" id="rsvpName" name="names" type="text" placeholder="Vul hier je naam of namen in" autocomplete="name" />
+          </div>
+
+          <div class="rsvp__card" id="cardMsg">
+            <label class="rsvp__label" for="rsvpMsg">Wil je iets zeggen of heb je nog vragen?</label>
+            <textarea class="chip chip--area" id="rsvpMsg" name="message" rows="5"></textarea>
+          </div>
+
+          <button class="rsvp__send" id="rsvpSend" type="submit">send</button>
+        </form>
+
+        <div class="rsvp__done" id="rsvpDone" aria-hidden="true">
+          <img src="img/emoji-seintje.png" alt="" width="56" height="56" />
+          <h2 class="rsvp__done-title">Merci!</h2>
+          <p class="rsvp__done-text">We hebben jullie seintje goed ontvangen.</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="pg" data-page="kadoooootjes" aria-hidden="true">
+      <div class="pg__col">
+        <h1 class="pg__title">Kadooootjes</h1>
+        <p class="kado__script">Deze dag draait gewoon om ons ja-woord. En om daarna samen met jullie te klinken, iets te eten en te vieren. Kortom geen centen of cadeaus!</p>
+        <img class="pg__emoji pg__emoji--heart" src="img/emoji-heart.png" alt="" width="30" height="30" />
+        <video class="kado__video" src="img/kadootjes.mp4" autoplay muted loop playsinline width="195" height="260"></video>
+      </div>
+    </article>
+
   </div>
 
   <!-- Music player -->
@@ -141,7 +271,7 @@
         </button>
       </div>
 
-      <p class="sheet__blurb" id="blurb">Dit is Ina&rsquo;s all time favourite liefdesliedje. Lang nog voor er sprake was van Ruben, dus ze zal al wel wat geoefend hebben met andere vriendjes.</p>
+      <p class="sheet__blurb" id="blurb">Ina&rsquo;s favo liefdessong die alles vat: always together. Onze interesse was al wederzijds in het tweede middelbaar. Gelukkig durfden we beiden niet hopen, en maakten we omwegen tot we elkaar in 2015 opnieuw terugvonden. Een zalige tijd, zoekend naar elkaar, en eenmaal bevestigd in onze zoektocht - op dat moment al - dromen dat wat we voor elkaar voelden wel eens voor altijd kon zijn...</p>
     </div>
   </footer>
 
