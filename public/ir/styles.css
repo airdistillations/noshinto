@@ -48,6 +48,15 @@
   font-display: swap;
 }
 
+/* The waaaaat? intro serif. */
+@font-face {
+  font-family: 'Abhaya Libre';
+  src: url('fonts/abhaya-libre-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 @font-face {
   font-family: 'Space Mono';
   src: url('fonts/space-mono-400.woff2') format('woff2');
