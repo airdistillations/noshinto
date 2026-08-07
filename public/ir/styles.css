@@ -301,7 +301,13 @@ body.unlocked .nav {
   pointer-events: auto;
 }
 
-.nav__logo img { display: block; width: 100%; height: 100%; }
+.nav__logo canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* The link handles the tap; the canvas must not eat it. */
+  pointer-events: none;
+}
 
 /* Closed: a 73px glass square holding the winking emoji. Open: the same
    element grown into the vertical strip, thicker glass, destinations below. */

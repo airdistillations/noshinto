@@ -59,7 +59,9 @@
        grows into a vertical pill of emoji destinations. -->
   <header class="nav" id="nav" aria-hidden="true">
     <a class="nav__logo" id="logoLink" href="home" aria-label="Home">
-      <img src="img/nav-logo.png" alt="" width="59" height="57" />
+      <!-- A second live view of the monogram, spun by the same clock as the
+           big one. No pointer handlers — the link is just a link. -->
+      <canvas id="logoCanvas" width="59" height="57"></canvas>
     </a>
 
     <div class="nav__pill" id="navBar">
