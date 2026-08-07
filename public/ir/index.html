@@ -224,7 +224,10 @@
 
     <!-- closed pill -->
     <div class="bar player__bar" id="playerBar" role="button" tabindex="0" aria-label="Open player">
-      <img class="player__cover" id="barCover" src="img/cover-donna.jpg" alt="" width="54" height="54" />
+      <div class="player__cover" id="barCover">
+        <img class="player__coverimg is-on" id="barCoverA" src="img/cover-donna.jpg" alt="" width="54" height="54" />
+        <img class="player__coverimg" id="barCoverB" src="img/cover-donna.jpg" alt="" aria-hidden="true" width="54" height="54" />
+      </div>
       <div class="player__meta">
         <span class="player__title" id="barTitle">I Love You Always Forever</span>
         <span class="player__artist" id="barArtist">Donna Lewis</span>

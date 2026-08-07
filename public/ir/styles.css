@@ -871,8 +871,22 @@ body.unlocked .player {
   width: 54px;
   height: 54px;
   border-radius: 8px;
-  object-fit: cover;
+  overflow: hidden;
 }
+
+/* The bar thumbnail rides the same carousel as the sheet cover (same decks,
+   same clock), so the rotation shows even while the sheet is closed. */
+.player__coverimg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 480ms ease;
+}
+
+.player__coverimg.is-on { opacity: 1; }
 
 .player__meta {
   position: absolute;
