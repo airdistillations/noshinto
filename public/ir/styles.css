@@ -48,19 +48,19 @@
   font-display: swap;
 }
 
-/* The waaaaat? intro serif. */
-@font-face {
-  font-family: 'Abhaya Libre';
-  src: url('fonts/abhaya-libre-600.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
 @font-face {
   font-family: 'Space Mono';
   src: url('fonts/space-mono-400.woff2') format('woff2');
   font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* The bold cut carries the waaaaat? date. */
+@font-face {
+  font-family: 'Space Mono';
+  src: url('fonts/space-mono-700.woff2') format('woff2');
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
@@ -486,17 +486,18 @@ body.unlocked .nav {
 
 /* --- waaaaat? --- */
 
+/* Space Grotesk like the rest of the site — the serif intro went with the
+   updated artboard. The opening line runs a step larger. */
 .pg__intro {
   margin-top: 5px;
-  font-family: 'Abhaya Libre', Georgia, serif;
-  font-weight: 600;
   font-size: 14px;
-  line-height: 17px;
+  line-height: 18px;
 }
 
 .pg__intro p { margin: 0 auto; max-width: 339px; }
 .pg__intro p + p { margin-top: 17px; }
-.pg__date { letter-spacing: 0.06em; }
+.pg__lede { font-size: 16px; line-height: 20px; }
+.pg__date { font-family: var(--mono); font-weight: 700; }
 
 .menu {
   list-style: none;
@@ -520,9 +521,17 @@ body.unlocked .nav {
 .menu__by {
   margin: 0 auto;
   max-width: 307px;
-  font-size: 11px;
-  line-height: 13px;
+  font-size: 13px;
+  line-height: 16px;
   font-weight: 400;
+}
+
+/* Every menu block links out to its maker — the whole block is the target,
+   dressed as plain text; the destination is the surprise. */
+.menu__link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
 }
 
 /* --- waar is't hier te doen? --- */
