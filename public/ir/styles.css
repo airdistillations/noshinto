@@ -1008,8 +1008,25 @@ body.audio-paused .ic-pause { display: none; }
   width: 304px;
   height: 304px;
   border-radius: 8px;
-  object-fit: cover;
+  overflow: hidden;
 }
+
+/* The cover is a slow carousel: each track's images rotate behind a
+   crossfade (main.js drives the cadence). Two stacked layers double-buffer
+   it — the hidden one receives the next image and fades in over the
+   current. Sources are pre-cropped square at 640; object-fit guards any
+   future stragglers. */
+.sheet__coverimg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 480ms ease;
+}
+
+.sheet__coverimg.is-on { opacity: 1; }
 
 .sheet__meta {
   position: absolute;
