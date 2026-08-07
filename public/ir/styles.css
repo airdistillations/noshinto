@@ -196,9 +196,11 @@ body.unlocked .stage {
 }
 
 /* The typewriter: every character exists from the start (so nothing reflows
-   or recentres), and simply becomes visible on its beat. */
+   or recentres), and simply becomes visible on its beat. ("typed", not
+   "tick" — the gate's checkmark already owns .tick, whose display:none was
+   silently swallowing every revealed character.) */
 .type-a__row span { visibility: hidden; }
-.type-a__row span.tick { visibility: visible; }
+.type-a__row span.typed { visibility: visible; }
 
 /* ------------------------------------------------------------------ ring --- */
 
