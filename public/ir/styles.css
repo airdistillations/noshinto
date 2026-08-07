@@ -80,7 +80,7 @@
   --pill-fill:   rgba(0, 0, 0, 0.24);
   --pill-radius: 17px;
   --pill-shadow: 0 2px 5.2px rgba(0, 0, 0, 0.08);
-  --pill-width:  calc(100vw - 14px); /* no cap: the bars track the viewport at every size */
+  --pill-width:  calc(100vw - 14px); /* the nav tracks the viewport at every size; the player caps itself at 500px */
 
   /* Set by fitStage(): viewport-height / 852. */
   --bgfit: 1;
@@ -846,6 +846,10 @@ body.unlocked .player {
 }
 
 .player__bar {
+  /* Capped: a pill the full width of a monitor reads as a banner. Phones sit
+     under the cap, so nothing changes there. The sheet carries the same cap —
+     it is the same object, opened. */
+  width: min(var(--pill-width), 500px);
   height: 71px;
   cursor: pointer;
   transition: opacity 240ms ease, transform 240ms ease;
@@ -950,7 +954,7 @@ body.audio-paused .ic-pause { display: none; }
      player's bottom offset so no edge peeks while closed. Any inline
      transform set by the drag handler must repeat the -50% X term. */
   transform: translate(-50%, calc(100% + 80px));
-  width: var(--pill-width);
+  width: min(var(--pill-width), 500px);
   height: min(640px, calc(100vh - 14px));
   /* Prefer the dynamic viewport minus both safe insets where supported. */
   height: min(640px, calc(100dvh - 14px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)));
@@ -967,6 +971,7 @@ body.audio-paused .ic-pause { display: none; }
   touch-action: none;
   transition:
     transform  420ms cubic-bezier(0.32, 0.72, 0, 1),
+    height     260ms cubic-bezier(0.32, 0.72, 0, 1),
     visibility 0s linear 420ms;
 }
 
@@ -1099,6 +1104,35 @@ body.audio-paused .ic-pause { display: none; }
 
 /* Tracks without a story just show nothing there. */
 .sheet__blurb:empty { display: none; }
+
+/* Changing songs slides the song-specific pieces — cover, meta, blurb —
+   while the chrome (progress, transport) holds still. The leaving song is
+   cloned as ghosts that exit one way; the real nodes update underneath
+   (audio included, instantly) and enter from the other. --slide on the sheet
+   is +1 for next, -1 for previous. */
+.sheet__cover,
+.sheet__meta,
+.sheet__blurb,
+.sheet__ghost {
+  transition:
+    transform 260ms cubic-bezier(0.32, 0.72, 0, 1),
+    opacity   200ms ease;
+}
+
+/* Ghosts keep their layout classes (that is what places them), so the entry
+   snap must not catch them or the exit would start from the entry offset. */
+.sheet.track-enter :is(.sheet__cover, .sheet__meta, .sheet__blurb):not(.sheet__ghost) {
+  transition: none;
+  transform: translateX(calc(var(--slide, 1) * 64px));
+  opacity: 0;
+}
+
+.sheet__ghost { pointer-events: none; }
+
+.sheet__ghost.ghost-out {
+  transform: translateX(calc(var(--slide, 1) * -64px));
+  opacity: 0;
+}
 
 /* ----------------------------------------------------------------- gate --- */
 
@@ -1487,4 +1521,8 @@ body.unlocked .phone {
   .ring__svg { animation: none; }
   .ring,
   .stage { transition-duration: 200ms; }
+
+  /* Track changes keep the swap but drop the travel: a plain crossfade. */
+  .sheet.track-enter :is(.sheet__cover, .sheet__meta, .sheet__blurb),
+  .sheet__ghost.ghost-out { transform: none; }
 }
