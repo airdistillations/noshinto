@@ -24,35 +24,35 @@
   <main class="stage" id="stage" aria-hidden="true">
 
     <div class="bg" id="bg" aria-hidden="true">
-      <!-- home 1 — stacked lyric, black, design-space scaled -->
-      <div class="bg__variant bg__variant--a is-active" id="bgA">
-        <div class="bg__space">
-          <div class="type-a">
-            <span class="type-a__row" style="--rls:-9px">I</span>
-            <span class="type-a__row" style="--rls:-9px">LOVE</span>
-            <span class="type-a__row" style="--rls:-11px">YOU</span>
-            <span class="type-a__row" style="--rls:-16px">ALWAYS</span>
-            <span class="type-a__row" style="--rls:-9px">FOR</span>
-            <span class="type-a__row" style="--rls:-9px">EVER</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- home 2 — announcement wall, native size, filled by JS -->
-      <div class="bg__variant bg__variant--b" id="bgB">
-        <p class="type-b" id="typeB"></p>
-      </div>
-
-      <!-- home 3 — place and date, light, design-space scaled -->
-      <div class="bg__variant bg__variant--c" id="bgC">
-        <div class="bg__space">
-          <div class="type-c-digits">12<br />09<br />26</div>
-          <div class="type-c-words">ANTW<br />ERPEN<br />ZATER<br />DAG</div>
+      <!-- Scene 3 — the lyric, typed out character by character. The rows are
+           split into per-character spans by main.js. -->
+      <div class="bg__space">
+        <div class="type-a" id="lyric">
+          <span class="type-a__row" style="--rls:-9px" data-text="I"></span>
+          <span class="type-a__row" style="--rls:-9px" data-text="LOVE"></span>
+          <span class="type-a__row" style="--rls:-11px" data-text="YOU"></span>
+          <span class="type-a__row" style="--rls:-16px" data-text="ALWAYS"></span>
+          <span class="type-a__row" style="--rls:-9px" data-text="FOR"></span>
+          <span class="type-a__row" style="--rls:-9px" data-text="EVER"></span>
         </div>
       </div>
     </div>
 
     <canvas id="canvas"></canvas>
+
+    <!-- Scene 2 — the circle text, revolving around the monogram. Sized and
+         positioned over the monogram by main.js; the inner svg carries the
+         endless rotation, the outer element the fly-in/out. -->
+    <div class="ring" id="ring" aria-hidden="true">
+      <svg class="ring__svg" viewBox="0 0 311 311" aria-hidden="true">
+        <defs>
+          <path id="ringPath" d="M 155.5 19.5 A 136 136 0 1 1 155.4 19.5" />
+        </defs>
+        <text class="ring__text">
+          <textPath href="#ringPath" textLength="854" lengthAdjust="spacing">INA &amp; RUBEN GAAN TROUWEN RUBEN &amp; INA GAAN TROUWEN&nbsp;</textPath>
+        </text>
+      </svg>
+    </div>
   </main>
 
   <!-- Navigation: a floating logo top-left and an emoji square top-right that

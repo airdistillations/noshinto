@@ -118,8 +118,12 @@ body {
   transform: scale(1.045);
   transition:
     opacity   1400ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 2600ms cubic-bezier(0.22, 1, 0.36, 1);
+    transform 2600ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 800ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Scene 1 plays on white; the fade to grey is the scene-2 handover. */
+body.scene-white .stage { background: #fff; }
 
 body.unlocked .stage {
   opacity: 1;
@@ -145,17 +149,8 @@ body.unlocked .stage {
   overflow: hidden;
 }
 
-.bg__variant {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 1200ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.bg__variant.is-active { opacity: 1; }
-
 /* The Figma frame, kept at its own size and scaled. Centred horizontally,
-   pinned to the top so the compositions crop at the bottom like the design. */
+   pinned to the top so the composition crops at the bottom like the design. */
 .bg__space {
   position: absolute;
   left: 50%;
@@ -166,8 +161,8 @@ body.unlocked .stage {
   transform-origin: top center;
 }
 
-/* home 1 — "I LOVE YOU ALWAYS FOR EVER", black, 90px Rubik Mono One.
-   Figma: box −17…414 (431 wide, centred), y 41, line-height 67. */
+/* Scene 3 — "I LOVE YOU ALWAYS FOR EVER", white in the Home 3 frame, 90px
+   Rubik Mono One. Figma: box −17…414 (431 wide, centred), y 41. */
 .type-a {
   position: absolute;
   left: 50%;
@@ -183,9 +178,14 @@ body.unlocked .stage {
      the real one, which the API doesn't expose) — but the auto-sized box
      doesn't lie: 741px / 6 lines. */
   line-height: 123.5px;
-  color: var(--ink);
+  color: #fff;
   white-space: nowrap;
+
+  opacity: 0;
+  transition: opacity 300ms ease;
 }
+
+.type-a.on { opacity: 1; }
 
 /* Per-row tracking from the file. CSS letter-spacing also trails the last
    glyph, which shifts a centred row by half a space — the translate puts the
@@ -195,55 +195,63 @@ body.unlocked .stage {
   transform: translateX(calc(var(--rls, -9px) / 2));
 }
 
-/* home 2 — the announcement wall. Native 16px on every screen (it is a
-   texture, not a poster), justified, bleeding slightly past every edge. */
-.type-b {
-  position: absolute;
-  inset: -26px -1px -10px 0; /* the design starts the wall 26px above the top */
-  margin: 0;
-  font-family: var(--sans);
-  font-weight: 300;
-  font-size: 16px;
-  line-height: 20.4px;
-  letter-spacing: 0.64px;
-  text-transform: uppercase;
-  text-align: justify;
-  color: var(--light);
-  overflow: hidden;
+/* The typewriter: every character exists from the start (so nothing reflows
+   or recentres), and simply becomes visible on its beat. */
+.type-a__row span { visibility: hidden; }
+.type-a__row span.tick { visibility: visible; }
+
+/* ------------------------------------------------------------------ ring --- */
+
+/* Scene 2 — the circle text. Positioned and sized over the monogram by
+   main.js (CSS vars); the outer element flies in and out, the inner svg
+   revolves endlessly. Space Mono 27/2.7 from the TEXT_PATH node, distributed
+   over the full circumference like Figma does. */
+.ring {
+  position: fixed;
+  left: var(--ring-x, 50%);
+  top: var(--ring-y, 44%);
+  width: var(--ring-size, 480px);
+  height: var(--ring-size, 480px);
+  z-index: 2; /* above the canvas, below the chrome */
+  transform: translate(-50%, -50%) scale(3);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity   500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* home 3 — Antwerpen and the date, pale, cropped by the viewport. */
-.type-c-digits,
-.type-c-words {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--disp);
-  text-align: center;
-  color: var(--light);
-  white-space: nowrap;
+.ring.in {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
 }
 
-/* Both nodes are fixed-height boxes with vertical CENTER in Figma, so the
-   visible top is box-top + (box − content)/2. Words: 84 + (171 − 4·78)/2 =
-   13.5 — which is exactly what shoves ANTW half underneath the nav bar in
-   the design. Digits: 173 + (929 − 3·204)/2 = 331.5, cropping "26" at the
-   bottom of the screen. */
-.type-c-digits {
-  top: 331.5px;
-  font-size: 277px;
-  line-height: 204px;
-  letter-spacing: -44.32px;
-  /* recentre for the trailing letterspace, as above */
-  margin-left: -22px;
+/* Leaving is bigger than arriving — it flies past the viewer. */
+.ring.out {
+  transform: translate(-50%, -50%) scale(3.4);
+  opacity: 0;
+  transition:
+    transform 600ms cubic-bezier(0.55, 0, 0.85, 0.5),
+    opacity   450ms ease-out;
 }
 
-.type-c-words {
-  top: 13.5px;
-  font-size: 100px;
-  line-height: 78px;
-  letter-spacing: -10px;
-  margin-left: -5px;
+.ring__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  animation: ringSpin 18s linear infinite;
+}
+
+@keyframes ringSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.ring__text {
+  fill: #fff;
+  font-family: var(--mono);
+  font-size: 27px;
+  letter-spacing: 2.7px;
 }
 
 /* ---------------------------------------------------------------- chrome --- */
@@ -1472,6 +1480,9 @@ body.unlocked .phone {
   .stage { transform: none; }
   body.unlocked .phone { transform: scale(var(--fit, 1)); }
 
-  /* main.js also stops the background rotation under reduced motion. */
-  .bg__variant { transition-duration: 400ms; }
+  /* main.js parks the scene loop under reduced motion: grey background, the
+     ring resting in place, no revolutions, no typewriter. */
+  .ring__svg { animation: none; }
+  .ring,
+  .stage { transition-duration: 200ms; }
 }
