@@ -166,7 +166,10 @@ body.unlocked .stage {
 .type-a {
   position: absolute;
   left: 50%;
-  top: 41px;
+  /* The tightened Home 3: 67px pitch on the 90px face (rows touch, per the
+     render), the 402px block vertically centred in the 741 box →
+     41 + (741 − 6·67)/2. */
+  top: 210.5px;
   width: 431px;
   transform: translateX(-50%);
   display: flex;
@@ -174,10 +177,7 @@ body.unlocked .stage {
   align-items: center;
   font-family: var(--disp);
   font-size: 90px;
-  /* The node's declared line-height is stale (per-character overrides carry
-     the real one, which the API doesn't expose) — but the auto-sized box
-     doesn't lie: 741px / 6 lines. */
-  line-height: 123.5px;
+  line-height: 67px;
   color: #fff;
   white-space: nowrap;
 
