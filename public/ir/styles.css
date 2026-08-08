@@ -1222,6 +1222,66 @@ body.audio-paused .ic-pause { display: none; }
 .sheet__skip { width: 51px; height: 45px; }
 .sheet__skip svg { width: 51px; height: 45px; fill: currentColor; }
 
+/* Press states. The transport glyphs float free on the glass, so a finger
+   has nothing to land on: pressing now reveals a round button beneath it
+   and shrinks the glyph a touch — the keypad's own press language, carried
+   into the player. The circle is centred on the *glyph*, not the hit area:
+   each skip glyph hugs its own side of the 51px box (see the SVGs), so a
+   box-centred circle would sit 5.5px off. */
+.sheet__play,
+.sheet__skip { position: relative; }
+
+/* .player__toggle is already absolutely positioned — it needs no position of
+   its own, only its own stacking context so the wash cannot fall behind the
+   pill's glass. */
+.sheet__play,
+.sheet__skip,
+.player__toggle { isolation: isolate; }
+
+.sheet__play::before,
+.sheet__skip::before,
+.player__toggle::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: 50%;
+  width: 54px;
+  height: 54px;
+  margin: -27px 0 0 -27px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  opacity: 0;
+  transform: scale(0.7);
+  transition:
+    opacity   200ms ease,
+    transform 200ms cubic-bezier(0.2, 0.9, 0.3, 1);
+  pointer-events: none;
+}
+
+.sheet__skip--prev::before { margin-left: -32.5px; }
+.sheet__skip--next::before { margin-left: -21.5px; }
+
+.sheet__play:active,
+.sheet__skip:active,
+.player__toggle:active { transform: scale(0.94); }
+
+.sheet__play:focus-visible,
+.sheet__skip:focus-visible,
+.player__toggle:focus-visible { outline: none; }
+
+.sheet__play:active::before,
+.sheet__skip:active::before,
+.player__toggle:active::before,
+.sheet__play:focus-visible::before,
+.sheet__skip:focus-visible::before,
+.player__toggle:focus-visible::before {
+  opacity: 1;
+  transform: scale(1);
+  /* The press lands at once; it is the release that eases back out. */
+  transition-duration: 80ms;
+}
+
 .sheet__blurb {
   position: absolute;
   left: 13px;
@@ -1711,4 +1771,13 @@ body.unlocked .phone {
   /* Track changes keep the swap but drop the travel: a plain crossfade. */
   .sheet.track-enter :is(.sheet__cover, .sheet__meta, .sheet__blurb),
   .sheet__ghost.ghost-out { transform: none; }
+
+  /* The press states keep their round button — it is the feedback — but it
+     appears at full size instead of springing open, and nothing shrinks. */
+  .sheet__play::before,
+  .sheet__skip::before,
+  .player__toggle::before { transform: scale(1); transition: opacity 120ms ease; }
+  .sheet__play:active,
+  .sheet__skip:active,
+  .player__toggle:active { transform: none; }
 }
