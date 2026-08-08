@@ -677,26 +677,26 @@ body.unlocked .nav {
   100% { transform: scale(1); }
 }
 
+/* Two builds of the same field: multi-line textareas that follow their
+   content (main.js tracks scrollHeight). The name pill rests one line tall,
+   the message box at the artboard's 169 — everything else is identical. */
 .chip--input,
 .chip--area {
   width: 100%;
   cursor: text;
-  text-align: center;
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.02em;
-  text-transform: uppercase;
+  line-height: 18px;
+  text-align: left;
+  resize: none;
+  overflow: hidden;
   outline: none;
 }
 
-/* A textarea, not an input, so names stack on enters. One line rests
-   centred in the 60px pill (21 + 18 + 21); main.js grows it from there. */
 .chip--input {
   min-height: 60px;
   padding: 21px 16px;
-  line-height: 18px;
-  resize: none;
-  overflow: hidden;
 }
 .chip--input::placeholder,
 .chip--area::placeholder { color: rgb(22, 22, 22); opacity: 0.85; transition: opacity 200ms ease; }
@@ -707,15 +707,8 @@ body.unlocked .nav {
 .chip--area:focus { background: rgb(242, 242, 242); box-shadow: inset 0 0 0 1.5px rgb(22, 22, 22); }
 
 .chip--area {
-  /* The artboard's resting box; from there the field follows its content —
-     main.js keeps the height at scrollHeight while typing. */
   min-height: 169px;
-  overflow: hidden;
   padding: 16px;
-  resize: none;
-  text-transform: none;
-  line-height: 18px;
-  text-align: left;
 }
 
 /* Refused (empty required bits): the card's outline flashes the site's gold
