@@ -98,6 +98,16 @@ body {
   margin: 0;
 }
 
+/* The compositions are art-directed to the pixel, so the phone's font-size
+   preference (Android Chrome / Samsung Internet text scaling, Safari's
+   rotation inflation) must not multiply the type into overlap. Any non-auto
+   value switches the browser's text-autosizing off for the page; pinch-zoom
+   stays available — the viewport meta never disables it. */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   background: var(--page);
   color: var(--ink);
