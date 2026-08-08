@@ -534,25 +534,35 @@ body.unlocked .nav {
   text-decoration: none;
 }
 
-/* --- waar is't hier te doen? --- */
+/* --- waar ist hier te doen? --- */
+
+/* The two section titles — PARKFEESTJE, KRIBBEL — mono caps at display
+   size, straight from the artboard. */
+.pg__head {
+  margin: 10px 0 0;
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 36px;
+  text-transform: uppercase;
+}
 
 .where { margin-top: 24px; }
-.where p { margin: 10px 0 24px; font-size: 14px; line-height: 18px; }
+.where p { margin: 10px 0 24px; font-size: 16px; line-height: 23px; }
 
 .where__label {
   margin: 0;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .pg__note {
   margin: 22px auto;
   max-width: 339px;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 15px;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 18px;
   color: rgb(113, 113, 113);
 }
 
