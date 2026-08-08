@@ -1334,22 +1334,32 @@ body.unlocked .phone {
 
 /* The correct code scatters the pad: every key flies out on its own line,
    slightly staggered, past any viewport edge — 150vmax survives the phone's
-   scale-down on every screen. The entry animations are cleared because
-   their `both` fill would pin transform and beat the transition. ENTER's
-   delayed successIn (below) fades it in once the keys are gone. */
+   scale-down on every screen. It is an ANIMATION, not a transition, and
+   that is load-bearing: the keys' entry animations fill `both`, and a
+   transition never starts from an animation-filled value in the same
+   recalc — the keys teleported off-screen and nobody ever saw them fly.
+   An animation always plays on class application and replaces the entry
+   fill through the normal cascade. ENTER's delayed successIn (below)
+   fades it in once the keys are gone. */
 .pad.scatter { pointer-events: none; }
 
 .pad.scatter .key {
-  animation: none;
-  /* A full second of flight with a slow build — the explosion has to be
-     seen, not inferred. Keys stay opaque while they cross the screen; the
-     fade only mops up at the end, once they are essentially outside. */
-  transition:
-    transform 1s cubic-bezier(0.5, 0, 0.85, 0.4),
-    opacity   0.35s ease-in;
-  transition-delay: var(--sd, 0s), calc(0.6s + var(--sd, 0s));
-  transform: translate(calc(var(--sx) * 150vmax), calc(var(--sy) * 150vmax)) rotate(var(--sr, 0deg));
-  opacity: 0;
+  animation: keyScatter 1s cubic-bezier(0.5, 0, 0.85, 0.4) var(--sd, 0s) both;
+}
+
+/* A full second of flight with a slow build — the explosion has to be
+   seen, not inferred. Keys stay opaque for the first 60% while they cross
+   the screen; the fade only mops up once they are essentially outside. */
+@keyframes keyScatter {
+  0% {
+    transform: none;
+    opacity: 1;
+  }
+  60% { opacity: 1; }
+  100% {
+    transform: translate(calc(var(--sx, 0) * 150vmax), calc(var(--sy, -1) * 150vmax)) rotate(var(--sr, 0deg));
+    opacity: 0;
+  }
 }
 
 .key:nth-child(1) { --sx: -0.90; --sy: -0.75; --sr: -50deg; --sd: 0.03s; }
@@ -1615,9 +1625,10 @@ body.unlocked .phone {
   .stage { transform: none; }
   body.unlocked .phone { transform: translate(-50%, -50%) scale(var(--fit, 1)); }
 
-  /* The scatter keeps the swap but not the flight: keys fade in place and
-     ENTER (animation: none above) appears at once. */
-  .pad.scatter .key { transform: none; transition-duration: 200ms; }
+  /* The scatter keeps the swap but not the flight: keys fade in place —
+     the keyScatter animation is dead under `animation: none` above, so the
+     fade is declared here — and ENTER appears at once. */
+  .pad.scatter .key { opacity: 0; transition: opacity 200ms ease; }
 
   /* main.js parks the scene loop under reduced motion: grey background, the
      ring resting in place, no revolutions, no typewriter. */
