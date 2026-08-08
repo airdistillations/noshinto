@@ -190,8 +190,11 @@
         <h1 class="pg__title">Seintje geven</h1>
 
         <form class="rsvp" id="rsvp" novalidate>
-          <fieldset class="rsvp__card" id="cardComing">
-            <legend class="rsvp__label">wij komen naar:</legend>
+          <!-- A plain label, not a legend: browsers seat a legend on the
+               fieldset's border line, which made this title sit visibly
+               different from its two siblings. -->
+          <div class="rsvp__card" id="cardComing" role="group" aria-labelledby="comingLabel">
+            <span class="rsvp__label" id="comingLabel">wij komen naar:</span>
             <div class="rsvp__row">
               <button class="chip chip--half" type="button" id="chipPark" aria-pressed="false">
                 <img src="img/emoji-park.png" alt="" width="32" height="32" />
@@ -205,11 +208,11 @@
             <button class="chip chip--wide" type="button" id="chipNone" aria-pressed="false">
               <span class="chip__text">We kunnen niet komen<br /><small>Toch sturen we heel veel warme groeten &lt;3</small></span>
             </button>
-          </fieldset>
+          </div>
 
           <div class="rsvp__card" id="cardName">
             <label class="rsvp__label" for="rsvpName">Wie is ik of wij?</label>
-            <input class="chip chip--input" id="rsvpName" name="names" type="text" placeholder="Vul hier je naam of namen in" autocomplete="name" />
+            <textarea class="chip chip--input" id="rsvpName" name="names" rows="1" placeholder="Vul hier je naam of namen in" autocomplete="name"></textarea>
           </div>
 
           <div class="rsvp__card" id="cardMsg">

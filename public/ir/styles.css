@@ -596,8 +596,6 @@ body.unlocked .nav {
   transition: border-color 240ms ease;
 }
 
-fieldset.rsvp__card { padding-top: 6px; }
-
 /* A card holding the focus sharpens its outline a touch. */
 .rsvp__card:focus-within { border-color: rgba(22, 22, 22, 0.35); }
 
@@ -691,7 +689,15 @@ fieldset.rsvp__card { padding-top: 6px; }
   outline: none;
 }
 
-.chip--input { height: 60px; }
+/* A textarea, not an input, so names stack on enters. One line rests
+   centred in the 60px pill (21 + 18 + 21); main.js grows it from there. */
+.chip--input {
+  min-height: 60px;
+  padding: 21px 16px;
+  line-height: 18px;
+  resize: none;
+  overflow: hidden;
+}
 .chip--input::placeholder,
 .chip--area::placeholder { color: rgb(22, 22, 22); opacity: 0.85; transition: opacity 200ms ease; }
 .chip--input:focus::placeholder,
