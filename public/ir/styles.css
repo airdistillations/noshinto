@@ -1220,20 +1220,25 @@ body.unlocked .gate {
 }
 
 .phone {
-  position: relative;
+  /* Absolute centring rather than a grid item: the 852-tall box overflows
+     every phone viewport before its scale-down, and engines that resolve an
+     overflowing centred item "safely" (Samsung Internet) pin it to the top
+     — the panel then sat low with extra space above. translate(-50%,-50%)
+     centres regardless of overflow. */
+  position: absolute;
+  left: 50%;
+  top: 50%;
   width: 393px;
   height: 852px;
-  flex: none;
   background: transparent;
 
-  transform: scale(var(--fit, 1));
-  transform-origin: center;
+  transform: translate(-50%, -50%) scale(var(--fit, 1));
   transition: transform 700ms cubic-bezier(0.4, 0, 0.2, 1),
               opacity   700ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body.unlocked .phone {
-  transform: scale(calc(var(--fit, 1) * 0.94));
+  transform: translate(-50%, -50%) scale(calc(var(--fit, 1) * 0.94));
   opacity: 0;
 }
 
@@ -1283,17 +1288,21 @@ body.unlocked .phone {
   background: var(--dot);
 }
 
-.slot__dot--filled {
-  background: var(--ink);
-  animation: popIn 0.24s cubic-bezier(0.2, 1.4, 0.4, 1);
-}
+/* Persistent slots: is-filled swaps dot for digit, and the pop only runs on
+   the slot that just changed — the others keep matching and stay still. */
+.slot.is-filled .slot__dot { display: none; }
 
 .slot__digit {
+  display: none;
   font-family: var(--mono);
   font-weight: 400;
   font-size: 40px;
   line-height: 1;
   color: var(--ink);
+}
+
+.slot.is-filled .slot__digit {
+  display: inline;
   animation: popIn 0.24s cubic-bezier(0.2, 1.4, 0.4, 1);
 }
 
@@ -1321,16 +1330,36 @@ body.unlocked .phone {
   grid-template-columns: repeat(3, 97px);
   column-gap: 13px;
   row-gap: 10px;
-  transition:
-    opacity   0.5s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.pad.gone {
+/* The correct code scatters the pad: every key flies out on its own line,
+   slightly staggered, past any viewport edge — 150vmax survives the phone's
+   scale-down on every screen. The entry animations are cleared because
+   their `both` fill would pin transform and beat the transition. ENTER's
+   delayed successIn (below) fades it in once the keys are gone. */
+.pad.scatter { pointer-events: none; }
+
+.pad.scatter .key {
+  animation: none;
+  transition:
+    transform 0.62s cubic-bezier(0.55, 0, 0.85, 0.45),
+    opacity   0.55s ease-in;
+  transition-delay: var(--sd, 0s);
+  transform: translate(calc(var(--sx) * 150vmax), calc(var(--sy) * 150vmax)) rotate(var(--sr, 0deg));
   opacity: 0;
-  transform: scale(0.9);
-  pointer-events: none;
 }
+
+.key:nth-child(1) { --sx: -0.90; --sy: -0.75; --sr: -50deg; --sd: 0.03s; }
+.key:nth-child(2) { --sx:  0.05; --sy: -1.00; --sr:  25deg; --sd: 0.05s; }
+.key:nth-child(3) { --sx:  0.90; --sy: -0.75; --sr:  55deg; --sd: 0.00s; }
+.key:nth-child(4) { --sx: -1.00; --sy: -0.10; --sr: -35deg; --sd: 0.06s; }
+.key:nth-child(5) { --sx: -0.25; --sy: -1.00; --sr: -20deg; --sd: 0.02s; }
+.key:nth-child(6) { --sx:  1.00; --sy: -0.10; --sr:  40deg; --sd: 0.04s; }
+.key:nth-child(7) { --sx: -0.95; --sy:  0.65; --sr: -55deg; --sd: 0.01s; }
+.key:nth-child(8) { --sx:  0.30; --sy:  1.00; --sr:  20deg; --sd: 0.05s; }
+.key:nth-child(9) { --sx:  0.95; --sy:  0.65; --sr:  45deg; --sd: 0.03s; }
+.key--zero        { --sx: -0.40; --sy:  1.00; --sr: -30deg; --sd: 0.02s; }
+.key--del         { --sx:  0.85; --sy:  0.90; --sr:  35deg; --sd: 0.04s; }
 
 .key {
   width: 97px;
@@ -1435,7 +1464,9 @@ body.unlocked .phone {
 
 .open.show {
   display: block;
-  animation: successIn 0.52s cubic-bezier(0.2, 1.1, 0.3, 1) both;
+  /* The delay covers the pad's flight (0.62s + stagger) — successIn starts
+     at opacity 0 and `both` holds that through the wait. */
+  animation: successIn 0.52s 0.68s cubic-bezier(0.2, 1.1, 0.3, 1) both;
 }
 
 .open__btn {
@@ -1579,7 +1610,11 @@ body.unlocked .phone {
   .sheet,
   .nav__pill { transition-duration: 200ms; }
   .stage { transform: none; }
-  body.unlocked .phone { transform: scale(var(--fit, 1)); }
+  body.unlocked .phone { transform: translate(-50%, -50%) scale(var(--fit, 1)); }
+
+  /* The scatter keeps the swap but not the flight: keys fade in place and
+     ENTER (animation: none above) appears at once. */
+  .pad.scatter .key { transform: none; transition-duration: 200ms; }
 
   /* main.js parks the scene loop under reduced motion: grey background, the
      ring resting in place, no revolutions, no typewriter. */
