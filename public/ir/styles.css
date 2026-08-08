@@ -475,7 +475,9 @@ body.unlocked .nav {
 
 .pg__emoji { display: block; margin: 8px auto 0; }
 .pg__emoji--dove { margin-top: 31px; }
-.pg__emoji--heart { margin-top: -3px; }
+/* Centred between the script paragraph and the clip: equal margins both
+   sides (the clip's own top margin is zero for exactly this reason). */
+.pg__emoji--heart { margin: 36px auto; }
 
 .pg__link {
   color: inherit;
@@ -584,9 +586,11 @@ body.unlocked .nav {
 }
 
 .rsvp__card {
-  width: min(327px, 100%);
+  /* Nearly full-bleed per the artboard: 366 in the 393 frame, whites at 352
+     inside — hence the slim 7px horizontal padding. */
+  width: min(366px, 100%);
   margin: 0;
-  padding: 14px 14px 14px;
+  padding: 14px 7px;
   border: 0.5px solid #fff;
   border-radius: 23px;
   transition: border-color 240ms ease;
@@ -651,15 +655,15 @@ fieldset.rsvp__card { padding-top: 6px; }
 }
 
 .chip__text {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 500;
-  line-height: 14px;
+  line-height: 15px;
   text-transform: uppercase;
   text-align: left;
 }
 
 .chip--wide .chip__text { text-align: center; }
-.chip__text small { font-size: 11px; font-weight: 500; color: rgb(113, 113, 113); }
+.chip__text small { font-size: 9px; font-weight: 500; line-height: 12px; color: rgb(113, 113, 113); }
 
 /* Selected: the chip lifts to near-white with an ink ring — the pressed
    states of the rest of the site, translated to daylight. */
@@ -680,7 +684,7 @@ fieldset.rsvp__card { padding-top: 6px; }
   width: 100%;
   cursor: text;
   text-align: center;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -697,11 +701,13 @@ fieldset.rsvp__card { padding-top: 6px; }
 .chip--area:focus { background: rgb(242, 242, 242); box-shadow: inset 0 0 0 1.5px rgb(22, 22, 22); }
 
 .chip--area {
-  height: 169px;
+  /* The artboard's resting box; from there the field follows its content —
+     main.js keeps the height at scrollHeight while typing. */
+  min-height: 169px;
+  overflow: hidden;
   padding: 16px;
   resize: none;
   text-transform: none;
-  font-size: 13px;
   line-height: 18px;
   text-align: left;
 }
@@ -818,16 +824,16 @@ fieldset.rsvp__card { padding-top: 6px; }
 
 .kado__script {
   margin: 5px auto 0;
-  max-width: 274px;
+  max-width: 339px;
   font-family: 'Beyong Perfection', var(--sans);
   font-weight: 400;
-  font-size: 17px;
-  line-height: 33px;
+  font-size: 21px;
+  line-height: 39px;
 }
 
 .kado__video {
   display: block;
-  margin: 54px auto 0;
+  margin: 0 auto;
   width: 195px;
   height: 260px;
   object-fit: cover;
