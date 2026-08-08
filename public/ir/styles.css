@@ -384,6 +384,23 @@ body.unlocked .nav {
 .nav.is-open .nav__emoji { display: none; }
 .nav.is-open .nav__close { display: block; }
 
+/* A glass square with an emoji in it reads as decoration until it moves, so
+   it winks: ~1.2s of tilt inside a 5.5s cycle — an occasional nudge rather
+   than a fidget. main.js drops the body class the first time the menu is
+   opened; the hint has taught its lesson and never returns. */
+body.hint-nav .nav__emoji {
+  animation: navHint 5.5s 2s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes navHint {
+  0%, 78%, 100% { transform: none; }
+  82% { transform: rotate(-11deg) scale(1.09); }
+  87% { transform: rotate(9deg)   scale(1.06); }
+  92% { transform: rotate(-5deg)  scale(1.03); }
+  96% { transform: rotate(2deg)   scale(1.01); }
+}
+
 .nav__menu {
   list-style: none;
   margin: 0;
@@ -896,6 +913,56 @@ body.unlocked .player {
 .player.is-open .player__bar {
   opacity: 0;
   pointer-events: none;
+}
+
+/* Nobody guesses that the whole pill opens — or that it can be pulled up —
+   because the play button is the only thing that looks pressable. Two
+   answers, one permanent and one temporary:
+
+   The grabber is the permanent one: a short handle at the pill's top edge,
+   the universal "drag me up" mark, which also frames the bar as one object
+   rather than a strip of buttons. It stays forever (and is the whole hint
+   under reduced motion).
+
+   The nudge is the temporary one: the pill hops upward twice per cycle,
+   naming the direction the gesture goes. Six cycles ≈ 30s covers a
+   visitor's arrival, then it settles for good — and any interaction with
+   the bar retires it early, since the lesson has landed. */
+.player__grip {
+  position: absolute;
+  left: 50%;
+  top: 4px;
+  width: 36px;
+  height: 4px;
+  margin-left: -18px;
+  border-radius: 2px;
+  /* Near-white held back by opacity, so the hint has somewhere to brighten
+     to — and so the resting mark is the same with or without the hint. */
+  background: rgba(255, 255, 255, 0.9);
+  opacity: 0.42;
+  pointer-events: none;
+}
+
+body.hint-player .player__bar {
+  animation: barHint 5s 2.6s ease-in-out 6 both;
+  will-change: transform;
+}
+
+body.hint-player .player__grip {
+  animation: gripHint 5s 2.6s ease-in-out 6 both;
+}
+
+@keyframes barHint {
+  0%, 68%, 100% { transform: none; }
+  77% { transform: translateY(-8px); }
+  85% { transform: translateY(-1px); }
+  91% { transform: translateY(-4px); }
+  97% { transform: none; }
+}
+
+@keyframes gripHint {
+  0%, 68%, 100% { opacity: 0.42; transform: scaleX(1); }
+  77%, 91%      { opacity: 1;    transform: scaleX(1.25); }
 }
 
 .player__cover {
@@ -1612,7 +1679,12 @@ body.unlocked .phone {
   .slot__dot--filled,
   .phone__body.shakeA,
   .phone__body.shakeB,
-  .glow.pulse {
+  .glow.pulse,
+  /* The affordance hints go quiet; the grabber stays, and being static it
+     carries the whole "pull me up" message on its own. */
+  body.hint-nav .nav__emoji,
+  body.hint-player .player__bar,
+  body.hint-player .player__grip {
     animation: none !important;
   }
 
