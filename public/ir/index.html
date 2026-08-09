@@ -6,13 +6,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>IR</title>
 <meta name="robots" content="noindex, nofollow" />
-<!-- The page is one art-directed palette on a fixed grey; there is no dark
-     variant to switch to. Without this, Android's algorithmic dark modes
-     (Chrome's Auto Dark Theme, Samsung Internet's Dark mode) invert the
-     whole thing — grey paper turns black and the glossy black monogram
-     comes out chrome. "only light" is the documented opt-out; as a meta it
-     lands before first paint, so there is no flash of darkened content. -->
-<meta name="color-scheme" content="only light" />
+<!-- Android's algorithmic dark modes (Chrome's Auto Dark Theme, Samsung
+     Internet's Dark mode) will otherwise invert the whole page — grey paper
+     to black, the glossy monogram to chrome.
+
+     This says "light dark" rather than the "only light" you might expect,
+     and the difference is the whole fix. Chrome treats "only light" as an
+     opt-out, but Samsung's Force Dark reads it as "this page has no dark
+     styles" — which is exactly what it exists to darken. Samsung's own
+     guidance is to *declare* both schemes: a page that handles dark itself
+     gets its own styles rather than the algorithm. So we claim both, and
+     the prefers-color-scheme block in styles.css answers the dark one with
+     the same paper grey. Both browsers then stand down.
+
+     A meta rather than only CSS: it lands before first paint, so there is
+     no flash of darkened content. -->
+<meta name="color-scheme" content="light dark" />
 <meta name="theme-color" content="#bebebe" />
 <meta name="description" content="Private." />
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />

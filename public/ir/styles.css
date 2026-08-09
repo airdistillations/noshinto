@@ -68,8 +68,9 @@
 :root {
   /* Says it again in CSS — the meta covers first paint, this covers the
      document for the rest of its life (and for any UA that reads only one
-     of the two). See the note in index.html. */
-  color-scheme: only light;
+     of the two). Both schemes are claimed on purpose; see the note in
+     index.html for why "only light" is the wrong answer here. */
+  color-scheme: light dark;
 
   --page:  rgb(190, 190, 190);
   --panel: rgb(190, 190, 190);
@@ -93,14 +94,13 @@
   --p: 0;
 }
 
-/* Third and last signal against algorithmic darkening. Samsung Internet
-   stands its own Dark mode down for pages that handle dark themselves, so
-   this claims the scheme and then answers it with the same paper grey — the
-   design has one palette and this is it, whatever the phone prefers. */
+/* This *is* the site's dark theme, and it is load-bearing rather than
+   decorative: Samsung Internet stands its Dark mode down for a page that
+   handles dark itself, so having claimed both schemes above we answer the
+   dark one here — with the same paper grey. The design has one palette and
+   this is it, whatever the phone prefers. */
 @media (prefers-color-scheme: dark) {
   :root {
-    color-scheme: only light;
-
     --page:  rgb(190, 190, 190);
     --panel: rgb(190, 190, 190);
     --ink:   rgb(0, 0, 0);
@@ -120,6 +120,10 @@ html,
 body {
   height: 100%;
   margin: 0;
+  /* Explicit on html too, not just body: the page now claims the dark
+     scheme (see the color-scheme note), and a UA canvas left to its own
+     devices would paint dark for a frame before this stylesheet lands. */
+  background: rgb(190, 190, 190);
 }
 
 /* The compositions are art-directed to the pixel, so the phone's font-size
