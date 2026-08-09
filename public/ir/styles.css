@@ -1318,11 +1318,40 @@ body.audio-paused .ic-pause { display: none; }
   left: 13px;
   right: 13px;
   top: 539px;
+  /* Bounded by the sheet rather than running past its edge: on a short
+     screen the sheet hits the viewport cap and the longer stories used to
+     be clipped mid-sentence with no way to read the rest. Now the story
+     scrolls inside its own box. */
+  bottom: 14px;
+  overflow-y: auto;
+  /* The sheet takes every gesture (touch-action: none) so its drag can
+     follow the finger; this one belongs to the reader. Its companion is the
+     .sheet__blurb exemption in the sheet's pointerdown handler. */
+  touch-action: pan-y;
+  /* and scrolling past the end must not drag the page or the sheet with it */
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
   margin: 0;
   font-weight: 300;
   font-size: 14px;
   line-height: 17.9px;
   color: #fff;
+}
+
+.sheet__blurb::-webkit-scrollbar { width: 4px; }
+.sheet__blurb::-webkit-scrollbar-track { background: transparent; }
+.sheet__blurb::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 2px;
+}
+
+/* Android hides scrollbars until you actually scroll, so the cut-off edge
+   would still read as "the text just ends". The last line fades while there
+   is more below it — and the fade lifts once you reach the end. */
+.sheet__blurb.has-more {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 26px), transparent);
+          mask-image: linear-gradient(to bottom, #000 calc(100% - 26px), transparent);
 }
 
 /* Tracks without a story just show nothing there. */
