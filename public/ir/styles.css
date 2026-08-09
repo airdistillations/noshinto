@@ -389,16 +389,23 @@ body.unlocked .nav {
    than a fidget. main.js drops the body class the first time the menu is
    opened; the hint has taught its lesson and never returns. */
 body.hint-nav .nav__emoji {
-  animation: navHint 5.5s 2s ease-in-out infinite;
+  animation: navHint 5s 2s ease-in-out infinite;
   will-change: transform;
 }
 
+/* It pops to a third again its size and waves there for a second before
+   settling — big enough to catch the eye from across the screen, and still
+   only 1.5s of the 5s cycle so it stays a nudge rather than a fidget.
+   The ceiling is the pill: it clips at 73px, and a 41px emoji rotated 12°
+   sweeps a 1.19× wider box than it is, so 1.35 is about as large as this
+   can go before the corners start shaving. */
 @keyframes navHint {
-  0%, 78%, 100% { transform: none; }
-  82% { transform: rotate(-11deg) scale(1.09); }
-  87% { transform: rotate(9deg)   scale(1.06); }
-  92% { transform: rotate(-5deg)  scale(1.03); }
-  96% { transform: rotate(2deg)   scale(1.01); }
+  0%, 70%, 100% { transform: none; }
+  74%  { transform: scale(1.35) rotate(-10deg); }
+  79%  { transform: scale(1.32) rotate(11deg); }
+  84%  { transform: scale(1.34) rotate(-9deg); }
+  89%  { transform: scale(1.27) rotate(6deg); }
+  94%  { transform: scale(1.13) rotate(-3deg); }
 }
 
 .nav__menu {
