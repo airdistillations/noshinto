@@ -6,6 +6,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>IR</title>
 <meta name="robots" content="noindex, nofollow" />
+<!-- The page is one art-directed palette on a fixed grey; there is no dark
+     variant to switch to. Without this, Android's algorithmic dark modes
+     (Chrome's Auto Dark Theme, Samsung Internet's Dark mode) invert the
+     whole thing — grey paper turns black and the glossy black monogram
+     comes out chrome. "only light" is the documented opt-out; as a meta it
+     lands before first paint, so there is no flash of darkened content. -->
+<meta name="color-scheme" content="only light" />
 <meta name="theme-color" content="#bebebe" />
 <meta name="description" content="Private." />
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />

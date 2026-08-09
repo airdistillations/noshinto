@@ -66,6 +66,11 @@
 }
 
 :root {
+  /* Says it again in CSS — the meta covers first paint, this covers the
+     document for the rest of its life (and for any UA that reads only one
+     of the two). See the note in index.html. */
+  color-scheme: only light;
+
   --page:  rgb(190, 190, 190);
   --panel: rgb(190, 190, 190);
   --ink:   rgb(0, 0, 0);
@@ -86,6 +91,25 @@
   --bgfit: 1;
   /* Set by the audio machinery: played fraction 0..1. */
   --p: 0;
+}
+
+/* Third and last signal against algorithmic darkening. Samsung Internet
+   stands its own Dark mode down for pages that handle dark themselves, so
+   this claims the scheme and then answers it with the same paper grey — the
+   design has one palette and this is it, whatever the phone prefers. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: only light;
+
+    --page:  rgb(190, 190, 190);
+    --panel: rgb(190, 190, 190);
+    --ink:   rgb(0, 0, 0);
+    --dot:   rgb(217, 217, 217);
+    --light: rgb(227, 227, 227);
+    --pill-fill: rgba(0, 0, 0, 0.24);
+  }
+
+  body { background: var(--page); color: var(--ink); }
 }
 
 *,
