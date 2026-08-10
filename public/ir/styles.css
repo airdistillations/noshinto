@@ -905,8 +905,11 @@ body.hint-nav .nav__emoji {
 .player {
   position: fixed;
   /* Safe-edge keeps the pill clear of Android's bottom gesture bar; mobile
-     additionally lifts it 20px by request. */
-  bottom: calc(27px + env(safe-area-inset-bottom, 0px));
+     additionally lifts it 20px by request. --vv-bottom is main.js holding the
+     pill against the *visible* bottom while a mobile browser's toolbars slide
+     in and out; it is 0 whenever nothing is covering the fold, which is every
+     desktop and the resting state of every phone. */
+  bottom: calc(27px + env(safe-area-inset-bottom, 0px) + var(--vv-bottom, 0px));
   left: 0;
   right: 0;
   z-index: 410;
@@ -928,7 +931,7 @@ body.unlocked .player {
 }
 
 @media (min-width: 600px) {
-  .player { bottom: calc(7px + env(safe-area-inset-bottom, 0px)); }
+  .player { bottom: calc(7px + env(safe-area-inset-bottom, 0px) + var(--vv-bottom, 0px)); }
 }
 
 .player__bar {
