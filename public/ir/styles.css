@@ -451,11 +451,6 @@ body.hint-nav .nav__emoji {
    the full-width pill, and the dash lengths mean the same on each. */
 .trace {
   position: absolute;
-  inset: 1px;                 /* the 2px stroke then straddles the border */
-  /* Sized explicitly: an <svg> is a replaced element, so four insets alone
-     leave it at its intrinsic 300×150 instead of stretching to the parent. */
-  width: calc(100% - 2px);
-  height: calc(100% - 2px);
   overflow: visible;          /* the halo spills past the box on purpose */
   pointer-events: none;
   opacity: 0;
@@ -486,12 +481,29 @@ body.hint-nav .nav__emoji {
   filter: blur(3.5px);
 }
 
-/* Sits on the closed square's geometry (the pill is 73×73 at right: 6px). */
+/* Neither trace is a child of the thing it outlines any more — both paint
+   before it so the light sits behind the glass (see index.html) — so each
+   is laid on its object's geometry by hand, inset 1px all round so the
+   stroke straddles the border instead of hanging outside it.
+   The square is 73×73 at right: 6px; the pill is the centred bar. */
 .trace--nav {
-  inset: 1px 7px auto auto;
+  top: 1px;
+  right: 7px;
   width: 71px;
   height: 71px;
 }
+
+.trace--bar {
+  top: 1px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;             /* centred exactly as .bar is */
+  width: calc(min(var(--pill-width), 500px) - 2px);
+  height: 69px;
+}
+
+/* The bar fades out when the sheet opens; its light goes with it. */
+.player.is-open .trace--bar { opacity: 0; }
 
 body.hint-nav    .trace--nav,
 body.hint-player .trace--bar { opacity: 1; }

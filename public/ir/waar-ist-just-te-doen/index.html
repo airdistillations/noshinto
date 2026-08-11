@@ -80,6 +80,17 @@
       <canvas id="logoCanvas" width="59" height="57"></canvas>
     </a>
 
+    <!-- The light that runs the square's outline until the menu is first
+         opened. It sits *before* the pill, and outside it, for two reasons:
+         the pill clips (overflow: hidden, for its grow-open animation) and
+         would shear the halo off, and painting first is what puts the glow
+         behind the glass — the pill's own backdrop-filter then blurs the
+         part of the light that falls behind it. -->
+    <svg class="trace trace--nav" aria-hidden="true">
+      <rect class="trace__halo" width="100%" height="100%" rx="16" pathLength="100" />
+      <rect class="trace__core" width="100%" height="100%" rx="16" pathLength="100" />
+    </svg>
+
     <div class="nav__pill" id="navBar">
       <button class="nav__toggle" id="navToggle" type="button" aria-expanded="false" aria-label="Open menu">
         <img class="nav__emoji" src="img/emoji-wink.png" alt="" width="41" height="41" />
@@ -95,15 +106,6 @@
         <li><a class="nav__item" data-route="kadoooootjes" href="kadoooootjes" aria-label="Kadoooootjes"><img src="img/emoji-kado.png" alt="" width="42" height="42" /></a></li>
       </ul>
     </div>
-
-    <!-- The light that runs the square's outline until the menu is first
-         opened. It is a sibling of the pill rather than a child because the
-         pill clips (overflow: hidden, for its grow-open animation) and would
-         shear the halo off. -->
-    <svg class="trace trace--nav" aria-hidden="true">
-      <rect class="trace__halo" width="100%" height="100%" rx="16" pathLength="100" />
-      <rect class="trace__core" width="100%" height="100%" rx="16" pathLength="100" />
-    </svg>
   </header>
 
   <!-- The menu pages. Each is a full-screen scrollable layer under the fixed
@@ -268,6 +270,17 @@
   <!-- Music player -->
   <footer class="player" id="player" aria-hidden="true">
 
+    <!-- Same light, running the pill's outline until it is first touched.
+         A sibling *before* the pill rather than a child: the bar carries a
+         backdrop-filter, which makes it a stacking context, so a child could
+         never sink below its glass however its z-index were set. Painting
+         first is the only way behind — and the bar's own backdrop-filter
+         then blurs the light that falls behind it. -->
+    <svg class="trace trace--bar" aria-hidden="true">
+      <rect class="trace__halo" width="100%" height="100%" rx="16" pathLength="100" />
+      <rect class="trace__core" width="100%" height="100%" rx="16" pathLength="100" />
+    </svg>
+
     <!-- closed pill -->
     <div class="bar player__bar" id="playerBar" role="button" tabindex="0" aria-label="Open player">
       <!-- The handle that says "this whole pill opens, and it comes up". -->
@@ -288,12 +301,6 @@
       <div class="player__mini" aria-hidden="true">
         <span class="player__mini-line"></span>
       </div>
-
-      <!-- Same light, running the pill's outline until it is first touched. -->
-      <svg class="trace trace--bar" aria-hidden="true">
-        <rect class="trace__halo" width="100%" height="100%" rx="16" pathLength="100" />
-        <rect class="trace__core" width="100%" height="100%" rx="16" pathLength="100" />
-      </svg>
     </div>
 
     <!-- open sheet -->
