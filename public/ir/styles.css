@@ -436,6 +436,64 @@ body.hint-nav .nav__emoji {
   94%  { transform: scale(1.13) rotate(-3deg); }
 }
 
+/* ----------------------------------------------------------- the trace --- */
+
+/* A bead of white light that runs the outline of the two things nobody
+   presses, and keeps running until each is touched for the first time. Same
+   job as the wink and the nudge, said in a way you catch out of the corner of
+   your eye.
+
+   It is drawn as a stroked SVG rect rather than a rotating conic gradient
+   because a conic sweeps around a *centre*: on a 500×71 pill the light would
+   crawl along the long edges and whip around the short ones. A dash running a
+   path keeps one speed the whole way round. `pathLength="100"` normalises the
+   perimeter to 100 units, so a single duration fits both the 73px square and
+   the full-width pill, and the dash lengths mean the same on each. */
+.trace {
+  position: absolute;
+  inset: 1px;                 /* the 2px stroke then straddles the border */
+  /* Sized explicitly: an <svg> is a replaced element, so four insets alone
+     leave it at its intrinsic 300×150 instead of stretching to the parent. */
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  overflow: visible;          /* the halo spills past the box on purpose */
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+
+.trace rect {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 16 84;    /* a short bead of light, then dark */
+  filter:
+    drop-shadow(0 0 4px rgba(255, 255, 255, 0.9))
+    drop-shadow(0 0 9px rgba(255, 255, 255, 0.5));
+}
+
+/* Sits on the closed square's geometry (the pill is 73×73 at right: 6px). */
+.trace--nav {
+  inset: 1px 7px auto auto;
+  width: 71px;
+  height: 71px;
+}
+
+body.hint-nav    .trace--nav,
+body.hint-player .trace--bar { opacity: 1; }
+
+body.hint-nav    .trace--nav rect,
+body.hint-player .trace--bar rect { animation: traceRun 2.8s linear infinite; }
+
+/* While the menu is open the square is not a square any more. */
+.nav.is-open .trace--nav { opacity: 0; }
+
+@keyframes traceRun {
+  from { stroke-dashoffset: 100; }
+  to   { stroke-dashoffset: 0; }
+}
+
 .nav__menu {
   list-style: none;
   margin: 0;
@@ -1811,9 +1869,14 @@ body.unlocked .phone {
      carries the whole "pull me up" message on its own. */
   body.hint-nav .nav__emoji,
   body.hint-player .player__bar,
-  body.hint-player .player__grip {
+  body.hint-player .player__grip,
+  body.hint-nav .trace--nav rect,
+  body.hint-player .trace--bar rect {
     animation: none !important;
   }
+
+  /* A bead of light with nowhere to travel is just a dash on the border. */
+  .trace { display: none; }
 
   .stage,
   .phone,
