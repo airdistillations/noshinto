@@ -100,7 +100,10 @@
          opened. It is a sibling of the pill rather than a child because the
          pill clips (overflow: hidden, for its grow-open animation) and would
          shear the halo off. -->
-    <svg class="trace trace--nav" aria-hidden="true"><rect width="100%" height="100%" rx="16" pathLength="100" /></svg>
+    <svg class="trace trace--nav" aria-hidden="true">
+      <rect class="trace__halo" width="100%" height="100%" rx="16" pathLength="100" />
+      <rect class="trace__core" width="100%" height="100%" rx="16" pathLength="100" />
+    </svg>
   </header>
 
   <!-- The menu pages. Each is a full-screen scrollable layer under the fixed
@@ -287,7 +290,10 @@
       </div>
 
       <!-- Same light, running the pill's outline until it is first touched. -->
-      <svg class="trace trace--bar" aria-hidden="true"><rect width="100%" height="100%" rx="16" pathLength="100" /></svg>
+      <svg class="trace trace--bar" aria-hidden="true">
+        <rect class="trace__halo" width="100%" height="100%" rx="16" pathLength="100" />
+        <rect class="trace__core" width="100%" height="100%" rx="16" pathLength="100" />
+      </svg>
     </div>
 
     <!-- open sheet -->
