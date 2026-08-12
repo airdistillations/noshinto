@@ -248,7 +248,15 @@
             <textarea class="chip chip--area" id="rsvpMsg" name="message" rows="5"></textarea>
           </div>
 
-          <button class="rsvp__send" id="rsvpSend" type="submit">send</button>
+          <div class="sendwrap">
+            <div class="halo halo--send" aria-hidden="true">
+              <span class="halo__ring halo__ring--1"></span>
+              <span class="halo__ring halo__ring--2"></span>
+              <span class="halo__ring halo__ring--3"></span>
+              <span class="halo__ring halo__ring--4"></span>
+            </div>
+            <button class="rsvp__send" id="rsvpSend" type="submit">send</button>
+          </div>
         </form>
 
         <div class="rsvp__done" id="rsvpDone" aria-hidden="true">
@@ -387,6 +395,12 @@ the code
         </div>
 
         <div class="open" id="open">
+          <div class="halo halo--enter" aria-hidden="true">
+            <span class="halo__ring halo__ring--1"></span>
+            <span class="halo__ring halo__ring--2"></span>
+            <span class="halo__ring halo__ring--3"></span>
+            <span class="halo__ring halo__ring--4"></span>
+          </div>
           <button class="open__btn" type="button" id="enter">enter</button>
         </div>
       </div>

@@ -464,9 +464,10 @@ body.hint-nav .nav__emoji {
   /* How far the light reaches past the object. It has to comfortably exceed
      the widest blur below, because the mask clips to this box — too small and
      the bloom gets a straight cut where it should still be fading. */
-  --grow: 36px;
+  --grow: 22px;
+  --r: 17px;                /* the object's own corner radius */
   padding: var(--grow);
-  border-radius: calc(17px + var(--grow));
+  border-radius: calc(var(--r) + var(--grow));
 
   /* The finished glow has the object's own footprint cut out of it. That
      matters twice: the pill's glass is only 24% black, so an uncut bloom
@@ -497,7 +498,7 @@ body.hint-nav .nav__emoji {
 .halo__ring {
   position: absolute;
   inset: var(--grow);
-  border-radius: 17px;
+  border-radius: var(--r);
   background: conic-gradient(from 0deg,
     #BC82F3 0%,
     #BC82F3 var(--gs1),
@@ -511,10 +512,10 @@ body.hint-nav .nav__emoji {
 
 /* Four copies of the same shape at four blurs, compounding into one long
    falloff: tight and bright against the edge, wide and faint at the reach. */
-.halo__ring--1 { filter: blur(7px);  opacity: 0.85; }
-.halo__ring--2 { filter: blur(14px); opacity: 0.6; }
-.halo__ring--3 { filter: blur(22px); opacity: 0.4; }
-.halo__ring--4 { filter: blur(32px); opacity: 0.28; }
+.halo__ring--1 { filter: blur(5px);  opacity: 0.85; }
+.halo__ring--2 { filter: blur(10px); opacity: 0.6; }
+.halo__ring--3 { filter: blur(15px); opacity: 0.4; }
+.halo__ring--4 { filter: blur(20px); opacity: 0.28; }
 
 /* Neither glow is a child of the thing it surrounds — both paint before it
    so the light sits behind the glass (see index.html) — so each is laid on
@@ -535,7 +536,10 @@ body.hint-nav .nav__emoji {
      the box pins to the left instead, throwing the glow off the bar by the
      grow amount. */
   left: 50%;
-  transform: translateX(-50%);
+  /* --halo-lift is main.js handing over the swipe: while a finger drags the
+     sheet up, the light travels with it instead of sitting at the bottom
+     watching the player leave. */
+  transform: translate(-50%, var(--halo-lift, 0px));
   width: calc(min(var(--pill-width), 500px) + var(--grow) * 2);
   height: calc(71px + var(--grow) * 2);
 }
@@ -543,8 +547,41 @@ body.hint-nav .nav__emoji {
 body.hint-nav    .halo--nav,
 body.hint-player .halo--bar { opacity: 1; }
 
+/* While a finger owns the sheet the light tracks it frame for frame, so the
+   transition gets out of the way — exactly as it does for the sheet. */
+.halo--bar.dragging { transition: none; }
+
 /* The bar fades out when the sheet opens; its light goes with it. */
 .player.is-open .halo--bar { opacity: 0; }
+
+/* ---- the two round buttons ---------------------------------------------
+   ENTER on the gate and SEND on the form are the same 183×180 glass circle,
+   and both are the one thing to press on their screen — so unlike the two
+   chrome hints these stay lit the whole time they are on screen. Each sits
+   inside a positioned box of its own, the halo painted first: both buttons
+   carry a backdrop-filter, so once again nothing nested inside them could
+   ever sink below their glass. */
+.halo--enter,
+.halo--send {
+  inset: calc(var(--grow) * -1);
+  border-radius: 50%;
+  opacity: 1;
+}
+
+.halo--enter .halo__ring,
+.halo--send  .halo__ring { border-radius: 50%; }
+
+/* The form's send button needs a box to hang the halo in; the gate's ENTER
+   already has one (.open). The button's own top margin moves up here so the
+   halo stays centred on it. */
+.sendwrap {
+  position: relative;
+  width: 183px;
+  height: 180px;
+  margin-top: 18px;
+}
+
+.sendwrap .rsvp__send { margin-top: 0; }
 
 /* While the menu is open the square is not a square any more. */
 .nav.is-open .halo--nav { opacity: 0; }
