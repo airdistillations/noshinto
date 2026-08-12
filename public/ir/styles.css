@@ -461,12 +461,22 @@ body.hint-nav .nav__emoji {
 
 .halo {
   position: absolute;
-  /* How far the light reaches past the object, and how wide the lit band is.
-     The band is a shade wider than the growth so it tucks a couple of pixels
-     under the object's edge and no seam can show between the two. */
-  --grow: 14px;
-  --band: 16px;
+  /* How far the light reaches past the object. It has to comfortably exceed
+     the widest blur below, because the mask clips to this box — too small and
+     the bloom gets a straight cut where it should still be fading. */
+  --grow: 36px;
+  padding: var(--grow);
   border-radius: calc(17px + var(--grow));
+
+  /* The finished glow has the object's own footprint cut out of it. That
+     matters twice: the pill's glass is only 24% black, so an uncut bloom
+     would shine straight through and stain it, and cutting here puts the
+     glow's only hard edge exactly under the object's edge, where it cannot
+     be seen. Everything outside is pure falloff. */
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
   pointer-events: none;
   opacity: 0;
   transition:
@@ -475,13 +485,19 @@ body.hint-nav .nav__emoji {
     --gs4 1s ease-in-out, --gs5 1s ease-in-out, --gs6 1s ease-in-out;
 }
 
-/* Each ring is a rounded rect filled with the wheel, then masked to just its
-   own border: the box painted twice, once clipped to the content box, and
-   the two composited so only the padding band survives. */
+/* Each ring is simply the object's shape, filled with the wheel and blurred.
+   Filled, not a band — this is the whole difference between a glow and a
+   stroke. Blurring a band leaves its middle at full strength, so you get a
+   soft-edged strip; blurring a filled shape leaves nothing but falloff once
+   its interior is cut away, which is what the mask on the parent does.
+
+   The mask lives on the parent for ordering reasons: CSS applies `filter`
+   before `mask`, so masking here would cut a crisp band out of an
+   already-blurred fill — a hard-edged strip, exactly the bug this replaced. */
 .halo__ring {
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
+  inset: var(--grow);
+  border-radius: 17px;
   background: conic-gradient(from 0deg,
     #BC82F3 0%,
     #BC82F3 var(--gs1),
@@ -491,25 +507,14 @@ body.hint-nav .nav__emoji {
     #FFBA71 var(--gs5),
     #C686FF var(--gs6),
     #BC82F3 100%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
 }
 
-/* All four layers light the same wide band and differ only in how far they
-   are blurred, so they compound into one long smooth falloff — brightest
-   against the object's edge, gone by the outer reach — rather than reading
-   as four rings. Narrow bands were the mistake: a band has two edges, and
-   however much you blur it the eye still finds them. This one keeps its
-   inner edge tucked under the object, so the only edge left to see is the
-   object's own. */
-.halo__ring { padding: var(--band); }
-
-.halo__ring--1 { filter: blur(6px);  opacity: 0.8; }
-.halo__ring--2 { filter: blur(13px); opacity: 0.6; }
-.halo__ring--3 { filter: blur(22px); opacity: 0.45; }
-.halo__ring--4 { filter: blur(32px); opacity: 0.3; }
+/* Four copies of the same shape at four blurs, compounding into one long
+   falloff: tight and bright against the edge, wide and faint at the reach. */
+.halo__ring--1 { filter: blur(7px);  opacity: 0.85; }
+.halo__ring--2 { filter: blur(14px); opacity: 0.6; }
+.halo__ring--3 { filter: blur(22px); opacity: 0.4; }
+.halo__ring--4 { filter: blur(32px); opacity: 0.28; }
 
 /* Neither glow is a child of the thing it surrounds — both paint before it
    so the light sits behind the glass (see index.html) — so each is laid on
@@ -525,9 +530,12 @@ body.hint-nav .nav__emoji {
 
 .halo--bar {
   top: calc(var(--grow) * -1);
-  left: 0;
-  right: 0;
-  margin: 0 auto;             /* centred exactly as .bar is */
+  /* Centred with a transform, not `margin: 0 auto`: once --grow makes this
+     box wider than the viewport, auto margins have nothing to share out and
+     the box pins to the left instead, throwing the glow off the bar by the
+     grow amount. */
+  left: 50%;
+  transform: translateX(-50%);
   width: calc(min(var(--pill-width), 500px) + var(--grow) * 2);
   height: calc(71px + var(--grow) * 2);
 }
