@@ -436,90 +436,98 @@ body.hint-nav .nav__emoji {
   94%  { transform: scale(1.13) rotate(-3deg); }
 }
 
-/* ----------------------------------------------------------- the trace --- */
+/* ------------------------------------------------------------ the halo --- */
 
-/* A bead of white light that runs the outline of the two things nobody
-   presses, and keeps running until each is touched for the first time. Same
-   job as the wink and the nudge, said in a way you catch out of the corner of
-   your eye.
+/* The Apple-Intelligence glow, around the two things nobody presses, lit
+   until each is touched for the first time.
 
-   It is drawn as a stroked SVG rect rather than a rotating conic gradient
-   because a conic sweeps around a *centre*: on a 500×71 pill the light would
-   crawl along the long edges and whip around the short ones. A dash running a
-   path keeps one speed the whole way round. `pathLength="100"` normalises the
-   perimeter to 100 units, so a single duration fits both the 73px square and
-   the full-width pill, and the dash lengths mean the same on each. */
-.trace {
+   Four rings of the same colour wheel stacked on one another, crisp to soft
+   (2/3/4/5px wide under 0.5/2/5/7px of blur) — the layering is what makes it
+   read as light rather than as a stroke. The wheel is a conic gradient of the
+   six Apple Intelligence colours, and the *positions* of those six stops are
+   re-randomised twice a second and eased to their new places over a second
+   (main.js drives it; the transition below does the easing). That is the
+   whole trick of the effect: the colours keep folding through each other
+   instead of looping, so it never repeats.
+
+   The stops are registered with @property because plain custom properties
+   are unanimatable strings — only a registered <percentage> interpolates. */
+@property --gs1 { syntax: "<percentage>"; inherits: true; initial-value: 16%; }
+@property --gs2 { syntax: "<percentage>"; inherits: true; initial-value: 33%; }
+@property --gs3 { syntax: "<percentage>"; inherits: true; initial-value: 50%; }
+@property --gs4 { syntax: "<percentage>"; inherits: true; initial-value: 66%; }
+@property --gs5 { syntax: "<percentage>"; inherits: true; initial-value: 83%; }
+@property --gs6 { syntax: "<percentage>"; inherits: true; initial-value: 92%; }
+
+.halo {
   position: absolute;
-  overflow: visible;          /* the halo spills past the box on purpose */
+  border-radius: 20px;        /* the object's 17 plus the 3px it is grown by */
   pointer-events: none;
   opacity: 0;
-  transition: opacity 500ms ease;
+  transition:
+    opacity 500ms ease,
+    --gs1 1s ease-in-out, --gs2 1s ease-in-out, --gs3 1s ease-in-out,
+    --gs4 1s ease-in-out, --gs5 1s ease-in-out, --gs6 1s ease-in-out;
 }
 
-.trace rect {
-  fill: none;
-  stroke: #fff;
-  stroke-linecap: round;
-  stroke-dasharray: 20 80;    /* a bead of light, then dark */
+/* Each ring is a rounded rect filled with the wheel, then masked to just its
+   own border: the box painted twice, once clipped to the content box, and
+   the two composited so only the padding band survives. */
+.halo__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: conic-gradient(from 0deg,
+    #BC82F3 0%,
+    #BC82F3 var(--gs1),
+    #F5B9EA var(--gs2),
+    #8D9FFF var(--gs3),
+    #FF6778 var(--gs4),
+    #FFBA71 var(--gs5),
+    #C686FF var(--gs6),
+    #BC82F3 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
 }
 
-/* Light, not a lit line. A drop-shadow would only wrap a halo around a
-   stroke that stays crisp in the middle, so the blur goes on the stroke
-   itself: every layer is blurred wider than it is drawn, which leaves the
-   bead with no edge anywhere — a broad soft wash, and a softer bloom inside
-   it to give the light a centre. */
-.trace__halo {
-  stroke-width: 10;
-  opacity: 0.4;
-  filter: blur(8px);
-}
+/* Crisp to soft. The innermost ring keeps a half-pixel of blur rather than
+   the reference's none: enough to hold an edge, not enough to be a line. */
+.halo__ring--1 { padding: 2px; filter: blur(0.5px); }
+.halo__ring--2 { padding: 3px; filter: blur(2px);   opacity: 0.9; }
+.halo__ring--3 { padding: 5px; filter: blur(7px);   opacity: 0.7; }
+.halo__ring--4 { padding: 7px; filter: blur(11px);  opacity: 0.45; }
 
-.trace__core {
-  stroke-width: 3.5;
-  opacity: 0.8;
-  filter: blur(3.5px);
-}
-
-/* Neither trace is a child of the thing it outlines any more — both paint
-   before it so the light sits behind the glass (see index.html) — so each
-   is laid on its object's geometry by hand, inset 1px all round so the
-   stroke straddles the border instead of hanging outside it.
+/* Neither glow is a child of the thing it surrounds — both paint before it
+   so the light sits behind the glass (see index.html) — so each is laid on
+   its object's geometry by hand, grown 3px all round so the rings straddle
+   the edge instead of hiding entirely behind it.
    The square is 73×73 at right: 6px; the pill is the centred bar. */
-.trace--nav {
-  top: 1px;
-  right: 7px;
-  width: 71px;
-  height: 71px;
+.halo--nav {
+  top: -3px;
+  right: 3px;
+  width: 79px;
+  height: 79px;
 }
 
-.trace--bar {
-  top: 1px;
+.halo--bar {
+  top: -3px;
   left: 0;
   right: 0;
   margin: 0 auto;             /* centred exactly as .bar is */
-  width: calc(min(var(--pill-width), 500px) - 2px);
-  height: 69px;
+  width: calc(min(var(--pill-width), 500px) + 6px);
+  height: 77px;
 }
+
+body.hint-nav    .halo--nav,
+body.hint-player .halo--bar { opacity: 1; }
 
 /* The bar fades out when the sheet opens; its light goes with it. */
-.player.is-open .trace--bar { opacity: 0; }
-
-body.hint-nav    .trace--nav,
-body.hint-player .trace--bar { opacity: 1; }
-
-/* A slow lap: the light should be something you notice, not something that
-   paces. */
-body.hint-nav    .trace--nav rect,
-body.hint-player .trace--bar rect { animation: traceRun 5.5s linear infinite; }
+.player.is-open .halo--bar { opacity: 0; }
 
 /* While the menu is open the square is not a square any more. */
-.nav.is-open .trace--nav { opacity: 0; }
-
-@keyframes traceRun {
-  from { stroke-dashoffset: 100; }
-  to   { stroke-dashoffset: 0; }
-}
+.nav.is-open .halo--nav { opacity: 0; }
 
 .nav__menu {
   list-style: none;
@@ -1896,14 +1904,12 @@ body.unlocked .phone {
      carries the whole "pull me up" message on its own. */
   body.hint-nav .nav__emoji,
   body.hint-player .player__bar,
-  body.hint-player .player__grip,
-  body.hint-nav .trace--nav rect,
-  body.hint-player .trace--bar rect {
+  body.hint-player .player__grip {
     animation: none !important;
   }
 
-  /* A bead of light with nowhere to travel is just a dash on the border. */
-  .trace { display: none; }
+  /* The colour wheel only means anything while it shifts. */
+  .halo { display: none; }
 
   .stage,
   .phone,
