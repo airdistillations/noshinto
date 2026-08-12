@@ -461,7 +461,12 @@ body.hint-nav .nav__emoji {
 
 .halo {
   position: absolute;
-  border-radius: 23px;        /* the object's 17 plus the 6px it is grown by */
+  /* How far the light reaches past the object, and how wide the lit band is.
+     The band is a shade wider than the growth so it tucks a couple of pixels
+     under the object's edge and no seam can show between the two. */
+  --grow: 14px;
+  --band: 16px;
+  border-radius: calc(17px + var(--grow));
   pointer-events: none;
   opacity: 0;
   transition:
@@ -492,35 +497,39 @@ body.hint-nav .nav__emoji {
           mask-composite: exclude;
 }
 
-/* Every ring is blurred wider than it is drawn, so none of them has an edge
-   and the stack reads as bloom rather than as a border. The reference keeps
-   its innermost ring perfectly crisp, which works on a black phone screen —
-   a bright filament inside the bloom — but on this pale grey the same line
-   just looks like somebody stroked the box, so it goes. */
-.halo__ring--1 { padding: 3px;  filter: blur(4px);  opacity: 0.85; }
-.halo__ring--2 { padding: 5px;  filter: blur(9px);  opacity: 0.7; }
-.halo__ring--3 { padding: 7px;  filter: blur(16px); opacity: 0.55; }
-.halo__ring--4 { padding: 10px; filter: blur(24px); opacity: 0.4; }
+/* All four layers light the same wide band and differ only in how far they
+   are blurred, so they compound into one long smooth falloff — brightest
+   against the object's edge, gone by the outer reach — rather than reading
+   as four rings. Narrow bands were the mistake: a band has two edges, and
+   however much you blur it the eye still finds them. This one keeps its
+   inner edge tucked under the object, so the only edge left to see is the
+   object's own. */
+.halo__ring { padding: var(--band); }
+
+.halo__ring--1 { filter: blur(6px);  opacity: 0.8; }
+.halo__ring--2 { filter: blur(13px); opacity: 0.6; }
+.halo__ring--3 { filter: blur(22px); opacity: 0.45; }
+.halo__ring--4 { filter: blur(32px); opacity: 0.3; }
 
 /* Neither glow is a child of the thing it surrounds — both paint before it
    so the light sits behind the glass (see index.html) — so each is laid on
-   its object's geometry by hand, grown 6px all round so the rings straddle
-   the edge and the bloom has somewhere to go instead of hiding behind it.
+   its object's geometry by hand, grown by --grow all round so the light has
+   somewhere to reach.
    The square is 73×73 at right: 6px; the pill is the centred bar. */
 .halo--nav {
-  top: -6px;
-  right: 0;
-  width: 85px;
-  height: 85px;
+  top: calc(var(--grow) * -1);
+  right: calc(6px - var(--grow));
+  width: calc(73px + var(--grow) * 2);
+  height: calc(73px + var(--grow) * 2);
 }
 
 .halo--bar {
-  top: -6px;
+  top: calc(var(--grow) * -1);
   left: 0;
   right: 0;
   margin: 0 auto;             /* centred exactly as .bar is */
-  width: calc(min(var(--pill-width), 500px) + 12px);
-  height: 83px;
+  width: calc(min(var(--pill-width), 500px) + var(--grow) * 2);
+  height: calc(71px + var(--grow) * 2);
 }
 
 body.hint-nav    .halo--nav,
