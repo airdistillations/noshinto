@@ -461,7 +461,7 @@ body.hint-nav .nav__emoji {
 
 .halo {
   position: absolute;
-  border-radius: 20px;        /* the object's 17 plus the 3px it is grown by */
+  border-radius: 23px;        /* the object's 17 plus the 6px it is grown by */
   pointer-events: none;
   opacity: 0;
   transition:
@@ -492,32 +492,35 @@ body.hint-nav .nav__emoji {
           mask-composite: exclude;
 }
 
-/* Crisp to soft. The innermost ring keeps a half-pixel of blur rather than
-   the reference's none: enough to hold an edge, not enough to be a line. */
-.halo__ring--1 { padding: 2px; filter: blur(0.5px); }
-.halo__ring--2 { padding: 3px; filter: blur(2px);   opacity: 0.9; }
-.halo__ring--3 { padding: 5px; filter: blur(7px);   opacity: 0.7; }
-.halo__ring--4 { padding: 7px; filter: blur(11px);  opacity: 0.45; }
+/* Every ring is blurred wider than it is drawn, so none of them has an edge
+   and the stack reads as bloom rather than as a border. The reference keeps
+   its innermost ring perfectly crisp, which works on a black phone screen —
+   a bright filament inside the bloom — but on this pale grey the same line
+   just looks like somebody stroked the box, so it goes. */
+.halo__ring--1 { padding: 3px;  filter: blur(4px);  opacity: 0.85; }
+.halo__ring--2 { padding: 5px;  filter: blur(9px);  opacity: 0.7; }
+.halo__ring--3 { padding: 7px;  filter: blur(16px); opacity: 0.55; }
+.halo__ring--4 { padding: 10px; filter: blur(24px); opacity: 0.4; }
 
 /* Neither glow is a child of the thing it surrounds — both paint before it
    so the light sits behind the glass (see index.html) — so each is laid on
-   its object's geometry by hand, grown 3px all round so the rings straddle
-   the edge instead of hiding entirely behind it.
+   its object's geometry by hand, grown 6px all round so the rings straddle
+   the edge and the bloom has somewhere to go instead of hiding behind it.
    The square is 73×73 at right: 6px; the pill is the centred bar. */
 .halo--nav {
-  top: -3px;
-  right: 3px;
-  width: 79px;
-  height: 79px;
+  top: -6px;
+  right: 0;
+  width: 85px;
+  height: 85px;
 }
 
 .halo--bar {
-  top: -3px;
+  top: -6px;
   left: 0;
   right: 0;
   margin: 0 auto;             /* centred exactly as .bar is */
-  width: calc(min(var(--pill-width), 500px) + 6px);
-  height: 77px;
+  width: calc(min(var(--pill-width), 500px) + 12px);
+  height: 83px;
 }
 
 body.hint-nav    .halo--nav,
