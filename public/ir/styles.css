@@ -240,6 +240,53 @@ body.unlocked .stage {
 .type-a__row span { visibility: hidden; }
 .type-a__row span.typed { visibility: visible; }
 
+/* ------------------------------------------------------------ photo home --- */
+
+/* The wedding, full-bleed behind the monogram. Two stacked layers
+   double-buffer a slow crossfade (the cover carousel's trick, at wall
+   size), and whichever is showing drifts in a little — the slowest of Ken
+   Burns, enough that a still photograph reads as a living wall. The drift
+   is a transition rather than an animation on purpose: removing an
+   animation snaps its transform back, and an outgoing photo would jump
+   from 1.08× to 1× in the middle of its fade. A 9s transition just turns
+   around at glacial speed under the fade, where nobody can see it.
+   The whole wall fades up once the white intro has landed. */
+.photos {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 1200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.photos.on { opacity: 1; }
+
+.photos__layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1);
+  transition:
+    opacity   1500ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 9000ms linear;
+}
+
+.photos__layer.is-on {
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+/* Two homes, one stage. The classic choreography — ring and lyric — lives
+   on at /classic; every other route is the photo home. Each hides the
+   other's furniture outright rather than trusting opacity, so a half-done
+   fade can never bleed across the switch. */
+body.home-classic .photos { display: none; }
+body:not(.home-classic) .ring,
+body:not(.home-classic) .bg { display: none; }
+
 /* ------------------------------------------------------------------ ring --- */
 
 /* Scene 2 — the circle text. Positioned and sized over the monogram by
@@ -1971,6 +2018,7 @@ body.unlocked .phone {
 
   /* The colour wheel only means anything while it shifts. */
   .halo { display: none; }
+  .photos__layer { transform: none !important; transition: opacity 1500ms ease; }
 
   .stage,
   .phone,

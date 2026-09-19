@@ -54,6 +54,15 @@
       </div>
     </div>
 
+    <!-- The photo home: the wedding, full-bleed behind the monogram. Two
+         layers double-buffer the crossfade, exactly as the cover carousel
+         does; main.js swaps the hidden one's src and flips. Hidden at
+         /classic, where the ring and lyric choreography lives on. -->
+    <div class="photos" id="photos" aria-hidden="true">
+      <img class="photos__layer is-on" id="photoA" src="img/home-01.webp" alt="" decoding="async" />
+      <img class="photos__layer" id="photoB" src="img/home-01.webp" alt="" decoding="async" />
+    </div>
+
     <canvas id="canvas"></canvas>
 
     <!-- Scene 2 — the circle text, revolving around the monogram. Sized and
