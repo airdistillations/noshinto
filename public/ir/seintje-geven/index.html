@@ -54,14 +54,12 @@
       </div>
     </div>
 
-    <!-- The photo home: the wedding, full-bleed behind the monogram. Two
-         layers double-buffer the crossfade, exactly as the cover carousel
-         does; main.js swaps the hidden one's src and flips. Hidden at
-         /classic, where the ring and lyric choreography lives on. -->
-    <div class="photos" id="photos" aria-hidden="true">
-      <img class="photos__layer is-on" id="photoA" src="img/home-01.webp" alt="" decoding="async" />
-      <img class="photos__layer" id="photoB" src="img/home-01.webp" alt="" decoding="async" />
-    </div>
+    <!-- The flash: ten frames of the wedding in 2.5 seconds, full-bleed
+         behind the turning monogram, once per entry. main.js fills this
+         with one layer per frame (all decoded before the first cut, so a
+         250ms frame is never a blank) and steps through them with hard
+         cuts. Hidden at /classic, where the ring and lyric live on. -->
+    <div class="photos" id="photos" aria-hidden="true"></div>
 
     <canvas id="canvas"></canvas>
 
@@ -285,6 +283,47 @@
       </div>
     </article>
 
+    <!-- The home, once the intro has played: the story, black on grey.
+         A routed page like the others, except the router only opens it
+         after the intro is done — until then /home is the bare stage. -->
+    <article class="pg story" data-page="home" aria-hidden="true">
+      <div class="pg__col story__col">
+        <h1 class="story__q">Waarom trouwen we?</h1>
+        <p class="story__p">Laatste drie jaren, waren anders.</p>
+        <p class="story__p">We hebben niet langer<br />Een papa die zijn fierheid uit<br />Een mama die haar lieve woorden schrijft.<br />Wel besef dat het leven eindig is.</p>
+        <p class="story__p">We hebben niet langer<br />Een blind vertrouwen in mensen<br />Een judasboom in ons tuintje kapten we symbolisch, met botte bijl<br />Wel een litteken dat ons sterker maakt.</p>
+        <p class="story__p">Sindsdien hebben we een leuze, in een kader boven de inkomdeur van ons huis. Let us win, every day!</p>
+        <p class="story__p">De laatste jaren ontgroeiden we een fase<br />We zijn nu groot en kijken ook als een terug.<br />Dat doen we opnieuw samen,<br />Voor het eind der tijd als man en vrouw.</p>
+
+        <p class="story__s story__s--lead">Soms overvalt onze liefde</p>
+        <p class="story__s">Dan zie ik je staan<br />Met dezelfde verliefdheid van toen<br />Je lach, je grijns en blik - alles van toen</p>
+        <p class="story__s">Dan raak ik je aan<br />Met dezelfde tinteling van toen<br />Je handen, je borst en je lippen - alles van toen</p>
+        <p class="story__s">Dan kijk ik je aan<br />Met meer vastberadenheid dan toen</p>
+        <p class="story__s">Met deze overtuiging<br />Beloof ik je geen later.<br />Ik beloof je nu.<br />En morgen weer nu.</p>
+
+        <a class="story__btn" id="showGallery" href="gallery">show gallery</a>
+      </div>
+    </article>
+
+    <!-- The gallery: a Photos-app grid, filled by main.js from the same
+         ten frames (square thumbnails). -->
+    <section class="pg gallery" data-page="gallery" aria-hidden="true">
+      <div class="gallery__grid" id="galleryGrid"></div>
+    </section>
+
+  </div>
+
+  <!-- The lightbox: one photo at a time, full screen, above all the chrome.
+       The strip is a horizontal scroll-snap track, so the swipe is the
+       browser's own — fling, rubber-band and snap included. -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-label="Photo" aria-hidden="true">
+    <div class="lightbox__strip" id="lightboxStrip"></div>
+    <span class="lightbox__count" id="lightboxCount"></span>
+    <button class="lightbox__close" id="lightboxClose" type="button" aria-label="Back to the gallery">
+      <svg viewBox="0 0 15 15" aria-hidden="true">
+        <path d="M0.5 0.5 L14.5 14.5 M14.5 0.5 L0.5 14.5" stroke="currentColor" stroke-width="1.2" />
+      </svg>
+    </button>
   </div>
 
   <!-- Music player -->

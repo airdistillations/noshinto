@@ -242,24 +242,24 @@ body.unlocked .stage {
 
 /* ------------------------------------------------------------ photo home --- */
 
-/* The wedding, full-bleed behind the monogram. Two stacked layers
-   double-buffer a slow crossfade (the cover carousel's trick, at wall
-   size), and whichever is showing drifts in a little — the slowest of Ken
-   Burns, enough that a still photograph reads as a living wall. The drift
-   is a transition rather than an animation on purpose: removing an
-   animation snaps its transform back, and an outgoing photo would jump
-   from 1.08× to 1× in the middle of its fade. A 9s transition just turns
-   around at glacial speed under the fade, where nobody can see it.
-   The whole wall fades up once the white intro has landed. */
+/* The flash: ten frames of the wedding in 2.5 seconds, full-bleed behind
+   the turning monogram — the entry's introduction, once. One layer per
+   frame, stacked; main.js steps the is-on class through them every 250ms.
+   Hard cuts, on purpose: a montage this fast is cuts or it's a blur. The
+   wall itself snaps on (the first frame lands crisp) and eases off as the
+   monogram recedes. */
 .photos {
   position: absolute;
   inset: 0;
   overflow: hidden;
   opacity: 0;
-  transition: opacity 1200ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 700ms ease;
 }
 
-.photos.on { opacity: 1; }
+.photos.on {
+  opacity: 1;
+  transition: none;
+}
 
 .photos__layer {
   position: absolute;
@@ -268,16 +268,14 @@ body.unlocked .stage {
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transform: scale(1);
-  transition:
-    opacity   1500ms cubic-bezier(0.4, 0, 0.2, 1),
-    transform 9000ms linear;
 }
 
-.photos__layer.is-on {
-  opacity: 1;
-  transform: scale(1.08);
-}
+.photos__layer.is-on { opacity: 1; }
+
+/* After the flash the monogram recedes — a real dolly away, on the camera,
+   with this fade to finish the job — and the story takes the stage. */
+#canvas { transition: opacity 900ms ease; }
+#canvas.away { opacity: 0; }
 
 /* Two homes, one stage. The classic choreography — ring and lyric — lives
    on at /classic; every other route is the photo home. Each hides the
@@ -1091,6 +1089,208 @@ body.hint-player .halo--bar { opacity: 1; }
   font-weight: 400;
   font-size: 21px;
   line-height: 39px;
+}
+
+.story__q {
+  margin: 0;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 96px);
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 27px;
+  line-height: 36px;
+}
+
+.story__p {
+  margin: 26px auto 0;
+  max-width: 339px;
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 30px;
+}
+
+/* The poem, in the script face. It runs ~3× its em box, so 24px is a
+   generous size — trust the font, as the titles do. */
+.story__s {
+  margin: 30px auto 0;
+  max-width: 339px;
+  font-family: 'Beyong Perfection', var(--sans);
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 44px;
+}
+
+.story__s--lead {
+  margin-top: 64px;
+  font-size: 32px;
+  line-height: 60px;
+}
+
+/* The one thing to press at the end: the site's glass, as a pill. */
+.story__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 60px auto 0;
+  height: 64px;
+  padding: 0 36px;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.08),
+    inset 0 1px 1px rgba(255, 255, 255, 0.6),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.05);
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  animation: breathe 3.2s 1s ease-in-out infinite;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.story__btn:active { background: rgba(255, 255, 255, 0.34); }
+
+/* ------------------------------------------------------------- gallery --- */
+
+/* The Photos-app grid: three across on a phone, 2px gutters, square
+   crops, edge to edge under the nav. Wider screens get as many columns as
+   fit at ~160px, inside a readable width. */
+.gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  padding:
+    calc(env(safe-area-inset-top, 0px) + 96px)
+    0
+    calc(150px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 700px) {
+  .gallery__grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+}
+
+.gallery__cell {
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  background: var(--dot);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gallery__cell img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 200ms ease;
+}
+
+.gallery__cell:active img { transform: scale(0.96); }
+
+/* The lightbox. Above every bit of chrome (nav 420, player 410) — while a
+   photo is up it is the only thing on screen, as in Photos. */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: #000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity    260ms ease,
+    visibility 0s linear 260ms;
+}
+
+.lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
+
+/* The strip is the whole swipe: one slide per photo, each the full
+   viewport wide, on mandatory x-snap — the browser's own fling and
+   settle, and a resize just re-aims at the current index (main.js). */
+.lightbox__strip {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.lightbox__strip::-webkit-scrollbar { display: none; }
+
+.lightbox__slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox__slide img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.lightbox__close {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 14px);
+  right: 14px;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lightbox__close svg { width: 15px; height: 15px; }
+
+.lightbox__count {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 28px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.8);
+  pointer-events: none;
 }
 
 .kado__video {
@@ -2018,7 +2218,7 @@ body.unlocked .phone {
 
   /* The colour wheel only means anything while it shifts. */
   .halo { display: none; }
-  .photos__layer { transform: none !important; transition: opacity 1500ms ease; }
+  .story__btn { animation: none; }
 
   .stage,
   .phone,
