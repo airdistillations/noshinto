@@ -245,9 +245,9 @@ body.unlocked .stage {
 /* The flash: ten frames of the wedding in 2.5 seconds, full-bleed behind
    the turning monogram — the entry's introduction, once. One layer per
    frame, stacked; main.js steps the is-on class through them every 250ms.
-   Hard cuts, on purpose: a montage this fast is cuts or it's a blur. The
-   wall itself snaps on (the first frame lands crisp) and eases off as the
-   monogram recedes. */
+   Hard cuts, on purpose: a montage this fast is cuts or it's a blur — but
+   the wall itself fades in, so the first frame arrives rather than
+   strikes, and eases off as the monogram recedes. */
 .photos {
   position: absolute;
   inset: 0;
@@ -258,7 +258,7 @@ body.unlocked .stage {
 
 .photos.on {
   opacity: 1;
-  transition: none;
+  transition: opacity 400ms ease;
 }
 
 .photos__layer {
@@ -1091,40 +1091,32 @@ body.hint-player .halo--bar { opacity: 1; }
   line-height: 39px;
 }
 
-.story__q {
-  margin: 0;
-  padding-top: calc(env(safe-area-inset-top, 0px) + 96px);
-  font-family: var(--sans);
-  font-weight: 500;
-  font-size: 27px;
-  line-height: 36px;
-}
+.story__col { padding-top: calc(env(safe-area-inset-top, 0px) + 96px); }
 
-.story__p {
-  margin: 26px auto 0;
-  max-width: 339px;
-  font-family: var(--sans);
-  font-weight: 400;
-  font-size: 19px;
-  line-height: 30px;
-}
-
-/* The poem, in the script face. It runs ~3× its em box, so 24px is a
-   generous size — trust the font, as the titles do. */
+/* The poem first, in the script face (17/36 — it runs ~3× its em box, so
+   this reads larger than it sounds), then the prose in Space Grotesk
+   (17/22). Stanzas are one line apart; the two parts, a breath more. */
 .story__s {
-  margin: 30px auto 0;
+  margin: 36px auto 0;
   max-width: 339px;
   font-family: 'Beyong Perfection', var(--sans);
   font-weight: 400;
-  font-size: 24px;
-  line-height: 44px;
+  font-size: 17px;
+  line-height: 36px;
 }
 
-.story__s--lead {
-  margin-top: 64px;
-  font-size: 32px;
-  line-height: 60px;
+.story__s:first-child { margin-top: 0; }
+
+.story__p {
+  margin: 22px auto 0;
+  max-width: 339px;
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 22px;
 }
+
+.story__s + .story__p { margin-top: 64px; }
 
 /* The one thing to press at the end: the site's glass, as a pill. */
 .story__btn {
@@ -1295,6 +1287,7 @@ body.hint-player .halo--bar { opacity: 1; }
 }
 
 .lightbox__btn:active { background: rgba(0, 0, 0, 0.08); }
+.lightbox__btn.busy { opacity: 0.45; pointer-events: none; } /* fetching the JPEG for the share sheet */
 .lightbox__btn svg { width: 22px; height: 22px; }
 #lightboxClose svg { width: 17px; height: 17px; }
 
