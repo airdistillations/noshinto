@@ -425,7 +425,7 @@ body.unlocked .nav {
 
 .nav.is-open .nav__pill {
   width: 76px;
-  height: 369px;
+  height: 442px; /* five items: 86 + 5·42 + 4·31, plus the 22 below */
   cursor: default;
   backdrop-filter: blur(18px) saturate(1.15);
   -webkit-backdrop-filter: blur(18px) saturate(1.15);
@@ -1165,10 +1165,10 @@ body.hint-player .halo--bar { opacity: 1; }
 .gallery__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
+  gap: 6px;
   padding:
     calc(env(safe-area-inset-top, 0px) + 96px)
-    0
+    6px
     calc(150px + env(safe-area-inset-bottom, 0px));
 }
 
@@ -1184,6 +1184,7 @@ body.hint-player .halo--bar { opacity: 1; }
   display: block;
   aspect-ratio: 1;
   overflow: hidden;
+  border-radius: 12px;
   padding: 0;
   border: 0;
   background: var(--dot);
@@ -1260,30 +1261,73 @@ body.hint-player .halo--bar { opacity: 1; }
   object-fit: contain;
 }
 
-.lightbox__close {
+/* The actions pill sits exactly where the nav square does (7px + safe top,
+   6px in, 73 tall, radius 17), so the lightbox's chrome is the nav's own
+   geometry: the logo's square on the left, this on the right. Light glass
+   on black, since the monogram in that logo is black gloss and needs
+   something to stand on. */
+.lightbox__actions {
   position: absolute;
-  top: calc(env(safe-area-inset-top, 0px) + 14px);
-  right: 14px;
-  width: 44px;
-  height: 44px;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.16);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  color: #fff;
+  top: calc(7px + env(safe-area-inset-top, 0px));
+  right: 6px;
+  height: 73px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+  border-radius: var(--pill-radius);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(12px) saturate(1.15);
+  -webkit-backdrop-filter: blur(12px) saturate(1.15);
+  box-shadow: var(--pill-shadow);
+  overflow: hidden;
 }
 
-.lightbox__close svg { width: 15px; height: 15px; }
+.lightbox__btn {
+  width: 66px;
+  height: 73px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgb(22, 22, 22);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 150ms ease;
+}
+
+.lightbox__btn:active { background: rgba(0, 0, 0, 0.08); }
+.lightbox__btn svg { width: 22px; height: 22px; }
+#lightboxClose svg { width: 17px; height: 17px; }
+
+/* While a photo is up the nav rises above the lightbox, shed of its square
+   and halo, so only the logo remains — on a light square of its own, the
+   actions pill's twin, since black gloss on black would vanish. */
+body.lightbox-open .nav { z-index: 510; }
+body.lightbox-open .nav__pill,
+body.lightbox-open .halo--nav { visibility: hidden; }
+
+.nav__logo {
+  box-sizing: border-box;
+  border-radius: var(--pill-radius);
+  transition:
+    left 200ms ease, top 200ms ease, width 200ms ease, height 200ms ease,
+    padding 200ms ease, background-color 200ms ease;
+}
+
+body.lightbox-open .nav__logo {
+  left: 6px;
+  top: 0;
+  width: 73px;
+  height: 73px;
+  padding: 8px 7px; /* (73 − 57) / 2 and (73 − 59) / 2: the canvas keeps its size */
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(12px) saturate(1.15);
+  -webkit-backdrop-filter: blur(12px) saturate(1.15);
+  box-shadow: var(--pill-shadow);
+}
 
 .lightbox__count {
   position: absolute;
-  top: calc(env(safe-area-inset-top, 0px) + 28px);
+  top: calc(env(safe-area-inset-top, 0px) + 36px);
   left: 50%;
   transform: translateX(-50%);
   font-family: var(--mono);

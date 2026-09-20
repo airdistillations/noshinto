@@ -110,6 +110,7 @@
       </button>
 
       <ul class="nav__menu" id="navMenu">
+        <li><a class="nav__item" data-route="gallery" href="gallery" aria-label="Gallery"><img src="img/emoji-gallery.png" alt="" width="42" height="42" /></a></li>
         <li><a class="nav__item" data-route="waaaaaat" href="waaaaaat" aria-label="Waaaaaat?"><img src="img/emoji-waaaaaat.png" alt="" width="42" height="42" /></a></li>
         <li><a class="nav__item" data-route="waar-ist-just-te-doen" href="waar-ist-just-te-doen" aria-label="Waar is&rsquo;t Just Te Doen?"><img src="img/emoji-waar.png" alt="" width="42" height="42" /></a></li>
         <li><a class="nav__item" data-route="seintje-geven" href="seintje-geven" aria-label="Seintje Geven"><img src="img/emoji-seintje.png" alt="" width="42" height="42" /></a></li>
@@ -319,11 +320,24 @@
   <div class="lightbox" id="lightbox" role="dialog" aria-label="Photo" aria-hidden="true">
     <div class="lightbox__strip" id="lightboxStrip"></div>
     <span class="lightbox__count" id="lightboxCount"></span>
-    <button class="lightbox__close" id="lightboxClose" type="button" aria-label="Back to the gallery">
-      <svg viewBox="0 0 15 15" aria-hidden="true">
-        <path d="M0.5 0.5 L14.5 14.5 M14.5 0.5 L0.5 14.5" stroke="currentColor" stroke-width="1.2" />
-      </svg>
-    </button>
+
+    <!-- The actions, the nav square's twin in the top right: save the photo,
+         close. The nav's logo keeps the top left — the nav itself rises
+         above the lightbox while a photo is up, so the monogram never stops
+         turning in view. -->
+    <div class="lightbox__actions">
+      <a class="lightbox__btn" id="lightboxDownload" href="#" download aria-label="Download this photo">
+        <svg viewBox="0 0 20 20" aria-hidden="true">
+          <path d="M10 2.5 V12.5 M5.5 8.5 L10 13 L14.5 8.5 M3.5 15.5 V17.5 H16.5 V15.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </a>
+      <button class="lightbox__btn" id="lightboxClose" type="button" aria-label="Back to the gallery">
+        <svg viewBox="0 0 15 15" aria-hidden="true">
+          <path d="M0.5 0.5 L14.5 14.5 M14.5 0.5 L0.5 14.5" stroke="currentColor" stroke-width="1.2" />
+        </svg>
+      </button>
+    </div>
+
   </div>
 
   <!-- Music player -->
