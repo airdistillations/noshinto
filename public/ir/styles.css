@@ -1091,32 +1091,34 @@ body.hint-player .halo--bar { opacity: 1; }
   line-height: 39px;
 }
 
-.story__col { padding-top: calc(env(safe-area-inset-top, 0px) + 96px); }
+/* Clear of the chrome: the nav square ends 80px below the safe edge, and
+   the first line starts 44px under that. */
+.story__col { padding-top: calc(env(safe-area-inset-top, 0px) + 124px); }
 
-/* The poem first, in the script face (17/36 — it runs ~3× its em box, so
+/* The poem first, in the script face (14/30 — it runs ~3× its em box, so
    this reads larger than it sounds), then the prose in Space Grotesk
-   (17/22). Stanzas are one line apart; the two parts, a breath more. */
+   (15/20). Stanzas are one line apart; the two parts, a breath more. */
 .story__s {
-  margin: 36px auto 0;
+  margin: 30px auto 0;
   max-width: 339px;
   font-family: 'Beyong Perfection', var(--sans);
   font-weight: 400;
-  font-size: 17px;
-  line-height: 36px;
+  font-size: 14px;
+  line-height: 30px;
 }
 
 .story__s:first-child { margin-top: 0; }
 
 .story__p {
-  margin: 22px auto 0;
+  margin: 20px auto 0;
   max-width: 339px;
   font-family: var(--sans);
   font-weight: 400;
-  font-size: 17px;
-  line-height: 22px;
+  font-size: 15px;
+  line-height: 20px;
 }
 
-.story__s + .story__p { margin-top: 64px; }
+.story__s + .story__p { margin-top: 56px; }
 
 /* The one thing to press at the end: the site's glass, as a pill. */
 .story__btn {
